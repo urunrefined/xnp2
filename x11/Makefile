@@ -23,7 +23,6 @@ SRC_C = \
 		./../x11/kbdmng.c                                       \
 		./../x11/commng.c                                       \
 		./../x11/joymng.c                                       \
-		./../x11/soundmng.c                                     \
 		./../x11/sysmng.c                                       \
 		./../x11/taskmng.c                                      \
 		./../x11/timemng.c                                      \
@@ -227,6 +226,7 @@ SRC_C = \
 		./../debugsub.c                                         
       
 SRC_CPP = \
+		./../x11/soundmng.cpp                                   \
 		./../x11/misc/threadbase.cpp                            \
 		./../x11/misc/tty.cpp                                   \
 		./../x11/misc/usbdev.cpp                                \
