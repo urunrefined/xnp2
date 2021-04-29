@@ -306,6 +306,7 @@ static GtkRadioActionEntry screensize_entries[] = {
 { "800x500",  NULL, "800x500",  NULL, NULL, 10 },
 { "960x600",  NULL, "960x600",  NULL, NULL, 12 },
 { "1280x800", NULL, "1280x800", NULL, NULL, 16 },
+{ "2560x1600", NULL, "2560x1600", NULL, NULL, 32 }
 };
 static const guint n_screensize_entries = G_N_ELEMENTS(screensize_entries);
 
@@ -407,6 +408,7 @@ static const gchar *ui_info =
 "    <menuitem action='800x500'/>\n"
 "    <menuitem action='960x600'/>\n"
 "    <menuitem action='1280x800'/>\n"
+"    <menuitem action='2560x1600'/>\n"
 "   </menu>\n"
 #endif
 "   <separator/>\n"
