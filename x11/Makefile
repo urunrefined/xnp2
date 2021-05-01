@@ -4,7 +4,7 @@ LDLIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pi
 
 #General flags
 CXXFLAGS = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -std=c++11 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
-CFLAGS   = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\"            -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
+CFLAGS   = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -std=gnu99 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
 
 SRC_C = \
 		./../x11/main.c                                         \
