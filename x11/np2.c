@@ -238,17 +238,9 @@ changescreen(UINT8 newmode)
 	UINT8 renewal;
 
 	change = scrnmode ^ newmode;
-	renewal = (change & SCRNMODE_FULLSCREEN);
-	if (newmode & SCRNMODE_FULLSCREEN) {
-		renewal |= (change & SCRNMODE_HIGHCOLOR);
-	} else {
-		renewal |= (change & SCRNMODE_ROTATEMASK);
-	}
+	renewal |= (change & SCRNMODE_ROTATEMASK);
+
 	if (renewal) {
-		if (renewal & SCRNMODE_FULLSCREEN) {
-			toolwin_destroy();
-			kdispwin_destroy();
-		}
 		soundmng_stop();
 		mouse_running(MOUSE_STOP);
 		scrnmng_destroy();
@@ -261,16 +253,6 @@ changescreen(UINT8 newmode)
 			}
 		}
 		scrndraw_redraw();
-		if (renewal & SCRNMODE_FULLSCREEN) {
-			if (!scrnmng_isfullscreen()) {
-				if (np2oscfg.toolwin) {
-					toolwin_create();
-				}
-				if (np2oscfg.keydisp) {
-					kdispwin_create();
-				}
-			}
-		}
 		mouse_running(MOUSE_CONT);
 		soundmng_play();
 	} else {

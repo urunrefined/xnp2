@@ -109,10 +109,13 @@ key_press_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer p)
 {
 
 	if (ev->keyval == GDK_KEY_F11) {
-		if ((np2oscfg.F11KEY == 1) && (scrnmode & SCRNMODE_FULLSCREEN))
-			xmenu_toggle_menu();
-		else if (np2oscfg.F11KEY == 2)
-			xmenu_select_screen(scrnmode ^ SCRNMODE_FULLSCREEN);
+		np2oscfg.F11KEY = !np2oscfg.F11KEY;
+		if (np2oscfg.F11KEY){
+			xmenu_hide();
+		}
+		else {
+			xmenu_show();
+		}
 	} else if ((ev->keyval == GDK_KEY_F12) && (np2oscfg.F12KEY == 0))
 		xmenu_toggle_item(NULL, "mousemode", !np2oscfg.MOUSE_SW);
 	else
@@ -188,7 +191,7 @@ static gboolean
 motion_notify_evhandler(GtkWidget *w, GdkEventMotion *ev, gpointer p)
 {
 
-	if ((scrnmode & SCRNMODE_FULLSCREEN) && (ev->y < 8.0))
+	if ((scrnmode & SCRNMODE_HIDEMENU) && (ev->y < 8.0))
 		xmenu_show();
 
 	return TRUE;

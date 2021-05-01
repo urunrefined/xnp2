@@ -205,7 +205,7 @@ static GtkToggleActionEntry togglemenu_entries[] = {
 { "joyrapid",     NULL, "Joy _rapid",         NULL, NULL, G_CALLBACK(cb_joyrapid), FALSE },
 { "joyreverse",   NULL, "Joy re_verse",       NULL, NULL, G_CALLBACK(cb_joyreverse), FALSE },
 { "keydisplay",   NULL, "Key display",        NULL, NULL, G_CALLBACK(cb_keydisplay), FALSE },
-{ "mousemode",    NULL, "_Mouse mode",        NULL, NULL, G_CALLBACK(cb_mousemode), FALSE },
+{ "mousemode",    NULL, "_Mouse mode (F12)",        NULL, NULL, G_CALLBACK(cb_mousemode), FALSE },
 { "mouserapid",   NULL, "_Mouse rapid",       NULL, NULL, G_CALLBACK(cb_mouserapid), FALSE },
 { "nowait",       NULL, "_No wait",           NULL, NULL, G_CALLBACK(cb_nowait), FALSE },
 { "realpalettes", NULL, "Real _palettes",     NULL, NULL, G_CALLBACK(cb_realpalettes), FALSE },
@@ -287,7 +287,7 @@ static GtkRadioActionEntry memory_entries[] = {
 static const guint n_memory_entries = G_N_ELEMENTS(memory_entries);
 
 static GtkRadioActionEntry screenmode_entries[] = {
-{ "fullscreen",  NULL, "_Full screen", NULL, NULL, SCRNMODE_FULLSCREEN },
+{ "fullscreen",  NULL, "_Hide Menu", NULL, NULL, SCRNMODE_HIDEMENU },
 { "windowmode",  NULL, "_Window",      NULL, NULL, 0 },
 };
 static const guint n_screenmode_entries = G_N_ELEMENTS(screenmode_entries);
@@ -1713,7 +1713,7 @@ cb_screenmode(gint idx)
 	} else {
 		value = 0;
 	}
-	changescreen((scrnmode & ~SCRNMODE_FULLSCREEN) | value);
+	changescreen((scrnmode & ~SCRNMODE_HIDEMENU) | value);
 }
 
 static void
@@ -1784,7 +1784,7 @@ menubar_timeout(gpointer p)
 		menubar_timerid = 0;
 	}
 
-	if (scrnmode & SCRNMODE_FULLSCREEN) {
+	if (scrnmode & SCRNMODE_HIDEMENU) {
 		xmenu_hide();
 	}
 
@@ -1820,7 +1820,7 @@ leave_notify_evhandler(GtkWidget *w, GdkEventCrossing *ev, gpointer p)
 		menubar_timerid = 0;
 	}
 
-	if (scrnmode & SCRNMODE_FULLSCREEN) {
+	if (scrnmode & SCRNMODE_HIDEMENU) {
 		menubar_timerid = g_timeout_add(1000, menubar_timeout, NULL);
 	}
 
@@ -1978,7 +1978,7 @@ create_menu(void)
 	xmenu_select_joykey(np2cfg.KEY_MODE);
 	xmenu_select_memory(np2cfg.EXTMEM);
 	xmenu_select_rotate(scrnmode & SCRNMODE_ROTATEMASK);
-	xmenu_select_screenmode(scrnmode & SCRNMODE_FULLSCREEN);
+	xmenu_select_screenmode(scrnmode & SCRNMODE_HIDEMENU);
 	xmenu_select_screensize(SCREEN_DEFMUL);
 	xmenu_select_soundboard(np2cfg.SOUND_SW);
 
@@ -2008,25 +2008,9 @@ xmenu_show(void)
 }
 
 void
-xmenu_toggle_menu(void)
-{
-
-	if (
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 18)
-	    gtk_widget_get_visible(menubar)
-#else
-	    GTK_WIDGET_VISIBLE(menubar)
-#endif
-	)
-		xmenu_hide();
-	else
-		xmenu_show();
-}
-
-void
 xmenu_select_screen(UINT8 mode)
 {
 
 	xmenu_select_rotate(mode & SCRNMODE_ROTATEMASK);
-	xmenu_select_screenmode(mode & SCRNMODE_FULLSCREEN);
+	xmenu_select_screenmode(mode & SCRNMODE_HIDEMENU);
 }

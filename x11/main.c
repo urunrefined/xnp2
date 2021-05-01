@@ -310,16 +310,14 @@ main(int argc, char *argv[])
 
 	pccore_reset();
 
-	if (!(scrnmode & SCRNMODE_FULLSCREEN)) {
-		if (np2oscfg.toolwin) {
-			toolwin_create();
-		}
-		if (np2oscfg.keydisp) {
-			kdispwin_create();
-		}
-		if (np2oscfg.softkbd) {
-			skbdwin_create();
-		}
+	if (np2oscfg.toolwin) {
+	        toolwin_create();
+	}
+	if (np2oscfg.keydisp) {
+	        kdispwin_create();
+	}
+	if (np2oscfg.softkbd) {
+	        skbdwin_create();
 	}
 
 #if defined(SUPPORT_RESUME)

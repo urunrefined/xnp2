@@ -132,63 +132,44 @@ renewal_client_size(void)
 	height = min(scrnstat.height, drawmng.height);
 	extend = 0;
 
-	if (drawmng.scrnmode & SCRNMODE_FULLSCREEN) {
-		scrnwidth = drawmng.width;
-		scrnheight = drawmng.height;
 
-		drawmng.rect.right = width;
-		drawmng.rect.bottom = height;
-		if (!real_fullscreen) {
-			adapt_aspect(width, height, scrnwidth, scrnheight);
+	multiple = scrnstat.multiple;
+	if (!(drawmng.scrnmode & SCRNMODE_ROTATE)) {
+		if ((np2oscfg.paddingx > 0) && (multiple == SCREEN_DEFMUL)) {
+			extend = min(scrnstat.extend, drawmng.extend);
 		}
+		scrnwidth = (width * multiple) / SCREEN_DEFMUL;
+		scrnheight = (height * multiple) / SCREEN_DEFMUL;
+
+		drawmng.rect.right = scrnwidth + extend;
+		drawmng.rect.bottom = scrnheight;
 
 		drawmng.ratio_w = (double)drawmng.rect.right / width;
 		drawmng.ratio_h = (double)drawmng.rect.bottom / height;
 
-		drawmng.scrn.left = (scrnwidth - drawmng.rect.right) / 2;
-		drawmng.scrn.top = (scrnheight - drawmng.rect.bottom) / 2;
-		drawmng.scrn.right = drawmng.scrn.left + drawmng.rect.right;
-		drawmng.scrn.bottom = drawmng.scrn.top + drawmng.rect.bottom;
-
-		gtk_widget_set_size_request(drawarea, scrnwidth, scrnheight);
+		drawmng.scrn.left = np2oscfg.paddingx - extend;
+		drawmng.scrn.top = np2oscfg.paddingy;
 	} else {
-		multiple = scrnstat.multiple;
-		if (!(drawmng.scrnmode & SCRNMODE_ROTATE)) {
-			if ((np2oscfg.paddingx > 0) && (multiple == SCREEN_DEFMUL)) {
-				extend = min(scrnstat.extend, drawmng.extend);
-			}
-			scrnwidth = (width * multiple) / SCREEN_DEFMUL;
-			scrnheight = (height * multiple) / SCREEN_DEFMUL;
-
-			drawmng.rect.right = scrnwidth + extend;
-			drawmng.rect.bottom = scrnheight;
-
-			drawmng.ratio_w = (double)drawmng.rect.right / width;
-			drawmng.ratio_h = (double)drawmng.rect.bottom / height;
-
-			drawmng.scrn.left = np2oscfg.paddingx - extend;
-			drawmng.scrn.top = np2oscfg.paddingy;
-		} else {
-			if ((np2oscfg.paddingy > 0) && (multiple == SCREEN_DEFMUL)) {
-				extend = min(scrnstat.extend, drawmng.extend);
-			}
-			scrnwidth = (height * multiple) / SCREEN_DEFMUL;
-			scrnheight = (width * multiple) / SCREEN_DEFMUL;
-
-			drawmng.rect.right = scrnwidth;
-			drawmng.rect.bottom = scrnheight + extend;
-
-			drawmng.ratio_w = (double)drawmng.rect.right / height;
-			drawmng.ratio_h = (double)drawmng.rect.bottom / width;
-
-			drawmng.scrn.left = np2oscfg.paddingx;
-			drawmng.scrn.top = np2oscfg.paddingy - extend;
+		if ((np2oscfg.paddingy > 0) && (multiple == SCREEN_DEFMUL)) {
+			extend = min(scrnstat.extend, drawmng.extend);
 		}
-		drawmng.scrn.right = np2oscfg.paddingx + scrnwidth;
-		drawmng.scrn.bottom = np2oscfg.paddingy + scrnheight;
+		scrnwidth = (height * multiple) / SCREEN_DEFMUL;
+		scrnheight = (width * multiple) / SCREEN_DEFMUL;
 
-		set_window_size(scrnwidth, scrnheight);
+		drawmng.rect.right = scrnwidth;
+		drawmng.rect.bottom = scrnheight + extend;
+
+		drawmng.ratio_w = (double)drawmng.rect.right / height;
+		drawmng.ratio_h = (double)drawmng.rect.bottom / width;
+
+		drawmng.scrn.left = np2oscfg.paddingx;
+		drawmng.scrn.top = np2oscfg.paddingy - extend;
 	}
+	drawmng.scrn.right = np2oscfg.paddingx + scrnwidth;
+	drawmng.scrn.bottom = np2oscfg.paddingy + scrnheight;
+
+	set_window_size(scrnwidth, scrnheight);
+
 
 	scrnsurf.width = width;
 	scrnsurf.height = height;
@@ -362,23 +343,17 @@ scrnmng_create(UINT8 mode)
 		break;
 	}
 
-	if (mode & SCRNMODE_FULLSCREEN) {
-		mode &= ~SCRNMODE_ROTATEMASK;
-		scrnmng.flag = 0;
-		drawmng.extend = 0;
-		if (real_fullscreen) {
-			drawmng.width = FULLSCREEN_WIDTH;
-			drawmng.height = FULLSCREEN_HEIGHT;
-		} else {
-			screen = gdk_screen_get_default();
-			drawmng.width = gdk_screen_get_width(screen);
-			drawmng.height = gdk_screen_get_height(screen);
-		}
+
+	mode &= ~SCRNMODE_ROTATEMASK;
+	scrnmng.flag = 0;
+	drawmng.extend = 0;
+	if (real_fullscreen) {
+		drawmng.width = FULLSCREEN_WIDTH;
+		drawmng.height = FULLSCREEN_HEIGHT;
 	} else {
-		scrnmng.flag = SCRNFLAG_HAVEEXTEND;
-		drawmng.extend = 1;
-		drawmng.width = 640;
-		drawmng.height = 480;
+		screen = gdk_screen_get_default();
+		drawmng.width = gdk_screen_get_width(screen);
+		drawmng.height = gdk_screen_get_height(screen);
 	}
 
 	if (!(mode & SCRNMODE_ROTATE)) {
@@ -413,17 +388,11 @@ scrnmng_create(UINT8 mode)
 	}
 	gdk_pixbuf_fill(drawmng.surface, 0);
 
-	if (mode & SCRNMODE_FULLSCREEN) {
-		drawmng.drawsurf =
-		    real_fullscreen ? drawmng.backsurf : drawmng.surface;
-		xmenu_hide();
-		gtk_window_fullscreen_mode(main_window);
-	} else {
-		drawmng.drawsurf = (scrnstat.multiple == SCREEN_DEFMUL)
-		    ? drawmng.backsurf : drawmng.surface;
-		gtk_window_restore_mode(main_window);
-		xmenu_show();
-	}
+
+	drawmng.drawsurf = (scrnstat.multiple == SCREEN_DEFMUL)
+		? drawmng.backsurf : drawmng.surface;
+	gtk_window_restore_mode(main_window);
+	xmenu_show();
 
 	drawmng.drawing = FALSE;
 
@@ -493,19 +462,18 @@ scrnmng_setmultiple(int multiple)
 
 	if (scrnstat.multiple != multiple) {
 		scrnstat.multiple = multiple;
-		if (!(drawmng.scrnmode & SCRNMODE_FULLSCREEN)) {
-			soundmng_stop();
-			mouse_running(MOUSE_STOP);
-			scrnmng_destroy();
-			if (scrnmng_create(scrnmode) != SUCCESS) {
-				toolkit_widget_quit();
-				return;
-			}
-			renewal_client_size();
-			scrndraw_redraw();
-			mouse_running(MOUSE_CONT);
-			soundmng_play();
+
+		soundmng_stop();
+		mouse_running(MOUSE_STOP);
+		scrnmng_destroy();
+		if (scrnmng_create(scrnmode) != SUCCESS) {
+			toolkit_widget_quit();
+			return;
 		}
+		renewal_client_size();
+		scrndraw_redraw();
+		mouse_running(MOUSE_CONT);
+		soundmng_play();
 	}
 }
 
@@ -566,17 +534,11 @@ scrnmng_update(void)
 
 	drawmng.drawing = TRUE;
 
-	if (drawmng.scrnmode & SCRNMODE_FULLSCREEN) {
-		if (scrnmng.allflash) {
-			scrnmng.allflash = 0;
+
+	if (scrnmng.allflash) {
+		scrnmng.allflash = 0;
+		if (np2oscfg.paddingx || np2oscfg.paddingy) {
 			clear_outscreen();
-		}
-	} else {
-		if (scrnmng.allflash) {
-			scrnmng.allflash = 0;
-			if (np2oscfg.paddingx || np2oscfg.paddingy) {
-				clear_outscreen();
-			}
 		}
 	}
 
