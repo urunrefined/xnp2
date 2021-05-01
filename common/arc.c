@@ -2,10 +2,7 @@
 #include	"dosio.h"
 #include	"arc.h"
 #include	"arcunzip.h"
-#if defined(OSLANG_UCS2) || defined(OSLANG_UTF8)
 #include	"oemtext.h"
-#endif
-
 
 // ---- normal file (default)
 
@@ -112,21 +109,15 @@ ARCDH arc_diropen(ARCH arch) {
 
 BRESULT arc_dirread(ARCDH arcdh, OEMCHAR *fname, UINT size, ARCINF *inf) {
 
-#if defined(OSLANG_UCS2) || defined(OSLANG_UTF8)
 	BRESULT	ret;
 	char	name[MAX_PATH];
-#endif
 
 	if ((arcdh != NULL) && (arcdh->dirread != NULL)) {
-#if defined(OSLANG_UCS2) || defined(OSLANG_UTF8)
 		ret = (arcdh->dirread)(arcdh, name, sizeof(name), inf);
 		if ((ret == SUCCESS) && (fname != NULL) && (size != 0)) {
 			oemtext_sjistooem(fname, size, name, (UINT)-1);
 		}
 		return(ret);
-#else
-		return((arcdh->dirread)(arcdh, fname, size, inf));
-#endif
 	}
 	else {
 		return(FAILURE);
@@ -145,18 +136,14 @@ void arc_dirclose(ARCDH arcdh) {
 
 ARCFH arc_fileopen(ARCH arch, const OEMCHAR *fname) {
 
-#if defined(OSLANG_UCS2) || defined(OSLANG_UTF8)
+
 	char	name[MAX_PATH];
-#endif
 
 	if (arch != NULL) {
 		if (arch->fileopen != NULL) {
-#if defined(OSLANG_UCS2) || defined(OSLANG_UTF8)
+
 			oemtext_oemtosjis(name, NELEMENTS(name), fname, (UINT)-1);
 			return((*arch->fileopen)(arch, name));
-#else
-			return((*arch->fileopen)(arch, fname));
-#endif
 		}
 	}
 	return(NULL);
@@ -198,17 +185,13 @@ void arc_fileclose(ARCFH arcfh) {
 
 SINT16 arc_attr(ARCH arch, const OEMCHAR *fname) {
 
-#if defined(OSLANG_UCS2) || defined(OSLANG_UTF8)
+
 	char	path[MAX_PATH];
-#endif
 
 	if ((arch != NULL) && (arch->fileattr != NULL)) {
-#if defined(OSLANG_UCS2) || defined(OSLANG_UTF8)
+
 		oemtext_oemtosjis(path, NELEMENTS(path), fname, (UINT)-1);
 		return((*arch->fileattr)(arch, path));
-#else
-		return((*arch->fileattr)(arch, fname));
-#endif
 	}
 	return(-1);
 }

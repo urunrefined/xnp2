@@ -501,16 +501,10 @@ const UINT8		*hdr;
 	if (fh == _FILEH_INVALID) {
 		goto tfc_err1;
 	}
-#if defined(OSLANG_UTF8)
+
 	hdr = str_utf8;
 	hdrsize = sizeof(str_utf8);
-#elif defined(OSLANG_UCS2) 
-	hdr = (UINT8 *)str_ucs2;
-	hdrsize = sizeof(str_ucs2);
-#else
-	hdr = NULL;
-	hdrsize = 0;
-#endif
+
 	if ((hdrsize) && (_file_write(fh, hdr, hdrsize) != hdrsize)) {
 		goto tfc_err2;
 	}

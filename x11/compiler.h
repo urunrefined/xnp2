@@ -80,7 +80,6 @@
 #include <unistd.h>
 
 #define	X11
-#define	OSLANG_UTF8
 #define	OSLINEBREAK_LF
 
 #include <glib.h>
@@ -231,9 +230,6 @@ G_END_DECLS
 #define	INLINE		inline
 #endif
 #endif
-
-#define	SUPPORT_EUC
-#define	SUPPORT_UTF8
 
 #undef	SUPPORT_8BPP
 #define	SUPPORT_16BPP

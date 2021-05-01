@@ -40,21 +40,6 @@ UINT textcnv_getinfo(TCINF *inf, const UINT8 *hdr, UINT hdrsize) {
 		info.width = 1;
 	}
 
-#if defined(OSLANG_SJIS)
-	switch(textcode) {
-		case TEXTCNV_DEFAULT:
-		case TEXTCNV_SJIS:
-			info.caps = TEXTCNV_READ | TEXTCNV_WRITE;
-			break;
-	}
-#elif defined(OSLANG_EUC)
-	switch(textcode) {
-		case TEXTCNV_DEFAULT:
-		case TEXTCNV_EUC:
-			info.caps = TEXTCNV_READ | TEXTCNV_WRITE;
-			break;
-	}
-#elif defined(OSLANG_UTF8)
 	switch(textcode) {
 		case TEXTCNV_UTF8:
 			info.caps = TEXTCNV_READ | TEXTCNV_WRITE;
@@ -66,25 +51,7 @@ UINT textcnv_getinfo(TCINF *inf, const UINT8 *hdr, UINT hdrsize) {
 			info.fromoem = (TCFROMOEM)codecnv_utf8toucs2;
 			break;
 	}
-#elif defined(OSLANG_UCS2)
-	switch(textcode) {
-		case TEXTCNV_UTF8:
-			info.caps = TEXTCNV_READ | TEXTCNV_WRITE;
-			info.tooem = (TCTOOEM)codecnv_utf8toucs2;
-			info.fromoem = (TCFROMOEM)codecnv_ucs2toutf8;
-			break;
 
-		case TEXTCNV_UCS2:
-			info.caps = TEXTCNV_READ | TEXTCNV_WRITE;
-			break;
-	}
-#else	// defined(OSLANG_*)
-	switch(textcode) {
-		case TEXTCNV_DEFAULT:
-			info.caps = TEXTCNV_READ | TEXTCNV_WRITE;
-			break;
-	}
-#endif	// defined(OSLANG_*)
 	if (inf) {
 		*inf = info;
 	}

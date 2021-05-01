@@ -8,9 +8,7 @@
 
 #if defined(SUPPORT_HOSTDRV)
 
-#if defined(OSLANG_EUC) || defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 #include "oemtext.h"
-#endif
 #include "pccore.h"
 
 /*! ルート情報 */
@@ -50,7 +48,6 @@ static void RealPath2FcbSub(char *lpFcbname, UINT cchFcbname, const char *lpPath
 		{
 			break;
 		}
-#if defined(OSLANG_SJIS) || defined(OSLANG_EUC) || defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 		if ((((c ^ 0x20) - 0xa1) & 0xff) < 0x3c)
 		{
 			if (lpPath[0] == '\0')
@@ -83,25 +80,6 @@ static void RealPath2FcbSub(char *lpFcbname, UINT cchFcbname, const char *lpPath
 			*lpFcbname++ = c;
 			cchFcbname--;
 		}
-#else
-		if (((c - 0x20) & 0xff) < 0x60)
-		{
-			if (((c - 'a') & 0xff) < 26)
-			{
-				c -= 0x20;
-			}
-			if (s_cDosCharacters[(c >> 3) - (0x20 >> 3)] & (1 << (c & 7)))
-			{
-				*lpFcbname++ = c;
-				cchFcbname--;
-			}
-		}
-		else if (c >= 0x80)
-		{
-			*lpFcbname++ = c;
-			cchFcbname--;
-		}
-#endif
 	}
 }
 
@@ -113,29 +91,20 @@ static void RealPath2FcbSub(char *lpFcbname, UINT cchFcbname, const char *lpPath
 static void RealName2Fcb(char *lpFcbname, const OEMCHAR *lpPath)
 {
 	OEMCHAR	*ext;
-#if defined(OSLANG_EUC) || defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 	char sjis[MAX_PATH];
-#endif
+
 	OEMCHAR szFilename[MAX_PATH];
 
 	FillMemory(lpFcbname, 11, ' ');
 
 	ext = file_getext(lpPath);
-#if defined(OSLANG_EUC) || defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 	oemtext_oemtosjis(sjis, NELEMENTS(sjis), ext, (UINT)-1);
 	RealPath2FcbSub(lpFcbname + 8, 3, sjis);
-#else
-	RealPath2FcbSub(lpFcbname + 8, 3, ext);
-#endif
 
 	file_cpyname(szFilename, lpPath, NELEMENTS(szFilename));
 	file_cutext(szFilename);
-#if defined(OSLANG_EUC) || defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 	oemtext_oemtosjis(sjis, NELEMENTS(sjis), szFilename, (UINT)-1);
 	RealPath2FcbSub(lpFcbname + 0, 8, sjis);
-#else
-	RealPath2FcbSub(lpFcbname + 0, 8, szFilename);
-#endif
 }
 
 /**
@@ -418,9 +387,7 @@ UINT hostdrvs_appendname(HDRVPATH *phdp, const char *lpFcbname)
 	char szDosName[16];
 	char *p;
 	UINT i;
-#if defined(OSLANG_EUC) || defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 	OEMCHAR oemname[64];
-#endif
 
 	if (lpFcbname[0] == ' ')
 	{
@@ -450,12 +417,8 @@ UINT hostdrvs_appendname(HDRVPATH *phdp, const char *lpFcbname)
 			}
 		}
 		*p = '\0';
-#if defined(OSLANG_EUC) || defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 		oemtext_sjistooem(oemname, NELEMENTS(oemname), szDosName, (UINT)-1);
 		file_catname(phdp->szPath, oemname, NELEMENTS(phdp->szPath));
-#else
-		file_catname(phdp->szPath, szDosName, NELEMENTS(phdp->szPath));
-#endif
 		return ERR_FILENOTFOUND;
 	}
 }

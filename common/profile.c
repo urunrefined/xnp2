@@ -518,16 +518,10 @@ static PFILEH registnew(void)
 	{
 		memset(ret, 0, sizeof(*ret));
 
-#if defined(OSLANG_UTF8)
+
 		lpHeader = str_utf8;
 		cbHeader = sizeof(str_utf8);
-#elif defined(OSLANG_UCS2) 
-		lpHeader = (UINT8 *)str_ucs2;
-		cbHeader = sizeof(str_ucs2);
-#else
-		lpHeader = NULL;
-		cbHeader = 0;
-#endif
+
 		if (cbHeader)
 		{
 			memcpy(ret->szHeader, lpHeader, cbHeader);

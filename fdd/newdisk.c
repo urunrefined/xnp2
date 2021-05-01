@@ -1,7 +1,5 @@
 #include	"compiler.h"
-#if defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 #include	"oemtext.h"
-#endif
 #include	"dosio.h"
 #include	"newdisk.h"
 #include	"fddfile.h"
@@ -18,11 +16,8 @@ void newdisk_fdd(const OEMCHAR *fname, REG8 type, const OEMCHAR *label) {
 
 	ZeroMemory(&d88head, sizeof(d88head));
 	STOREINTELDWORD(d88head.fd_size, sizeof(d88head));
-#if defined(OSLANG_UTF8) || defined(OSLANG_UCS2)
 	oemtext_oemtosjis((char *)d88head.fd_name, NELEMENTS(d88head.fd_name), label, (UINT)-1);
-#else
-	milstr_ncpy((char *)d88head.fd_name, label, NELEMENTS(d88head.fd_name));
-#endif
+
 	d88head.fd_type = type;
 	fh = file_create(fname);
 	if (fh != FILEH_INVALID) {
