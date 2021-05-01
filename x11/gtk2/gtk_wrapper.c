@@ -111,128 +111,6 @@ static int use_xvid;
 static int use_netwm;
 static int is_fullscreen;
 
-#ifdef HAVE_XF86VIDMODE
-#include <X11/extensions/xf86vmode.h>
-
-static XF86VidModeModeInfo **modes = NULL;
-static int modeidx = -1;
-static XF86VidModeModeInfo *saved_modes;
-static XF86VidModeModeInfo orig_mode;
-static Display *fs_xdisplay;
-static int fs_xscreen;
-static int view_x, view_y;
-static gint orig_x, orig_y;
-
-static inline Bool
-XF86VidModeGetModeInfo(Display *d, int s, XF86VidModeModeInfo *info)
-{
-	XF86VidModeModeLine line;
-	int dotclock;
-
-	memset(info, 0, sizeof(*info));
-
-	Bool ret = XF86VidModeGetModeLine(d, s, &dotclock, &line);
-	if (ret) {
-		info->dotclock = dotclock;
-		info->hdisplay = line.hdisplay;
-		info->hsyncstart = line.hsyncstart;
-		info->hsyncend = line.hsyncend;
-		info->htotal = line.htotal;
-		info->vdisplay = line.vdisplay;
-		info->vsyncstart = line.vsyncstart;
-		info->vsyncend = line.vsyncend;
-		info->vtotal = line.vtotal;
-		info->flags = line.flags;
-		info->privsize = line.privsize;
-		info->private = line.private;
-	}
-	return ret;
-}
-
-static int
-check_xvid(GtkWidget *widget)
-{
-	gboolean ret = FALSE;
-	GdkWindow *w;
-	Display *xdisplay;
-	int xscreen;
-	XF86VidModeModeInfo mode;
-	int event_base, error_base;
-	int major_ver, minor_ver;
-	int nmodes;
-	int i;
-	Bool rv;
-
-	g_return_val_if_fail(widget != NULL, FALSE);
-
-	w = widget->window;
-	xdisplay = GDK_WINDOW_XDISPLAY(w);
-	xscreen = XDefaultScreen(xdisplay);
-
-	XLockDisplay(xdisplay);
-
-	rv = XF86VidModeQueryExtension(xdisplay, &event_base, &error_base);
-	if (!rv) {
-		goto out;
-	}
-
-	rv = XF86VidModeQueryVersion(xdisplay, &major_ver, &minor_ver);
-	if (!rv) {
-		goto out;
-	}
-	VERBOSE(("XF86VidMode Extension: ver.%d.%d detected\n",
-	    major_ver, minor_ver));
-
-	rv = XF86VidModeGetModeInfo(xdisplay, xscreen, &mode);
-	if (rv) {
-		if ((mode.hdisplay == 640) && (mode.vdisplay == 480)) {
-			orig_mode = mode;
-			saved_modes = &orig_mode;
-			modes = &saved_modes;
-			modeidx = 0;
-			ret = TRUE;
-			goto out;
-		}
-	}
-
-	rv = XF86VidModeGetAllModeLines(xdisplay, xscreen, &nmodes, &modes);
-	if (!rv) {
-		goto out;
-	}
-	VERBOSE(("XF86VidMode Extension: %d modes\n", nmodes));
-
-	for (i = 0; i < nmodes; i++) {
-		VERBOSE(("XF86VidMode Extension: %d: %dx%d\n", i,
-		    modes[i]->hdisplay, modes[i]->vdisplay));
-
-		if ((modes[i]->hdisplay == 640)
-		 && (modes[i]->vdisplay == 480)) {
-			rv = XF86VidModeGetModeInfo(xdisplay, xscreen,
-			    &orig_mode);
-			if (rv) {
-				VERBOSE(("found\n"));
-				modeidx = i;
-				ret = TRUE;
-				break;
-			}
-		}
-	}
-
-	if (ret) {
-		fs_xdisplay = xdisplay;
-		fs_xscreen = xscreen;
-	} else {
-		XFree(modes);
-		modes = NULL;
-	}
-
-out:
-	XUnlockDisplay(xdisplay);
-
-	return ret;
-}
-#endif	/* HAVE_XF86VIDMODE */
-
 static int
 check_netwm(GtkWidget *widget)
 {
@@ -288,10 +166,6 @@ check_netwm(GtkWidget *widget)
 int
 gtk_window_init_fullscreen(GtkWidget *widget)
 {
-
-#ifdef HAVE_XF86VIDMODE
-	use_xvid = check_xvid(widget);
-#endif
 	use_netwm = check_netwm(widget);
 
 	if (use_xvid && (ignore_fullscreen_mode & 1)) {
@@ -323,22 +197,6 @@ gtk_window_fullscreen_mode(GtkWidget *widget)
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(widget->window != NULL);
 
-#ifdef HAVE_XF86VIDMODE
-	if (use_xvid && modes != NULL && modeidx >= 0) {
-		GtkWindow *window = GTK_WINDOW(widget);
-
-		XLockDisplay(fs_xdisplay);
-
-		XF86VidModeLockModeSwitch(fs_xdisplay, fs_xscreen, True);
-		XF86VidModeGetViewPort(fs_xdisplay,fs_xscreen,&view_x,&view_y);
-		gdk_window_get_origin(widget->window, &orig_x, &orig_y);
-		if (window)
-			gtk_window_move(window, 0, 0);
-		XF86VidModeSwitchToMode(fs_xdisplay,fs_xscreen,modes[modeidx]);
-
-		XUnlockDisplay(fs_xdisplay);
-	}
-#endif	/* HAVE_XF86VIDMODE */
 	if (use_netwm) {
 		gtk_window_fullscreen(GTK_WINDOW(widget));
 	}
@@ -355,38 +213,6 @@ gtk_window_restore_mode(GtkWidget *widget)
 		return;
 	is_fullscreen = 0;
 
-#ifdef HAVE_XF86VIDMODE
-	if (use_xvid) {
-		XF86VidModeModeInfo mode;
-		int rv;
-
-		if ((orig_mode.hdisplay == 0) || (orig_mode.vdisplay == 0))
-			return;
-
-		XLockDisplay(fs_xdisplay);
-
-		rv = XF86VidModeGetModeInfo(fs_xdisplay, fs_xscreen, &mode);
-		if (rv) {
-			if ((orig_mode.hdisplay != mode.hdisplay)
-			 || (orig_mode.vdisplay != mode.vdisplay)) {
-				XF86VidModeSwitchToMode(fs_xdisplay, fs_xscreen,
-				    &orig_mode);
-				XF86VidModeLockModeSwitch(fs_xdisplay,
-				    fs_xscreen, False);
-			}
-			if ((view_x != 0) || (view_y != 0)) {
-				XF86VidModeSetViewPort(fs_xdisplay, fs_xscreen,
-				    view_x, view_y);
-			}
-		}
-
-		if (np2running && GTK_IS_WINDOW(widget)) {
-			gtk_window_move(GTK_WINDOW(widget), orig_x, orig_y);
-		}
-
-		XUnlockDisplay(fs_xdisplay);
-	}
-#endif	/* HAVE_XF86VIDMODE */
 	if (use_netwm && GTK_IS_WINDOW(widget)) {
 		gtk_window_unfullscreen(GTK_WINDOW(widget));
 	}
