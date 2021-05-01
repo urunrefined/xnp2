@@ -139,7 +139,7 @@ static void hdd_close(SXSIDEV sxsi) {
 
 // ----
 
-// SASI‹KŠiHDD‚©ƒ`ƒFƒbƒN
+// SASIè¦æ ¼HDDã‹ãƒã‚§ãƒƒã‚¯
 static UINT8 gethddtype(SXSIDEV sxsi) {
 
 const SASIHDD	*sasi;
@@ -230,7 +230,7 @@ const OEMCHAR	*ext;
 		goto sxsiope_err2;
 	}
 
-	// ƒtƒH[ƒ}ƒbƒgŠm”F`
+	// ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆç¢ºèªï½ž
 	if ((surfaces == 0) || (surfaces >= 256) ||
 		(cylinders == 0) || (cylinders >= 65536) ||
 		(sectors == 0) || (sectors >= 256) ||
