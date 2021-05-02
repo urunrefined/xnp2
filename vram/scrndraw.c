@@ -30,7 +30,6 @@ void scrndraw_initialize(void) {
 	ZeroMemory(np2_tram, sizeof(np2_tram));
 	ZeroMemory(np2_vram, sizeof(np2_vram));
 	updateallline(0x80808080);
-	scrnmng_allflash();
 }
 
 void scrndraw_changepalette(void) {
@@ -249,8 +248,6 @@ sddr_exit1:
 }
 
 void scrndraw_redraw(void) {
-
-	scrnmng_allflash();
 	pal_change(1);
 	dispsync_renewalmode();
 	scrndraw_draw(1);

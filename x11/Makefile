@@ -55,7 +55,6 @@ SRC_C = \
 		./../common/_memory.c                                   \
 		./../common/textfile.c                                  \
 		./../common/profile.c                                   \
-		./../common/rect.c                                      \
 		./../common/lstarray.c                                  \
 		./../common/bmpdata.c                                   \
 		./../common/mimpidef.c                                  \

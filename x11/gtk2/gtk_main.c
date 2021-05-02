@@ -204,9 +204,6 @@ motion_notify_evhandler(GtkWidget *w, GdkEventMotion *ev, gpointer p)
 static gint
 main_loop_quit(gpointer p)
 {
-
-	scrnmng_fullscreen(0);
-
 	return 0;
 }
 
@@ -284,7 +281,7 @@ gui_gtk_widget_create(void)
 
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 //	gtk_widget_set_double_buffered(GTK_WIDGET(main_window), FALSE);
-	gtk_window_set_resizable(GTK_WINDOW(main_window), FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(main_window), TRUE);
 	gtk_window_set_title(GTK_WINDOW(main_window), np2oscfg.titles);
 	gtk_widget_add_events(main_window, EVENT_MASK);
 
@@ -299,7 +296,7 @@ gui_gtk_widget_create(void)
 	drawarea = gtk_drawing_area_new();
 //	gtk_widget_set_double_buffered(GTK_WIDGET(drawarea), FALSE);
 	gtk_widget_set_size_request(GTK_WIDGET(drawarea), 640, 400);
-	gtk_box_pack_end(GTK_BOX(main_vbox), drawarea, FALSE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(main_vbox), drawarea, TRUE, TRUE, 0);
 	gtk_widget_show(drawarea);
 
 	g_object_get(gtk_widget_get_settings(main_window),

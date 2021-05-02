@@ -287,17 +287,10 @@ static GtkRadioActionEntry memory_entries[] = {
 static const guint n_memory_entries = G_N_ELEMENTS(memory_entries);
 
 static GtkRadioActionEntry screenmode_entries[] = {
-{ "fullscreen",  NULL, "_Hide Menu", NULL, NULL, SCRNMODE_HIDEMENU },
+{ "hidemenu",  NULL, "_Hide Menu", NULL, NULL, SCRNMODE_HIDEMENU },
 { "windowmode",  NULL, "_Window",      NULL, NULL, 0 },
 };
 static const guint n_screenmode_entries = G_N_ELEMENTS(screenmode_entries);
-
-static GtkRadioActionEntry rotate_entries[] = {
-{ "normal",      NULL, "Nor_mal",       NULL, NULL, 0 },
-{ "leftrotate",  NULL, "_Left rotate",  NULL, NULL, SCRNMODE_ROTATELEFT },
-{ "rightrotate", NULL, "_Right rotate", NULL, NULL, SCRNMODE_ROTATERIGHT },
-};
-static const guint n_rotate_entries = G_N_ELEMENTS(rotate_entries);
 
 static GtkRadioActionEntry screensize_entries[] = {
 { "320x200",  NULL, "320x200",  NULL, NULL, 4 },
@@ -316,7 +309,6 @@ static void cb_f12key(gint idx);
 static void cb_framerate(gint idx);
 static void cb_joykey(gint idx);
 static void cb_memory(gint idx);
-static void cb_rotate(gint idx);
 static void cb_screenmode(gint idx);
 static void cb_screensize(gint idx);
 static void cb_soundboard(gint idx);
@@ -332,7 +324,6 @@ static const struct {
 	{ framerate_entries, G_N_ELEMENTS(framerate_entries), cb_framerate },
 	{ joykey_entries, G_N_ELEMENTS(joykey_entries), cb_joykey },
 	{ memory_entries, G_N_ELEMENTS(memory_entries), cb_memory },
-	{ rotate_entries, G_N_ELEMENTS(rotate_entries), cb_rotate },
 	{ screenmode_entries, G_N_ELEMENTS(screenmode_entries), cb_screenmode },
 	{ screensize_entries, G_N_ELEMENTS(screensize_entries), cb_screensize },
 	{ soundboard_entries, G_N_ELEMENTS(soundboard_entries), cb_soundboard },
@@ -384,12 +375,8 @@ static const gchar *ui_info =
 #endif	/* SUPPORT_IDEIO */
 "  </menu>\n"
 "  <menu name='Screen' action='ScreenMenu'>\n"
-"   <menuitem action='fullscreen'/>\n"
+"   <menuitem action='hidemenu'/>\n"
 "   <menuitem action='windowmode'/>\n"
-"   <separator/>\n"
-"   <menuitem action='normal'/>\n"
-"   <menuitem action='leftrotate'/>\n"
-"   <menuitem action='rightrotate'/>\n"
 "   <separator/>\n"
 "   <menuitem action='dispvsync'/>\n"
 "   <menuitem action='realpalettes'/>\n"
@@ -399,7 +386,6 @@ static const gchar *ui_info =
 "   <menuitem action='1/2 frame'/>\n"
 "   <menuitem action='1/3 frame'/>\n"
 "   <menuitem action='1/4 frame'/>\n"
-#if defined(SUPPORT_SCREENSIZE)
 "   <separator/>\n"
 "   <menu name='Size' action='ScrnSizeMenu'>\n"
 "    <menuitem action='320x200'/>\n"
@@ -410,7 +396,6 @@ static const gchar *ui_info =
 "    <menuitem action='1280x800'/>\n"
 "    <menuitem action='2560x1600'/>\n"
 "   </menu>\n"
-#endif
 "   <separator/>\n"
 "   <menuitem action='screenopt'/>\n"
 "  </menu>\n"
@@ -555,8 +540,6 @@ xmenu_select_item_by_index(MENU_HDL hdl, GtkRadioActionEntry *entry, guint nentr
 	xmenu_select_item_by_index(NULL, joykey_entries, n_joykey_entries, v);
 #define	xmenu_select_memory(v) \
 	xmenu_select_item_by_index(NULL, memory_entries, n_memory_entries, v);
-#define	xmenu_select_rotate(v) \
-	xmenu_select_item_by_index(NULL, rotate_entries, n_rotate_entries, v);
 #define	xmenu_select_screenmode(v) \
 	xmenu_select_item_by_index(NULL, screenmode_entries, n_screenmode_entries, v);
 #define	xmenu_select_screensize(v) \
@@ -1691,19 +1674,6 @@ cb_memory(gint idx)
 }
 
 static void
-cb_rotate(gint idx)
-{
-	guint value;
-
-	if (idx >= 0) {
-		value = rotate_entries[idx].value;
-	} else {
-		value = 0;
-	}
-	changescreen((scrnmode & ~SCRNMODE_ROTATEMASK) | value);
-}
-
-static void
 cb_screenmode(gint idx)
 {
 	guint value;
@@ -1786,6 +1756,7 @@ menubar_timeout(gpointer p)
 
 	if (scrnmode & SCRNMODE_HIDEMENU) {
 		xmenu_hide();
+		scrnmng_setextend(0);
 	}
 
 	return TRUE;
@@ -1977,7 +1948,6 @@ create_menu(void)
 	xmenu_select_framerate(np2oscfg.DRAW_SKIP);
 	xmenu_select_joykey(np2cfg.KEY_MODE);
 	xmenu_select_memory(np2cfg.EXTMEM);
-	xmenu_select_rotate(scrnmode & SCRNMODE_ROTATEMASK);
 	xmenu_select_screenmode(scrnmode & SCRNMODE_HIDEMENU);
 	xmenu_select_screensize(SCREEN_DEFMUL);
 	xmenu_select_soundboard(np2cfg.SOUND_SW);
@@ -1996,21 +1966,17 @@ create_menu(void)
 void
 xmenu_hide(void)
 {
-
 	gtk_widget_hide(menubar);
 }
 
 void
 xmenu_show(void)
 {
-
 	gtk_widget_show(menubar);
 }
 
 void
 xmenu_select_screen(UINT8 mode)
 {
-
-	xmenu_select_rotate(mode & SCRNMODE_ROTATEMASK);
 	xmenu_select_screenmode(mode & SCRNMODE_HIDEMENU);
 }

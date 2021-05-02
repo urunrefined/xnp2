@@ -94,23 +94,23 @@ drawmng_create(void *parent, int width, int height)
 
 	hdl->d.dest.x = hdl->d.dest.y = 0;
 	hdl->d.src.left = hdl->d.src.top = 0;
-	hdl->d.src.right = width;
-	hdl->d.src.bottom = height;
-	hdl->d.lpitch = hdl->d.src.right * bytes_per_pixel;
+	hdl->d.src.width = width;
+	hdl->d.src.height = height;
+	hdl->d.lpitch = hdl->d.src.width * bytes_per_pixel;
 	padding = hdl->d.lpitch % (fmt.scanline_pad / 8);
 	if (padding > 0) {
-		hdl->d.src.right += padding / bytes_per_pixel;
-		hdl->d.lpitch = hdl->d.src.right * bytes_per_pixel;
+		hdl->d.src.width += padding / bytes_per_pixel;
+		hdl->d.lpitch = hdl->d.src.width * bytes_per_pixel;
 	}
 
 	/* image */
 	hdl->surface = gdk_image_new(GDK_IMAGE_FASTEST, visual,
-	    hdl->d.src.right, hdl->d.src.bottom);
+	    hdl->d.src.width, hdl->d.src.height);
 	if (hdl->surface == NULL)
 		goto destroy;
 
-	hdl->d.vram.width = hdl->d.src.right;
-	hdl->d.vram.height = hdl->d.src.bottom;
+	hdl->d.vram.width = hdl->d.src.width;
+	hdl->d.vram.height = hdl->d.src.height;
 	hdl->d.vram.xalign = bytes_per_pixel;
 	hdl->d.vram.yalign = hdl->d.lpitch;
 	hdl->d.vram.bpp = fmt.bits_per_pixel;
@@ -174,11 +174,7 @@ drawmng_surfunlock(DRAWMNG_HDL dhdl)
 	GdkGC *gc;
 
 	if (hdl) {
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 18)
 		gc = hdl->drawarea->style->fg_gc[gtk_widget_get_state(hdl->drawarea)];
-#else
-		gc = hdl->drawarea->style->fg_gc[GTK_WIDGET_STATE(hdl->drawarea)];
-#endif
 		gdk_draw_image(hdl->backsurf, gc, hdl->surface,
 		    0, 0, 0, 0, hdl->d.width, hdl->d.height);
 		hdl->d.drawing = FALSE;
@@ -195,27 +191,23 @@ drawmng_blt(DRAWMNG_HDL dhdl, RECT_T *sr, POINT_T *dp)
 	int width, height;
 
 	if (hdl) {
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 18)
 		gc = hdl->drawarea->style->fg_gc[gtk_widget_get_state(hdl->drawarea)];
-#else
-		gc = hdl->drawarea->style->fg_gc[GTK_WIDGET_STATE(hdl->drawarea)];
-#endif
 		if (sr || dp) {
 
 			if (sr) {
 				r = *sr;
 			} else {
 				r.left = r.top = 0;
-				r.right = hdl->d.width;
-				r.bottom = hdl->d.height;
+				r.width = hdl->d.width;
+				r.height = hdl->d.height;
 			}
 			if (dp) {
 				p = *dp;
 			} else {
 				p.x = p.y = 0;
 			}
-			width = r.right - p.x;
-			height = r.bottom - p.y;
+			width = r.width - p.x;
+			height = r.height - p.y;
 
 			gdk_draw_drawable(hdl->drawarea->window, gc,
 			    hdl->backsurf,
@@ -249,8 +241,8 @@ drawmng_invalidate(DRAWMNG_HDL dhdl, RECT_T *r)
 	} else {
 		x = r->left;
 		y = r->top;
-		w = r->right - r->left;
-		h = r->bottom - r->top;
+		w = r->width - r->left;
+		h = r->height - r->top;
 		gtk_widget_queue_draw_area(hdl->drawarea, x, y, w, h);
 	}
 }

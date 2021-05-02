@@ -234,30 +234,20 @@ flagload(const char* ext, const char* title, BOOL force)
 void
 changescreen(UINT8 newmode)
 {
-	UINT8 change;
-	UINT8 renewal;
-
-	change = scrnmode ^ newmode;
-	renewal |= (change & SCRNMODE_ROTATEMASK);
-
-	if (renewal) {
-		soundmng_stop();
-		mouse_running(MOUSE_STOP);
-		scrnmng_destroy();
-		if (scrnmng_create(newmode) == SUCCESS) {
-			scrnmode = newmode;
-		} else {
-			if (scrnmng_create(scrnmode) != SUCCESS) {
-				toolkit_widget_quit();
-				return;
-			}
-		}
-		scrndraw_redraw();
-		mouse_running(MOUSE_CONT);
-		soundmng_play();
-	} else {
+	soundmng_stop();
+	mouse_running(MOUSE_STOP);
+	scrnmng_destroy();
+	if (scrnmng_create(newmode) == SUCCESS) {
 		scrnmode = newmode;
+	} else {
+		if (scrnmng_create(scrnmode) != SUCCESS) {
+			toolkit_widget_quit();
+			return;
+		}
 	}
+	scrndraw_redraw();
+	mouse_running(MOUSE_CONT);
+	soundmng_play();
 }
 
 void

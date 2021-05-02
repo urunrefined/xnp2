@@ -68,15 +68,13 @@ typedef struct {
 typedef struct {
 	int	width;
 	int	height;
-	int	extend;
 	int	multiple;
 } SCRNSTAT;
 
 static SCRNMNG scrnmng;
 static DRAWMNG drawmng;
-static SCRNSTAT scrnstat = { 640, 400, 1, SCREEN_DEFMUL };
+static SCRNSTAT scrnstat = { 640, 400, SCREEN_DEFMUL };
 static SCRNSURF scrnsurf;
-static int real_fullscreen;
 
 SCRNMNG *scrnmngp = &scrnmng;
 
@@ -86,36 +84,10 @@ GtkWidget *drawarea;
 #define	BITS_PER_PIXEL	24
 #define	BYTES_PER_PIXEL	3
 
-/*
- * drawarea のアスペクト比を 4:3 (640x480) にする。
- */
-static void
-adapt_aspect(int width, int height, int scrnwidth, int scrnheight)
-{
-	double ratio;
-	int w, h;
-
-	ratio = (double)scrnwidth / width;
-	h = floor((height * ratio) + 0.5);
-	if (h < scrnheight) {
-		drawmng.rect.right = scrnwidth;
-		drawmng.rect.bottom = h;
-	} else {
-		ratio = (double)scrnheight / height;
-		w = floor((width * ratio) + 0.5);
-		if (w < scrnwidth) {
-			drawmng.rect.right = w;
-			drawmng.rect.bottom = scrnheight;
-		}
-	}
-}
-
 static void
 set_window_size(int width, int height)
 {
-
-	gtk_widget_set_size_request(drawarea,
-	    width + np2oscfg.paddingx * 2, height + np2oscfg.paddingy * 2);
+	gtk_widget_set_size_request(drawarea, width, height);
 }
 
 static void
@@ -123,108 +95,41 @@ renewal_client_size(void)
 {
 	int width;
 	int height;
-	int extend;
+
 	int scrnwidth;
 	int scrnheight;
 	int multiple;
 
+	printf("dmng wi %d\n", drawmng.width);
+	printf("dmng he %d\n", drawmng.height);
+
+	printf("scrn wi %d\n", scrnstat.width);
+	printf("scrn he %d\n", scrnstat.height);
+
 	width = min(scrnstat.width, drawmng.width);
 	height = min(scrnstat.height, drawmng.height);
-	extend = 0;
-
 
 	multiple = scrnstat.multiple;
-	if (!(drawmng.scrnmode & SCRNMODE_ROTATE)) {
-		if ((np2oscfg.paddingx > 0) && (multiple == SCREEN_DEFMUL)) {
-			extend = min(scrnstat.extend, drawmng.extend);
-		}
-		scrnwidth = (width * multiple) / SCREEN_DEFMUL;
-		scrnheight = (height * multiple) / SCREEN_DEFMUL;
 
-		drawmng.rect.right = scrnwidth + extend;
-		drawmng.rect.bottom = scrnheight;
+	scrnwidth = (width * multiple) / SCREEN_DEFMUL;
+	scrnheight = (height * multiple) / SCREEN_DEFMUL;
 
-		drawmng.ratio_w = (double)drawmng.rect.right / width;
-		drawmng.ratio_h = (double)drawmng.rect.bottom / height;
+	drawmng.rect.width = scrnwidth;
+	drawmng.rect.height = scrnheight;
 
-		drawmng.scrn.left = np2oscfg.paddingx - extend;
-		drawmng.scrn.top = np2oscfg.paddingy;
-	} else {
-		if ((np2oscfg.paddingy > 0) && (multiple == SCREEN_DEFMUL)) {
-			extend = min(scrnstat.extend, drawmng.extend);
-		}
-		scrnwidth = (height * multiple) / SCREEN_DEFMUL;
-		scrnheight = (width * multiple) / SCREEN_DEFMUL;
+	drawmng.ratio_w = (double)drawmng.rect.width / width;
+	drawmng.ratio_h = (double)drawmng.rect.height / height;
 
-		drawmng.rect.right = scrnwidth;
-		drawmng.rect.bottom = scrnheight + extend;
+	drawmng.scrn.left = 0;
+	drawmng.scrn.top = 0;
 
-		drawmng.ratio_w = (double)drawmng.rect.right / height;
-		drawmng.ratio_h = (double)drawmng.rect.bottom / width;
-
-		drawmng.scrn.left = np2oscfg.paddingx;
-		drawmng.scrn.top = np2oscfg.paddingy - extend;
-	}
-	drawmng.scrn.right = np2oscfg.paddingx + scrnwidth;
-	drawmng.scrn.bottom = np2oscfg.paddingy + scrnheight;
+	drawmng.scrn.width = scrnwidth;
+	drawmng.scrn.height = scrnheight;
 
 	set_window_size(scrnwidth, scrnheight);
 
-
 	scrnsurf.width = width;
 	scrnsurf.height = height;
-	scrnsurf.extend = extend;
-}
-
-static void
-clear_out_of_rect(const RECT_T *target, const RECT_T *base)
-{
-	GdkDrawable *d = drawarea->window;
-	GdkGC *gc = drawarea->style->black_gc;
-	RECT_T rect;
-
-	rect.left = base->left;
-	rect.right = base->right;
-	rect.top = base->top;
-	rect.bottom = target->top;
-	if (rect.top < rect.bottom) {
-		gdk_draw_rectangle(d, gc, TRUE,
-		    rect.left, rect.top, rect.right, rect.bottom);
-	}
-	rect.top = target->bottom;
-	rect.bottom = base->bottom;
-	if (rect.top < rect.bottom) {
-		gdk_draw_rectangle(d, gc, TRUE,
-		    rect.left, rect.top, rect.right, rect.bottom);
-	}
-
-	rect.top = max(base->top, target->top);
-	rect.bottom = min(base->bottom, target->bottom);
-	if (rect.top < rect.bottom) {
-		rect.left = base->left;
-		rect.right = target->left;
-		if (rect.left < rect.right) {
-			gdk_draw_rectangle(d, gc, TRUE,
-			    rect.left, rect.top, rect.right, rect.bottom);
-		}
-		rect.left = target->right;
-		rect.right = base->right;
-		if (rect.left < rect.right) {
-			gdk_draw_rectangle(d, gc, TRUE,
-			    rect.left, rect.top, rect.right, rect.bottom);
-		}
-	}
-}
-
-static void
-clear_outscreen(void)
-{
-	RECT_T base;
-
-	base.left = base.top = 0;
-	base.right = drawarea->allocation.width;
-	base.bottom = drawarea->allocation.height;
-	clear_out_of_rect(&drawmng.scrn, &base);
 }
 
 static void
@@ -247,6 +152,7 @@ palette_init(void)
 		drawmng.pal[NP2PAL_TEXT + i + 1].blue =
 		    np2_pal32[NP2PAL_TEXT + i + 1].p.b << 8;
 	}
+
 	gdk_colormap_alloc_colors(cmap, &drawmng.pal[NP2PAL_TEXT + 1], 8,
 	    TRUE, FALSE, &success);
 }
@@ -290,11 +196,10 @@ scrnmng_initialize(void)
 	drawmng.drawing = FALSE;
 	scrnstat.width = 640;
 	scrnstat.height = 400;
-	scrnstat.extend = 1;
 	scrnstat.multiple = SCREEN_DEFMUL;
 	set_window_size(scrnstat.width, scrnstat.height);
 
-	real_fullscreen = gtk_window_init_fullscreen(main_window);
+	//real_fullscreen = gtk_window_init_fullscreen(main_window);
 
 	switch (np2oscfg.drawinterp) {
 	case INTERP_NEAREST:
@@ -343,26 +248,17 @@ scrnmng_create(UINT8 mode)
 		break;
 	}
 
-
-	mode &= ~SCRNMODE_ROTATEMASK;
 	scrnmng.flag = 0;
 	drawmng.extend = 0;
-	if (real_fullscreen) {
-		drawmng.width = FULLSCREEN_WIDTH;
-		drawmng.height = FULLSCREEN_HEIGHT;
-	} else {
-		screen = gdk_screen_get_default();
-		drawmng.width = gdk_screen_get_width(screen);
-		drawmng.height = gdk_screen_get_height(screen);
-	}
 
-	if (!(mode & SCRNMODE_ROTATE)) {
-		rect.right = 640 + drawmng.extend;
-		rect.bottom = 480;
-	} else {
-		rect.right = 480;
-		rect.bottom = 640 + drawmng.extend;
-	}
+	screen = gdk_screen_get_default();
+	drawmng.width = gdk_screen_get_width(screen);
+	drawmng.height = gdk_screen_get_height(screen);
+
+	printf("draw x y %d %d\n", drawmng.width, drawmng.height);
+
+	rect.width = 640;
+	rect.height = 480;
 
 	scrnmng.bpp = BITS_PER_PIXEL;
 	scrnsurf.bpp = BITS_PER_PIXEL;
@@ -370,23 +266,25 @@ scrnmng_create(UINT8 mode)
 	drawmng.clipping = 0;
 	renewal_client_size();
 
+	printf("--%d %d\n", rect.width, rect.height);
+
 	drawmng.backsurf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
-	    rect.right, rect.bottom);
+		rect.width, rect.height);
 	if (drawmng.backsurf == NULL) {
 		drawmng.drawing = FALSE;
 		g_message("can't create backsurf.");
 		return FAILURE;
 	}
-	gdk_pixbuf_fill(drawmng.backsurf, 0);
+	gdk_pixbuf_fill(drawmng.backsurf, 50);
 
 	drawmng.surface = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
-	    drawmng.rect.right, drawmng.rect.bottom);
+		drawmng.rect.width, drawmng.rect.height);
 	if (drawmng.surface == NULL) {
 		drawmng.drawing = FALSE;
 		g_message("can't create surface.");
 		return FAILURE;
 	}
-	gdk_pixbuf_fill(drawmng.surface, 0);
+	gdk_pixbuf_fill(drawmng.surface, 80);
 
 
 	drawmng.drawsurf = (scrnstat.multiple == SCREEN_DEFMUL)
@@ -413,17 +311,6 @@ scrnmng_destroy(void)
 	}
 }
 
-void
-scrnmng_fullscreen(int onoff)
-{
-
-	if (onoff) {
-		gtk_window_fullscreen_mode(main_window);
-	} else {
-		gtk_window_restore_mode(main_window);
-	}
-}
-
 RGB16
 scrnmng_makepal16(RGB32 pal32)
 {
@@ -434,6 +321,7 @@ scrnmng_makepal16(RGB32 pal32)
 void
 scrnmng_setwidth(int posx, int width)
 {
+	(void) posx;
 
 	scrnstat.width = width;
 	renewal_client_size();
@@ -442,6 +330,7 @@ scrnmng_setwidth(int posx, int width)
 void
 scrnmng_setheight(int posy, int height)
 {
+	(void) posy;
 
 	scrnstat.height = height;
 	renewal_client_size();
@@ -450,9 +339,6 @@ scrnmng_setheight(int posy, int height)
 void
 scrnmng_setextend(int extend)
 {
-
-	scrnstat.extend = extend;
-	scrnmng.allflash = TRUE;
 	renewal_client_size();
 }
 
@@ -483,20 +369,10 @@ scrnmng_surflock(void)
 	const int lpitch = gdk_pixbuf_get_rowstride(drawmng.backsurf);
 
 	scrnsurf.ptr = (UINT8 *)gdk_pixbuf_get_pixels(drawmng.backsurf);
-	if (!(drawmng.scrnmode & SCRNMODE_ROTATE)) {
-		scrnsurf.xalign = BYTES_PER_PIXEL;
-		scrnsurf.yalign = lpitch;
-	} else if (!(drawmng.scrnmode & SCRNMODE_ROTATEDIR)) {
-		/* rotate left */
-		scrnsurf.ptr += (scrnsurf.width + scrnsurf.extend - 1) * lpitch;
-		scrnsurf.xalign = -lpitch;
-		scrnsurf.yalign = BYTES_PER_PIXEL;
-	} else {
-		/* rotate right */
-		scrnsurf.ptr += (scrnsurf.height - 1) * BYTES_PER_PIXEL;
-		scrnsurf.xalign = lpitch;
-		scrnsurf.yalign = -BYTES_PER_PIXEL;
-	}
+
+	scrnsurf.xalign = BYTES_PER_PIXEL;
+	scrnsurf.yalign = lpitch;
+
 	return &scrnsurf;
 }
 
@@ -506,23 +382,32 @@ scrnmng_surfunlock(const SCRNSURF *surf)
 
 	if (drawmng.drawsurf == drawmng.surface) {
 		gdk_pixbuf_scale(drawmng.backsurf, drawmng.surface,
-		    0, 0, drawmng.rect.right, drawmng.rect.bottom,
-		    0, 0, drawmng.ratio_w, drawmng.ratio_h,
+			0, 0, drawmng.rect.width, drawmng.rect.height,
+			0, 0, drawmng.ratio_w, drawmng.ratio_h,
 		    drawmng.interp);
 	}
 
 	scrnmng_update();
 }
 
+static unsigned int getCenteringOffset(unsigned int inner, unsigned int outer){
+	if(inner >= outer) return 0;
+
+	return (outer - inner) / 2;
+}
+
 void
 scrnmng_update(void)
 {
 	GdkDrawable *d = drawarea->window;
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 18)
+
+	int drawableWidth =  (unsigned int)gdk_window_get_width (d);
+	int drawableHeight = (unsigned int)gdk_window_get_height (d);
+
+	unsigned int offsetX = getCenteringOffset(drawmng.rect.width, drawableWidth);
+	unsigned int offsetY = getCenteringOffset(drawmng.rect.height, drawableHeight);
+
 	GdkGC *gc = drawarea->style->fg_gc[gtk_widget_get_state(drawarea)];
-#else
-	GdkGC *gc = drawarea->style->fg_gc[GTK_WIDGET_STATE(drawarea)];
-#endif
 
 	if (scrnmng.palchanged) {
 		scrnmng.palchanged = FALSE;
@@ -534,19 +419,11 @@ scrnmng_update(void)
 
 	drawmng.drawing = TRUE;
 
-
-	if (scrnmng.allflash) {
-		scrnmng.allflash = 0;
-		if (np2oscfg.paddingx || np2oscfg.paddingy) {
-			clear_outscreen();
-		}
-	}
-
 	gdk_draw_pixbuf(d, gc, drawmng.drawsurf,
-	    0, 0,
-	    drawmng.scrn.left, drawmng.scrn.top,
-	    drawmng.rect.right, drawmng.rect.bottom,
-	    GDK_RGB_DITHER_NORMAL, 0, 0);
+		0, 0,
+		offsetX, offsetY,
+		drawmng.rect.width, drawmng.rect.height,
+		GDK_RGB_DITHER_NONE, 0, 0);
 
 	drawmng.drawing = FALSE;
 }

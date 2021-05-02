@@ -436,7 +436,7 @@ create_screen_dialog(void)
 	gtk_window_set_title(GTK_WINDOW(screen_dialog), "Screen option");
 	gtk_window_set_position(GTK_WINDOW(screen_dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(screen_dialog), TRUE);
-	gtk_window_set_resizable(GTK_WINDOW(screen_dialog), FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(screen_dialog), TRUE);
 	gtk_container_set_border_width(GTK_CONTAINER(screen_dialog), 5);
 
 	g_signal_connect(G_OBJECT(screen_dialog), "destroy",
@@ -473,11 +473,8 @@ create_screen_dialog(void)
 	cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 	gtk_widget_show(cancel_button);
 	gtk_box_pack_end(GTK_BOX(confirm_widget),cancel_button,FALSE, FALSE, 0);
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 18)
 	gtk_widget_set_can_default(cancel_button, FALSE);
-#else
-	GTK_WIDGET_SET_FLAGS(cancel_button, GTK_CAN_DEFAULT);
-#endif
+
 	g_signal_connect_swapped(G_OBJECT(cancel_button), "clicked",
 	    G_CALLBACK(gtk_widget_destroy), G_OBJECT(screen_dialog));
 
@@ -486,13 +483,9 @@ create_screen_dialog(void)
 	gtk_box_pack_end(GTK_BOX(confirm_widget), ok_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
 	    G_CALLBACK(ok_button_clicked), (gpointer)screen_dialog);
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 18)
+
 	gtk_widget_set_can_default(ok_button, TRUE);
 	gtk_widget_has_default(ok_button);
-#else
-	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
-	GTK_WIDGET_SET_FLAGS(ok_button, GTK_HAS_DEFAULT);
-#endif
 	gtk_widget_grab_default(ok_button);
 
 	gtk_widget_show_all(screen_dialog);
