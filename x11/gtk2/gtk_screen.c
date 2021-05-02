@@ -100,12 +100,6 @@ renewal_client_size(void)
 	int scrnheight;
 	int multiple;
 
-	printf("dmng wi %d\n", drawmng.width);
-	printf("dmng he %d\n", drawmng.height);
-
-	printf("scrn wi %d\n", scrnstat.width);
-	printf("scrn he %d\n", scrnstat.height);
-
 	width = min(scrnstat.width, drawmng.width);
 	height = min(scrnstat.height, drawmng.height);
 
@@ -255,8 +249,6 @@ scrnmng_create(UINT8 mode)
 	drawmng.width = gdk_screen_get_width(screen);
 	drawmng.height = gdk_screen_get_height(screen);
 
-	printf("draw x y %d %d\n", drawmng.width, drawmng.height);
-
 	rect.width = 640;
 	rect.height = 480;
 
@@ -265,8 +257,6 @@ scrnmng_create(UINT8 mode)
 	drawmng.scrnmode = mode;
 	drawmng.clipping = 0;
 	renewal_client_size();
-
-	printf("--%d %d\n", rect.width, rect.height);
 
 	drawmng.backsurf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
 		rect.width, rect.height);
@@ -290,7 +280,6 @@ scrnmng_create(UINT8 mode)
 	drawmng.drawsurf = (scrnstat.multiple == SCREEN_DEFMUL)
 		? drawmng.backsurf : drawmng.surface;
 	gtk_window_restore_mode(main_window);
-	xmenu_show();
 
 	drawmng.drawing = FALSE;
 

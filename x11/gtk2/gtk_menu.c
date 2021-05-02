@@ -196,6 +196,7 @@ static void cb_toolwindow(GtkToggleAction *action, gpointer user_data);
 static void cb_xctrlkey(GtkToggleAction *action, gpointer user_data);
 static void cb_xgrphkey(GtkToggleAction *action, gpointer user_data);
 static void cb_xshiftkey(GtkToggleAction *action, gpointer user_data);
+static void cb_autohide(GtkToggleAction *action, gpointer user_data);
 
 static GtkToggleActionEntry togglemenu_entries[] = {
 { "clockdisp",    NULL, "_Clock disp",        NULL, NULL, G_CALLBACK(cb_clockdisp), FALSE },
@@ -216,7 +217,9 @@ static GtkToggleActionEntry togglemenu_entries[] = {
 { "xctrlkey",     NULL, "mechanical _CTRL",   NULL, NULL, G_CALLBACK(cb_xctrlkey), FALSE },
 { "xgrphkey",     NULL, "mechanical _GRPH",   NULL, NULL, G_CALLBACK(cb_xgrphkey), FALSE },
 { "xshiftkey",    NULL, "mechanical _SHIFT",  NULL, NULL, G_CALLBACK(cb_xshiftkey), FALSE },
+{ "autohidemenu",  NULL, "_Autohide Menu",    NULL, NULL, G_CALLBACK(cb_autohide), FALSE},
 };
+
 static const guint n_togglemenu_entries = G_N_ELEMENTS(togglemenu_entries);
 
 /* Radio */
@@ -239,7 +242,6 @@ static const guint n_joykey_entries = G_N_ELEMENTS(joykey_entries);
 static GtkRadioActionEntry f11key_entries[] = {
 { "f11none", NULL, "F11 = None",        NULL, NULL, 0 },
 { "f11menu", NULL, "F11 = Menu toggle", NULL, NULL, 1 },
-{ "f11fscr", NULL, "F11 = Full Screen", NULL, NULL, 2 },
 };
 static const guint n_f11key_entries = G_N_ELEMENTS(f11key_entries);
 
@@ -286,12 +288,6 @@ static GtkRadioActionEntry memory_entries[] = {
 };
 static const guint n_memory_entries = G_N_ELEMENTS(memory_entries);
 
-static GtkRadioActionEntry screenmode_entries[] = {
-{ "hidemenu",  NULL, "_Hide Menu", NULL, NULL, SCRNMODE_HIDEMENU },
-{ "windowmode",  NULL, "_Window",      NULL, NULL, 0 },
-};
-static const guint n_screenmode_entries = G_N_ELEMENTS(screenmode_entries);
-
 static GtkRadioActionEntry screensize_entries[] = {
 { "320x200",  NULL, "320x200",  NULL, NULL, 4 },
 { "480x300",  NULL, "480x300",  NULL, NULL, 6 },
@@ -309,7 +305,6 @@ static void cb_f12key(gint idx);
 static void cb_framerate(gint idx);
 static void cb_joykey(gint idx);
 static void cb_memory(gint idx);
-static void cb_screenmode(gint idx);
 static void cb_screensize(gint idx);
 static void cb_soundboard(gint idx);
 
@@ -324,7 +319,7 @@ static const struct {
 	{ framerate_entries, G_N_ELEMENTS(framerate_entries), cb_framerate },
 	{ joykey_entries, G_N_ELEMENTS(joykey_entries), cb_joykey },
 	{ memory_entries, G_N_ELEMENTS(memory_entries), cb_memory },
-	{ screenmode_entries, G_N_ELEMENTS(screenmode_entries), cb_screenmode },
+	//{ screenmode_entries, G_N_ELEMENTS(screenmode_entries), cb_screenmode },
 	{ screensize_entries, G_N_ELEMENTS(screensize_entries), cb_screensize },
 	{ soundboard_entries, G_N_ELEMENTS(soundboard_entries), cb_soundboard },
 };
@@ -375,8 +370,7 @@ static const gchar *ui_info =
 #endif	/* SUPPORT_IDEIO */
 "  </menu>\n"
 "  <menu name='Screen' action='ScreenMenu'>\n"
-"   <menuitem action='hidemenu'/>\n"
-"   <menuitem action='windowmode'/>\n"
+"   <menuitem action='autohidemenu'/>\n"
 "   <separator/>\n"
 "   <menuitem action='dispvsync'/>\n"
 "   <menuitem action='realpalettes'/>\n"
@@ -411,7 +405,6 @@ static const gchar *ui_info =
 "    <separator/>\n"
 "    <menuitem action='f11none'/>\n"
 "    <menuitem action='f11menu'/>\n"
-"    <menuitem action='f11fscr'/>\n"
 "    <separator/>\n"
 "    <menuitem action='f12mouse'/>\n"
 "    <menuitem action='f12copy'/>\n"
@@ -540,8 +533,6 @@ xmenu_select_item_by_index(MENU_HDL hdl, GtkRadioActionEntry *entry, guint nentr
 	xmenu_select_item_by_index(NULL, joykey_entries, n_joykey_entries, v);
 #define	xmenu_select_memory(v) \
 	xmenu_select_item_by_index(NULL, memory_entries, n_memory_entries, v);
-#define	xmenu_select_screenmode(v) \
-	xmenu_select_item_by_index(NULL, screenmode_entries, n_screenmode_entries, v);
 #define	xmenu_select_screensize(v) \
 	xmenu_select_item_by_index(NULL, screensize_entries, n_screensize_entries, v);
 #define	xmenu_select_soundboard(v) \
@@ -1570,6 +1561,12 @@ cb_xshiftkey(GtkToggleAction *action, gpointer user_data)
 	}
 }
 
+static void
+cb_autohide(GtkToggleAction *action, gpointer user_data)
+{
+	np2oscfg.autohidemenu = gtk_toggle_action_get_active(action);
+	sysmng_update(SYS_UPDATEOSCFG);
+}
 
 /*
  * radio item
@@ -1674,19 +1671,6 @@ cb_memory(gint idx)
 }
 
 static void
-cb_screenmode(gint idx)
-{
-	guint value;
-
-	if (idx >= 0) {
-		value = screenmode_entries[idx].value;
-	} else {
-		value = 0;
-	}
-	changescreen((scrnmode & ~SCRNMODE_HIDEMENU) | value);
-}
-
-static void
 cb_screensize(gint idx)
 {
 	guint value;
@@ -1745,16 +1729,14 @@ static guint menubar_timerid;
 
 #define	EVENT_MASK	(GDK_ENTER_NOTIFY_MASK|GDK_LEAVE_NOTIFY_MASK)
 
-static gboolean
-menubar_timeout(gpointer p)
+static gboolean menubar_timeout(gpointer p)
 {
-
 	if (menubar_timerid) {
 		g_source_remove(menubar_timerid);
 		menubar_timerid = 0;
 	}
 
-	if (scrnmode & SCRNMODE_HIDEMENU) {
+	if (np2oscfg.autohidemenu) {
 		xmenu_hide();
 		scrnmng_setextend(0);
 	}
@@ -1791,7 +1773,7 @@ leave_notify_evhandler(GtkWidget *w, GdkEventCrossing *ev, gpointer p)
 		menubar_timerid = 0;
 	}
 
-	if (scrnmode & SCRNMODE_HIDEMENU) {
+	if (np2oscfg.autohidemenu) {
 		menubar_timerid = g_timeout_add(1000, menubar_timeout, NULL);
 	}
 
@@ -1940,6 +1922,7 @@ create_menu(void)
 	xmenu_toggle_item(NULL, "mousemode", np2oscfg.MOUSE_SW);
 	xmenu_toggle_item(NULL, "nowait", np2oscfg.NOWAIT);
 	xmenu_toggle_item(NULL, "softkeyboard", np2oscfg.softkbd);
+	xmenu_toggle_item(NULL, "autohidemenu", np2oscfg.autohidemenu);
 	xmenu_toggle_item(NULL, "toolwindow", np2oscfg.toolwin);
 
 	xmenu_select_beepvol(np2cfg.BEEP_VOL);
@@ -1948,7 +1931,6 @@ create_menu(void)
 	xmenu_select_framerate(np2oscfg.DRAW_SKIP);
 	xmenu_select_joykey(np2cfg.KEY_MODE);
 	xmenu_select_memory(np2cfg.EXTMEM);
-	xmenu_select_screenmode(scrnmode & SCRNMODE_HIDEMENU);
 	xmenu_select_screensize(SCREEN_DEFMUL);
 	xmenu_select_soundboard(np2cfg.SOUND_SW);
 
@@ -1964,6 +1946,18 @@ create_menu(void)
 }
 
 void
+xmenu_toggle(void)
+{
+	if(gtk_widget_get_visible (menubar)){
+		gtk_widget_hide(menubar);
+	}
+	else {
+		gtk_widget_show(menubar);
+	}
+
+}
+
+void
 xmenu_hide(void)
 {
 	gtk_widget_hide(menubar);
@@ -1973,10 +1967,4 @@ void
 xmenu_show(void)
 {
 	gtk_widget_show(menubar);
-}
-
-void
-xmenu_select_screen(UINT8 mode)
-{
-	xmenu_select_screenmode(mode & SCRNMODE_HIDEMENU);
 }

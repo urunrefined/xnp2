@@ -66,6 +66,8 @@ typedef struct {
 	UINT8	F11KEY;
 
 	UINT8	cfgreadonly;
+
+	UINT8	autohidemenu;
 } NP2OSCFG;
 
 

@@ -112,6 +112,7 @@ NP2OSCFG np2oscfg = {
 	0,			/* F11KEY */
 
 	FALSE,			/* cfgreadonly */
+	FALSE
 };
 
 volatile sig_atomic_t np2running = 0;

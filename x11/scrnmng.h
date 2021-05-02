@@ -19,7 +19,6 @@ typedef struct {
 } SCRNSURF;
 
 enum {
-	SCRNMODE_HIDEMENU	= 0x01,
 	SCRNMODE_HIGHCOLOR	= 0x02
 };
 

@@ -109,13 +109,7 @@ key_press_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer p)
 {
 
 	if (ev->keyval == GDK_KEY_F11) {
-		np2oscfg.F11KEY = !np2oscfg.F11KEY;
-		if (np2oscfg.F11KEY){
-			xmenu_hide();
-		}
-		else {
-			xmenu_show();
-		}
+		xmenu_toggle();
 	} else if ((ev->keyval == GDK_KEY_F12) && (np2oscfg.F12KEY == 0))
 		xmenu_toggle_item(NULL, "mousemode", !np2oscfg.MOUSE_SW);
 	else
@@ -190,8 +184,7 @@ button_release_evhandler(GtkWidget *w, GdkEventButton *ev, gpointer p)
 static gboolean
 motion_notify_evhandler(GtkWidget *w, GdkEventMotion *ev, gpointer p)
 {
-
-	if ((scrnmode & SCRNMODE_HIDEMENU) && (ev->y < 8.0))
+	if (ev->y < 8.0)
 		xmenu_show();
 
 	return TRUE;
