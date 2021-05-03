@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "common.h"
+
 enum {
 	LIO_SEGMENT		= 0xf990,
 	LIO_FONT		= 0x00a0

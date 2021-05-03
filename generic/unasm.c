@@ -1,4 +1,5 @@
 #include	"compiler.h"
+#include	"common.h"
 #include	"unasm.h"
 #include	"unasmdef.tbl"
 #include	"unasmstr.tbl"
@@ -6,6 +7,8 @@
 #include	"unasmop.tbl"
 #include	"unasmop8.tbl"
 #include	"unasmfpu.tbl"
+
+
 
 
 static const char strhex[] = "0123456789abcdef";

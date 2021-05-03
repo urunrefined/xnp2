@@ -5,6 +5,9 @@
 //	+80		text+grph					(NP2PAL_TEXT2:grph+text)
 //	+0A		black + text palette		(NP2PAL_TEXT3: text/grph=black)
 
+#include "compiler.h"
+#include "common.h"
+
 enum {
 	NP2PALS_TXT		= 10,
 	NP2PALS_GRPH	= 16,

@@ -1,3 +1,7 @@
+#ifndef	NP2_COMMON_H__
+#define	NP2_COMMON_H__
+
+#include "compiler.h"
 
 enum {
 	SUCCESS		= 0,
@@ -144,3 +148,4 @@ enum {
 #define	FASTCALL
 #endif
 
+#endif

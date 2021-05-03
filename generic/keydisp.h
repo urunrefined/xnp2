@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include "compiler.h"
+#include "common.h"
+
 #if defined(SUPPORT_KEYDISP)
 
 #include "cmndraw.h"

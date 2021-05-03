@@ -32,9 +32,11 @@
 #include "dosio.h"
 #include "ini.h"
 #include "pccore.h"
+#include "common.h"
 
 #include "fdd/fddfile.h"
 #include "fdd/newdisk.h"
+
 
 
 /*

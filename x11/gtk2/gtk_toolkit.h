@@ -26,6 +26,9 @@
 #ifndef	NP2_GTK2_GTKTOOLKIT_H__
 #define	NP2_GTK2_GTKTOOLKIT_H__
 
+#include	"compiler.h"
+#include	"common.h"
+
 G_BEGIN_DECLS
 
 const char *gui_gtk_get_toolkit(void);

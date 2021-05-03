@@ -37,6 +37,7 @@
 #include "scrndraw.h"
 
 #include "sysmng.h"
+#include "common.h"
 
 
 /*

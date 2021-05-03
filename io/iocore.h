@@ -6,6 +6,8 @@
 #define	IOINPCALL
 #endif
 
+#include	"common.h"
+
 typedef void (*FNIORESET)(const NP2CFG *pConfig);
 typedef void (*FNIOBIND)(void);
 typedef	void (IOOUTCALL *IOOUT)(UINT port, REG8 val);

@@ -32,6 +32,7 @@
 #include "scrndraw.h"
 
 #include "toolkit.h"
+#include "common.h"
 
 #include "scrnmng.h"
 #include "mousemng.h"

@@ -2,6 +2,7 @@
 // #define	SUPPORT_MP3
 // #define	SUPPORT_OGG
 
+#include "common.h"
 
 #ifdef __cplusplus
 extern "C" {

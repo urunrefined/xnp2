@@ -37,6 +37,7 @@
 #include "scrnmng.h"
 #include "soundmng.h"
 #include "taskmng.h"
+#include "common.h"
 
 #include "gtk2/xnp2.h"
 #include "gtk2/gtk_keyboard.h"

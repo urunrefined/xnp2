@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "common.h"
+
 enum {
 	SXSIBIOS_SASI		= 0,
 	SXSIBIOS_IDE		= 1,

@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "common.h"
+
 #ifndef SOUNDCALL
 #define	SOUNDCALL
 #endif

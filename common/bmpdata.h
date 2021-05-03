@@ -1,3 +1,8 @@
+#pragma once
+
+#include "compiler.h"
+#include "common.h"
+
 
 #if defined(__GNUC__)
 typedef struct {

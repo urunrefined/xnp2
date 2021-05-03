@@ -2,6 +2,8 @@
 #define	NP2_X11_DOSIO_H__
 
 #include <dirent.h>
+#include "compiler.h"
+#include "common.h"
 
 G_BEGIN_DECLS
 

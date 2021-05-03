@@ -1,6 +1,8 @@
 #ifndef	NP2_X11_SCRNMNG_H__
 #define	NP2_X11_SCRNMNG_H__
 
+#include "common.h"
+
 G_BEGIN_DECLS
 
 enum {

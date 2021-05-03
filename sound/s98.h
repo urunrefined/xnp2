@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "common.h"
+
 enum {
 	NORMAL2608	= 0,
 	EXTEND2608	= 1

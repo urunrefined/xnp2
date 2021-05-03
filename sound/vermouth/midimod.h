@@ -1,3 +1,6 @@
+#pragma once
+
+#include "common.h"
 
 struct _pathlist;
 typedef	struct _pathlist	_PATHLIST;

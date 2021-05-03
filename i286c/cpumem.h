@@ -5,6 +5,8 @@
 #define	MEMCALL
 #endif
 
+#include	"common.h"
+#include    "compiler.h"
 
 // 000000-0fffff メインメモリ
 // 100000-10ffef HMA

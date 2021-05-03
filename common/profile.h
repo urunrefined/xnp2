@@ -6,6 +6,8 @@
 #if !defined(NP2_PROFILE_H__)
 #define	NP2_PROFILE_H__
 
+#include "common.h"
+
 #ifdef __cplusplus
 extern "C"
 {

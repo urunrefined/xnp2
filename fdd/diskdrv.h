@@ -10,6 +10,9 @@ extern "C"
 {
 #endif
 
+#include	"common.h"
+#include    "compiler.h"
+
 void diskdrv_setsxsi(REG8 drv, const OEMCHAR *fname);
 const OEMCHAR *diskdrv_getsxsi(REG8 drv);
 void diskdrv_hddbind(void);

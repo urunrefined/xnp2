@@ -1,6 +1,9 @@
 #ifndef	NP2_X11_MOUSEMNG_H__
 #define	NP2_X11_MOUSEMNG_H__
 
+#include "compiler.h"
+#include "common.h"
+
 G_BEGIN_DECLS
 
 #define	MOUSE_MASK	0x07

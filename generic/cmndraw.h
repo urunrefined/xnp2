@@ -2,6 +2,9 @@
 #ifndef __CMNDRAW
 #define __CMNDRAW
 
+#include "compiler.h"
+#include "common.h"
+
 typedef union {
 	RGB32	pal32;
 	UINT16	pal16;

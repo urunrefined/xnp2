@@ -28,8 +28,10 @@
 #include "np2.h"
 
 #include "mousemng.h"
+#include "common.h"
 
 #include "gtk2/xnp2.h"
+
 
 
 typedef struct {

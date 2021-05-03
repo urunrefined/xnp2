@@ -1,9 +1,10 @@
 #ifndef	NP2_X11_FONTMNG_H__
 #define	NP2_X11_FONTMNG_H__
 
-G_BEGIN_DECLS
-
+#include "common.h"
 #include "rect.h"
+
+G_BEGIN_DECLS
 
 enum {
 	FDAT_BOLD		= 0x01,

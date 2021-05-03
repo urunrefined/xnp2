@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include "compiler.h"
+#include "common.h"
 
 enum {
 	SOUND_PCMSEEK,

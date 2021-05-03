@@ -6,6 +6,8 @@
 #pragma once
 
 #include "sound.h"
+#include "compiler.h"
+#include "common.h"
 
 enum {
 	PSGFREQPADBIT		= 12,
