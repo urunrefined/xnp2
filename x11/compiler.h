@@ -26,10 +26,6 @@
 #ifndef	NP2_X11_COMPILER_H__
 #define	NP2_X11_COMPILER_H__
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #define _(s)				gettext(s)
@@ -49,11 +45,13 @@
 #define bind_textdomain_codeset(d,c)	(c)
 #endif /* ENABLE_NLS */
 
-#ifdef	WORDS_BIGENDIAN
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #define	BYTESEX_BIG
-#else	/* !WORDS_BIGENDIAN */
+#elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #define	BYTESEX_LITTLE
-#endif	/* WORDS_BIGENDIAN */
+#else
+#error Please set preprocessor macro __BYTE_ORDER__ to __ORDER_BIG_ENDIAN__ or __ORDER_LITTLE_ENDIAN__
+#endif
 
 #if !defined(USE_SDLAUDIO) && !defined(USE_SDLMIXER)
 #ifndef	NOSOUND
