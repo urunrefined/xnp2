@@ -3,7 +3,9 @@
 
 // ---- com manager midi for unix
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern COMMNG cm_mpu98;
 
@@ -34,6 +36,8 @@ extern const char *cmmidi_mdlname[];
 void cmmidi_initailize(void);
 COMMNG cmmidi_create(const char *midiout, const char *midiin, const char *module);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_CMMIDI_H__ */

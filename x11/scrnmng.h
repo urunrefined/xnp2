@@ -3,7 +3,9 @@
 
 #include "common.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
 	RGB24_B	= 2,
@@ -61,6 +63,8 @@ RGB16 scrnmng_makepal16(RGB32 pal32);
 
 void scrnmng_setmultiple(int multiple);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_SCRNMNG_H__ */

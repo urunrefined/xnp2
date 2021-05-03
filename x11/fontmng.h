@@ -4,7 +4,9 @@
 #include "common.h"
 #include "rect.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
 	FDAT_BOLD		= 0x01,
@@ -34,6 +36,8 @@ BRESULT fontmng_getsize(void *hdl, const char *string, POINT_T *pt);
 BRESULT fontmng_getdrawsize(void *hdl, const char *string, POINT_T *pt);
 FNTDAT fontmng_get(void *hdl, const char *string);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_FONTMNG_H__ */

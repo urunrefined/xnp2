@@ -13,7 +13,7 @@ void trace_term(void) {
 void trace_fmt(const char *fmt, ...) {
 
 	va_list	ap;
-	gchar buf[1024];
+	char buf[1024];
 
 	va_start(ap, fmt);
 	g_vsnprintf(buf, sizeof(buf), fmt, ap);

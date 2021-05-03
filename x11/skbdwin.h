@@ -1,11 +1,15 @@
 #ifndef	NP2_X11_SKBDWIN_H__
 #define	NP2_X11_SKBDWIN_H__
 
+#include "compiler.h"
+
 #if defined(SUPPORT_SOFTKBD)
 
 #include "softkbd.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
 	int	posx;
@@ -23,7 +27,9 @@ void skbdwin_process(void);
 void skbdwin_readini(void);
 void skbdwin_writeini(void);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #else	/* !SUPPORT_SOFTKBD */
 

@@ -3,7 +3,9 @@
 
 #include "common.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Win32 SYSTEMTIME ストラクチャ
 
@@ -20,6 +22,8 @@ typedef struct {
 
 BRESULT timemng_gettime(_SYSTIME *systime);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_TIMEMNG_H__ */

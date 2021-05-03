@@ -253,6 +253,4 @@ typedef signed long nxp2ptr;
 extern char timidity_cfgfile_path[MAX_PATH];
 #define	TIMIDITY_CFGFILE	timidity_cfgfile_path
 
-#include <glib.h>
-
 #endif	/* NP2_X11_COMPILER_H__ */

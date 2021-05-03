@@ -1,7 +1,11 @@
 #ifndef	NP2_X11_TRACE_H__
 #define	NP2_X11_TRACE_H__
 
-G_BEGIN_DECLS
+#include <glib.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern int trace_flag;
 
@@ -29,6 +33,8 @@ void trace_fmt(const char *str, ...) G_GNUC_PRINTF(1, 2);
 
 #endif	/* !TRACE */
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_TRACE_H__ */

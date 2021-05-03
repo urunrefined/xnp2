@@ -1,7 +1,11 @@
 #ifndef	NP2_X11_INI_H__
 #define	NP2_X11_INI_H__
 
-G_BEGIN_DECLS
+#include "compiler.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
 	INITYPE_STR		= 0,
@@ -43,6 +47,8 @@ void ini_write(const char *path, const char *title, INITBL *tbl, UINT count, BOO
 void initload(void);
 void initsave(void);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_INI_H__ */

@@ -29,7 +29,9 @@
 #include	"compiler.h"
 #include	"common.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 const char *gui_gtk_get_toolkit(void);
 BRESULT gui_gtk_arginit(int *argcp, char ***argvp);
@@ -41,6 +43,8 @@ void gui_gtk_event_process(void);
 void gui_gtk_set_window_title(const char* str);
 int gui_gtk_msgbox(const char* title, const char *msg, UINT flags);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_GTK2_GTKTOOLKIT_H__ */

@@ -27,8 +27,12 @@
 #define	NP2_X11_KBDMNG_H__
 
 #include "keystat.h"
+#include "compiler.h"
+#include "common.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
 	KEY_KEY106,
@@ -44,6 +48,8 @@ BRESULT kbdmng_init(void);
 UINT8 kbdmng_getf12key(void);
 void kbdmng_resetf12(void);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_KBDMNG_H__ */

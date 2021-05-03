@@ -5,7 +5,9 @@
 
 #if defined(SUPPORT_KEYDISP)
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
 	KDISPCFG_FM	= 0x00,
@@ -28,7 +30,9 @@ void kdispwin_draw(UINT8 cnt);
 void kdispwin_readini(void);
 void kdispwin_writeini(void);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #else	/* !SUPPORT_KEYDISP */
 

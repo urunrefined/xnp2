@@ -3,7 +3,11 @@
 
 // ---- com manager interface
 
-G_BEGIN_DECLS
+#include "compiler.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
 	COMCREATE_SERIAL		= 0,
@@ -78,7 +82,9 @@ enum {
 
 void commng_initialize(void);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #include "cmmidi.h"
 #include "cmserial.h"

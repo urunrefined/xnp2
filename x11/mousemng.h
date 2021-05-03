@@ -4,7 +4,9 @@
 #include "compiler.h"
 #include "common.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define	MOUSE_MASK	0x07
 
@@ -50,6 +52,8 @@ enum {
 	MOUSE_RATIO_100 = 0
 };
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_MOUSEMNG_H__ */

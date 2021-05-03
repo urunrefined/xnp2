@@ -5,7 +5,9 @@
 #include "compiler.h"
 #include "common.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef FILE *			FILEH;
 #define	FILEH_INVALID		NULL
@@ -101,6 +103,8 @@ void file_cutext(OEMCHAR *path);
 void file_cutseparator(OEMCHAR *path);
 void file_setseparator(OEMCHAR *path, int maxlen);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_DOSIO_H__ */

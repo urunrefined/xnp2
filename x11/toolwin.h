@@ -1,7 +1,11 @@
 #ifndef	NP2_X11_TOOLWIN_H__
 #define	NP2_X11_TOOLWIN_H__
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "compiler.h"
 
 enum {
 	SKINMRU_MAX	= 4,
@@ -55,6 +59,8 @@ void toolwin_writeini(void);
 
 #endif	/* SUPPORT_TOOLWIN */
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_TOOLWIN_H__ */

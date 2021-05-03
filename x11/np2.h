@@ -6,7 +6,9 @@
 #include "joymng.h"
 #include "compiler.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 UINT32 gettick(void);
 
@@ -131,6 +133,8 @@ int mainloop(void *);
 extern int mmxflag;
 int havemmx(void);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_NP2_H__ */

@@ -30,7 +30,9 @@
 #include "cmndraw.h"
 #include "rect.h"
 
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
 	RGB32	mask;
@@ -65,6 +67,8 @@ void *drawmng_get_widget_handle(DRAWMNG_HDL hdl);
 void drawmng_make16mask(PAL16MASK *pal16, UINT32 bmask, UINT32 rmask, UINT32 gmask);
 RGB16 drawmng_makepal16(PAL16MASK *pal16, RGB32 pal32);
 
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* NP2_X11_DRAWMNG_H__ */

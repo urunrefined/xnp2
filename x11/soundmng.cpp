@@ -38,6 +38,8 @@
 #include "sound.h"
 #include "_memory.h"
 
+#include <glib.h>
+
 #if defined(VERMOUTH_LIB)
 #include "sound/vermouth/vermouth.h"
 
