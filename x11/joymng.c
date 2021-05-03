@@ -24,6 +24,7 @@
  */
 
 #include "compiler.h"
+#include "_memory.h"
 
 #if defined(SUPPORT_JOYSTICK)
 

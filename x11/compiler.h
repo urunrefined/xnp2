@@ -53,15 +53,9 @@
 #error Please set preprocessor macro __BYTE_ORDER__ to __ORDER_BIG_ENDIAN__ or __ORDER_LITTLE_ENDIAN__
 #endif
 
-#if !defined(USE_SDLAUDIO) && !defined(USE_SDLMIXER)
-#ifndef	NOSOUND
-#define	NOSOUND
-#undef	VERMOUTH_LIB
-#endif	/* !NOSOUND */
-#else	/* USE_SDLAUDIO || USE_SDLMIXER */
 #undef	NOSOUND
 #define	VERMOUTH_LIB
-#endif	/* !USE_SDLAUDIO && !USE_SDLMIXER */
+#define USE_SDLAUDIO
 
 #include <sys/param.h>
 #include <sys/time.h>
@@ -252,10 +246,8 @@ G_END_DECLS
 #define	SUPPORT_KEYDISP
 #define	SUPPORT_SOFTKBD	0
 
-#if defined(USE_SDLAUDIO) || defined(USE_SDLMIXER)
 #define	SUPPORT_JOYSTICK
 #define	USE_SDL_JOYSTICK
-#endif	/* USE_SDLAUDIO || USE_SDLMIXER */
 
 /*
  * You could specify a complete path, e.g. "/etc/timidity.cfg", and

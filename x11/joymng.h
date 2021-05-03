@@ -26,6 +26,8 @@
 #ifndef	NP2_X11_JOYMNG_H__
 #define	NP2_X11_JOYMNG_H__
 
+#include "common.h"
+
 /*
  * joystick manager
  */
