@@ -265,6 +265,5 @@ extern char timidity_cfgfile_path[MAX_PATH];
 #define	TIMIDITY_CFGFILE	timidity_cfgfile_path
 
 #include "common.h"
-#include "milstr.h"
 
 #endif	/* NP2_X11_COMPILER_H__ */

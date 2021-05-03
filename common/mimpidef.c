@@ -2,6 +2,7 @@
 #include	"dosio.h"
 #include	"textfile.h"
 #include	"mimpidef.h"
+#include	"milstr.h"
 
 
 static const OEMCHAR str_la[] = OEMTEXT("LA");

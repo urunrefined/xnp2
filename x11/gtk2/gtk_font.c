@@ -29,6 +29,7 @@
 #include "codecnv/codecnv.h"
 
 #include "fontmng.h"
+#include "milstr.h"
 
 #include "gtk2/xnp2.h"
 

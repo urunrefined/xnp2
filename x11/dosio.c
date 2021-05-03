@@ -7,6 +7,7 @@
 #include "dosio.h"
 #include "trace.h"
 #include "_memory.h"
+#include "milstr.h"
 
 
 static OEMCHAR curpath[MAX_PATH];

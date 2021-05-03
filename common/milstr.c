@@ -1,4 +1,5 @@
 #include	"compiler.h"
+#include	"milstr.h"
 
 int STRCALL milutf8_charsize(const char *str) {
 

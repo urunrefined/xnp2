@@ -27,6 +27,7 @@
 
 #include "np2.h"
 #include "pccore.h"
+#include "milstr.h"
 
 #include "sysmng.h"
 

@@ -7,6 +7,7 @@
 #include	"fddfile.h"
 #include	"fdd_xdf.h"
 #include	"fdd_d88.h"
+#include	"milstr.h"
 
 
 	_FDDFILE	fddfile[MAX_FDDFILE];

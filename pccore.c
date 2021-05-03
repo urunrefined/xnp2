@@ -20,8 +20,8 @@
 #include	"pc9861k.h"
 #include	"mpu98ii.h"
 #include	"amd98.h"
-#include "bios/bios.h"
-#include "bios/biosmem.h"
+#include	"bios/bios.h"
+#include	"bios/biosmem.h"
 #include	"vram.h"
 #include	"scrndraw.h"
 #include	"dispsync.h"
@@ -30,7 +30,7 @@
 #include	"maketgrp.h"
 #include	"makegrph.h"
 #include	"makegrex.h"
-#include "sound/sndcsec.h"
+#include	"sound/sndcsec.h"
 #include	"sound.h"
 #include	"fmboard.h"
 #include	"beep.h"
@@ -49,6 +49,7 @@
 #include	"timing.h"
 #include	"keystat.h"
 #include	"debugsub.h"
+#include	"milstr.h"
 
 
 const OEMCHAR np2version[] = OEMTEXT(NP2VER_CORE);

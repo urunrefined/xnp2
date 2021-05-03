@@ -10,6 +10,7 @@
 #include "sccispfmlight.h"
 #include "dosio.h"
 #include "common/profile.h"
+#include "milstr.h"
 
 namespace scci
 {

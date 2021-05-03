@@ -40,6 +40,7 @@
 #include "calendar.h"
 #include "keystat.h"
 #include "_memory.h"
+#include "milstr.h"
 
 #if defined(MACOS)
 #define	CRCONST		str_cr

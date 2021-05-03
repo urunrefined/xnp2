@@ -45,6 +45,7 @@
 #include "serial.h"
 #include "timing.h"
 #include "toolkit.h"
+#include "milstr.h"
 
 #include "kdispwin.h"
 #include "toolwin.h"

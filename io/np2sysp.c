@@ -10,6 +10,7 @@
 #include	"bios/sxsibios.h"
 #if defined(SUPPORT_HOSTDRV)
 #include	"hostdrv.h"
+#include	"milstr.h"
 #endif
 
 

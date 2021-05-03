@@ -32,6 +32,7 @@
 
 #include "commng.h"
 #include "sysmng.h"
+#include "milstr.h"
 
 #include "gtk2/xnp2.h"
 #include "gtk2/gtk_menu.h"

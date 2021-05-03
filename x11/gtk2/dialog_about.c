@@ -30,8 +30,10 @@
 
 #include "gtk2/xnp2.h"
 #include "gtk2/gtk_menu.h"
+#include "milstr.h"
 
 #include "resources/np2.xpm"
+
 
 
 static void

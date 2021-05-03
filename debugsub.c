@@ -6,6 +6,7 @@
 #include	"pccore.h"
 #include	"iocore.h"
 #include	"debugsub.h"
+#include	"milstr.h"
 
 
 #if defined(MACOS)

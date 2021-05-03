@@ -6,6 +6,7 @@
 #include "mimpidef.h"
 #include "sound.h"
 #include "_memory.h"
+#include "milstr.h"
 
 #include "sound/vermouth/vermouth.h"
 

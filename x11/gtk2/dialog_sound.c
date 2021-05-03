@@ -34,6 +34,7 @@
 #include "opngen.h"
 #include "pccore.h"
 #include "iocore.h"
+#include "milstr.h"
 
 #include "soundmng.h"
 #include "sysmng.h"

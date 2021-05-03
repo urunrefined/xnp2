@@ -11,6 +11,7 @@
 #include "joymng.h"
 #include "kbdmng.h"
 #include "soundmng.h"
+#include "milstr.h"
 
 
 typedef struct {

@@ -4,6 +4,7 @@
 #include	"textfile.h"
 #include	"midiout.h"
 #include	"_memory.h"
+#include	"milstr.h"
 
 #if defined(SUPPORT_ARC)
 #include	"arc.h"

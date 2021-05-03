@@ -7,7 +7,8 @@
 #include	"sound.h"
 #include	"fmboard.h"
 #include	"np2info.h"
-#include "sound/soundrom.h"
+#include	"sound/soundrom.h"
+#include	"milstr.h"
 
 static const OEMCHAR str_comma[] = OEMTEXT(", ");
 static const OEMCHAR str_2halfMHz[] = OEMTEXT("2.5MHz");

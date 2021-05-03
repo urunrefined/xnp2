@@ -7,6 +7,7 @@
 #include "sccisoundinterface.h"
 #include "sccisoundchip.h"
 #include "sccisoundinterfacemanager.h"
+#include "milstr.h"
 
 namespace scci
 {

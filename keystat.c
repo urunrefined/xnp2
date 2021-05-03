@@ -6,6 +6,7 @@
 #include	"keystat.h"
 #include	"keystat.tbl"
 #include	"softkbd.h"
+#include	"milstr.h"
 
 	KEYCTRL		keyctrl;
 	KEYSTAT		keystat;
