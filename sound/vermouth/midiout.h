@@ -64,6 +64,7 @@ enum {
 #include	"midinst.h"
 #include	"midvoice.h"
 #include	"midtable.h"
+#include	"lstarray.h"
 
 
 struct _midimodule {

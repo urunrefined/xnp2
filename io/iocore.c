@@ -8,6 +8,7 @@
 #include	"ideio.h"
 #include	"cs4231io.h"
 #include	"iocore16.tbl"
+#include	"lstarray.h"
 
 
 	_ARTIC		artic;

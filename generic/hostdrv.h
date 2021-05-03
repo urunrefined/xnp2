@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "lstarray.h"
+
 #if defined(SUPPORT_HOSTDRV)
 
 #include "statsave.h"
