@@ -5,6 +5,7 @@
 #include	"cs4231io.h"
 #include	"sound.h"
 #include	"fmboard.h"
+#include	"trace.h"
 
 
 static const UINT8 cs4231dma[] = {0xff,0x00,0x01,0x03,0xff,0xff,0xff,0xff};

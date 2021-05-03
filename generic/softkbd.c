@@ -5,6 +5,7 @@
 #include	"bmpdata.h"
 #include	"softkbd.h"
 #include	"keystat.h"
+#include	"trace.h"
 
 
 #define	SOFTKEY_MENU	0xfe

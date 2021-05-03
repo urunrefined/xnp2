@@ -2,6 +2,7 @@
 #include	"cpucore.h"
 #include	"pccore.h"
 #include	"iocore.h"
+#include	"trace.h"
 
 
 // EPSON専用ポート 0c00～

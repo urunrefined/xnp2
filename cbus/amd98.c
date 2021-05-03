@@ -13,6 +13,7 @@
 #include "sound.h"
 #include "sound/fmboard.h"
 #include "sound/pcmmix.h"
+#include "trace.h"
 
 	AMD98	g_amd98;
 

@@ -6,6 +6,7 @@
 #include	"bios/biosmem.h"
 #include	"lio.h"
 #include	"vram.h"
+#include	"trace.h"
 
 
 typedef struct {

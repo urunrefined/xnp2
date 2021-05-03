@@ -1,6 +1,7 @@
 #include	"compiler.h"
 #include	"cpucore.h"
 #include	"lio.h"
+#include	"trace.h"
 
 typedef struct {
 	UINT8	cx[2];

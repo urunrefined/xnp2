@@ -21,6 +21,7 @@
 #include "itfrom.res"
 #include "startup.res"
 #include "biosfd80.res"
+#include "trace.h"
 
 
 #define	BIOS_SIMULATE

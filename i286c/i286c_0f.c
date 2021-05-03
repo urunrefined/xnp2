@@ -1,5 +1,6 @@
 #include	"compiler.h"
 #include	"cpucore.h"
+#include	"trace.h"
 #include	"i286c.h"
 #include	"i286c.mcr"
 

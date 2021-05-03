@@ -4,6 +4,7 @@
 #include	"iocore.h"
 #include	"gdc_sub.h"
 #include	"lio.h"
+#include	"trace.h"
 
 
 typedef struct {

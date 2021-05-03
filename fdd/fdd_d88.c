@@ -4,7 +4,7 @@
 #include	"iocore.h"
 #include	"fddfile.h"
 #include	"fdd_d88.h"
-
+#include	"trace.h"
 
 #define		D88BUFSIZE		0x6000
 #define		D88TRACKMAX		10600

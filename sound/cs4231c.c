@@ -7,6 +7,7 @@
 #include "cs4231.h"
 #include "iocore.h"
 #include "fmboard.h"
+#include "trace.h"
 
 
 	CS4231CFG	cs4231cfg;

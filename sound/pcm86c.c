@@ -9,6 +9,7 @@
 #include "cpucore.h"
 #include "iocore.h"
 #include "fmboard.h"
+#include "trace.h"
 
 /* サンプリングレートに8掛けた物 */
 const UINT pcm86rate8[] = {352800, 264600, 176400, 132300,

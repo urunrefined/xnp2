@@ -6,6 +6,7 @@
 #include	"bios.h"
 #include	"biosmem.h"
 #include	"font/font.h"
+#include	"trace.h"
 
 
 typedef struct {

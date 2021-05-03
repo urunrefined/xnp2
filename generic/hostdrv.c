@@ -16,6 +16,7 @@
 #include	"hostdrv.h"
 #include	"hostdrvs.h"
 #include	"hostdrv.tbl"
+#include	"trace.h"
 
 
 #define IS_PERMITWRITE		(np2cfg.hdrvacc & HDFMODE_WRITE)

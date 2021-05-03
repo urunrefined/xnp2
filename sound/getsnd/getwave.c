@@ -1,5 +1,6 @@
 #include	"compiler.h"
 #include	"getsnd.h"
+#include	"trace.h"
 
 
 #if defined(__GNUC__)

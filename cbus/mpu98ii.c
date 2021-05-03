@@ -7,6 +7,7 @@
 #include	"iocore.h"
 #include	"cbuscore.h"
 #include	"mpu98ii.h"
+#include	"trace.h"
 
 
 enum {

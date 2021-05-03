@@ -8,6 +8,7 @@
 #include <math.h>
 #include "opngencfg.h"
 #include "pccore.h"
+#include "trace.h"
 
 
 #define	OPM_ARRATE		 399128L

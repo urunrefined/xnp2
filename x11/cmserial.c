@@ -27,6 +27,7 @@
 
 #include "np2.h"
 #include "commng.h"
+#include "trace.h"
 
 #include <sys/ioctl.h>
 #include <stdio.h>

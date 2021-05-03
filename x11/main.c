@@ -61,6 +61,7 @@
 #include "soundmng.h"
 #include "sysmng.h"
 #include "taskmng.h"
+#include "trace.h"
 
 
 static const char appname[] =

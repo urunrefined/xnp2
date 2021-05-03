@@ -4,6 +4,7 @@
 #include	"iocore.h"
 #include	"bios.h"
 #include	"biosmem.h"
+#include	"trace.h"
 
 
 static REG8 bios0x1f_90(void) {

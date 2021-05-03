@@ -6,6 +6,7 @@
 #include	"sdraw.h"
 #include	"dispsync.h"
 #include	"palettes.h"
+#include	"trace.h"
 
 
 	UINT8	renewal_line[SURFACE_HEIGHT];

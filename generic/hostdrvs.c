@@ -10,6 +10,7 @@
 
 #include "oemtext.h"
 #include "pccore.h"
+#include "trace.h"
 
 /*! ルート情報 */
 static const HDRVFILE s_hddroot = {{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}, 0, 0, 0x10, {0}, {0}};
