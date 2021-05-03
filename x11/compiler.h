@@ -91,10 +91,11 @@ typedef	uint64_t	UINT64;
 
 typedef	int			BOOL;
 
-#define	INTPTR		gintptr
+typedef signed long nxp2ptr;
+#define	INTPTR nxp2ptr
 
-#define PTR_TO_UINT32(p)	((UINT32)GPOINTER_TO_UINT(p))
-#define UINT32_TO_PTR(v)	GUINT_TO_POINTER((UINT32)(v))
+#define PTR_TO_UINT32(p)	((unsigned int) (unsigned long) (p))
+#define UINT32_TO_PTR(v)	((void*)(unsigned long) ((UINT32)(v)))
 
 #ifndef	FALSE
 #define	FALSE	0
@@ -159,7 +160,7 @@ typedef	int			BOOL;
 #define	SPRINTF		sprintf
 #define	STRLEN		strlen
 
-#define	OEMCHAR		gchar
+#define	OEMCHAR		char
 #define OEMTEXT(s)	s
 #define	OEMSPRINTF	sprintf
 #define	OEMSTRLEN	strlen
