@@ -144,7 +144,6 @@ char timidity_cfgfile_path[MAX_PATH];
 
 int verbose = 0;
 
-
 UINT32
 gettick(void)
 {

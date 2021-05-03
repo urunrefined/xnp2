@@ -74,22 +74,22 @@
 #define	X11
 #define	OSLINEBREAK_LF
 
-#include <glib.h>
+#include <stdint.h>
 
-typedef	gint32		SINT;
-typedef	guint32		UINT;
+typedef	int32_t		SINT;
+typedef	u_int32_t	UINT;
 
-typedef	gint8		SINT8;
-typedef	gint16		SINT16;
-typedef	gint32		SINT32;
-typedef	gint64		SINT64;
+typedef	int8_t		SINT8;
+typedef	int16_t		SINT16;
+typedef	int32_t		SINT32;
+typedef	int64_t		SINT64;
 
-typedef	guint8		UINT8;
-typedef	guint16		UINT16;
-typedef	guint32		UINT32;
-typedef	guint64		UINT64;
+typedef	uint8_t		UINT8;
+typedef	uint16_t	UINT16;
+typedef	uint32_t	UINT32;
+typedef	uint64_t	UINT64;
 
-typedef	gboolean	BOOL;
+typedef	int			BOOL;
 
 #define	INTPTR		gintptr
 
@@ -155,10 +155,6 @@ typedef	gboolean	BOOL;
 #endif
 #endif /* __GNUC__ */
 
-G_BEGIN_DECLS
-UINT32 gettick(void);
-G_END_DECLS
-#define	GETTICK()	gettick()
 #define	GETRAND()	random()
 #define	SPRINTF		sprintf
 #define	STRLEN		strlen
@@ -255,5 +251,7 @@ G_END_DECLS
  */
 extern char timidity_cfgfile_path[MAX_PATH];
 #define	TIMIDITY_CFGFILE	timidity_cfgfile_path
+
+#include <glib.h>
 
 #endif	/* NP2_X11_COMPILER_H__ */

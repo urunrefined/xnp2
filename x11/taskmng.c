@@ -19,8 +19,8 @@ taskmng_sleep(UINT32 tick)
 	UINT32 base;
 	UINT32 now;
 
-	base = GETTICK();
-	while (taskmng_isavail() && (((now = GETTICK()) - base) < tick)) {
+	base = gettick();
+	while (taskmng_isavail() && (((now = gettick()) - base) < tick)) {
 		toolkit_event_process();
 		usleep((tick - (now - base) / 2) * 1000);
 	}

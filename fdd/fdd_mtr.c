@@ -2,6 +2,8 @@
 #include	"soundmng.h"
 #include	"pccore.h"
 #include	"fdd_mtr.h"
+#include	"np2.h"
+
 #if defined(SUPPORT_SWSEEKSND)
 #include	"sound/pcmmix.h"
 #include	"fdd_mtr.res"
@@ -161,7 +163,7 @@ void fddmtr_seek(REG8 drv, REG8 c, UINT size) {
 			soundmng_pcmplay(SOUND_PCMSEEK1, FALSE);
 #endif
 			fddmtr.curevent = 80;
-			fddmtr.nextevent = GETTICK() + MOVEMOTOR1_MS;
+			fddmtr.nextevent = gettick() + MOVEMOTOR1_MS;
 		}
 	}
 	else if (regmove) {
@@ -173,7 +175,7 @@ void fddmtr_seek(REG8 drv, REG8 c, UINT size) {
 			soundmng_pcmplay(SOUND_PCMSEEK, TRUE);
 #endif
 			fddmtr.curevent = 100;
-			fddmtr.nextevent = GETTICK() + (regmove * MOVE1TCK_MS);
+			fddmtr.nextevent = gettick() + (regmove * MOVE1TCK_MS);
 		}
 		if (regmove >= 32) {
 			waitcnt += DISK1ROL_MS;

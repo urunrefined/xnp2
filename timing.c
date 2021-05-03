@@ -19,7 +19,7 @@ static	TIMING	timing;
 
 void timing_reset(void) {
 
-	timing.tick = GETTICK();
+        timing.tick = gettick();
 	timing.cnt = 0;
 	timing.fraction = 0;
 }
@@ -40,7 +40,7 @@ UINT timing_getcount(void) {
 	UINT32	span;
 	UINT32	fraction;
 
-	ticknow = GETTICK();
+	ticknow = gettick();
 	span = ticknow - timing.tick;
 	if (span) {
 		timing.tick = ticknow;

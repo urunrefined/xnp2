@@ -4,8 +4,11 @@
 #include <signal.h>
 
 #include "joymng.h"
+#include "compiler.h"
 
 G_BEGIN_DECLS
+
+UINT32 gettick(void);
 
 typedef struct {
 	UINT8	port;

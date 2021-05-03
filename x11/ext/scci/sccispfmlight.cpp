@@ -7,6 +7,7 @@
 #include "sccispfmlight.h"
 #include "sccisoundchip.h"
 #include "misc/threadbase.h"
+#include "np2.h"
 
 namespace scci
 {
@@ -48,7 +49,7 @@ bool CSpfmLight::Initialize()
 	bool bResult = false;
 
 	m_ttyGuard.Enter();
-	const UINT nUntil = GETTICK() + 3000;
+	const UINT nUntil = gettick() + 3000;
 	const unsigned char query[1] = {0xff};
 	if (Write(query, sizeof(query), nUntil) == sizeof(query))
 	{
@@ -209,7 +210,7 @@ bool CSpfmLight::reset()
 	m_queGuard.Leave();
 
 	m_ttyGuard.Enter();
-	const UINT nUntil = GETTICK() + 3000;
+	const UINT nUntil = gettick() + 3000;
 	const unsigned char reset[1] = {0xfe};
 	if (Write(reset, sizeof(reset), nUntil) == sizeof(reset))
 	{
@@ -235,7 +236,7 @@ ssize_t CSpfmLight::Read(unsigned char* lpBuffer, ssize_t cbBuffer, UINT nUntil)
 	{
 		return -1;
 	}
-	while ((nRead < cbBuffer) && ((static_cast<SINT>(nUntil) - static_cast<SINT>(GETTICK())) > 0))
+	while ((nRead < cbBuffer) && ((static_cast<SINT>(nUntil) - static_cast<SINT>(gettick())) > 0))
 	{
 		Delay(1000);
 		const ssize_t r = m_serial.Read(lpBuffer + nRead, cbBuffer - nRead);
@@ -262,7 +263,7 @@ ssize_t CSpfmLight::Write(const unsigned char* lpBuffer, ssize_t cbBuffer, UINT 
 	{
 		return -1;
 	}
-	while ((nWritten < cbBuffer) && ((static_cast<SINT>(nUntil) - static_cast<SINT>(GETTICK())) > 0))
+	while ((nWritten < cbBuffer) && ((static_cast<SINT>(nUntil) - static_cast<SINT>(gettick())) > 0))
 	{
 		Delay(1000);
 		const ssize_t w = m_serial.Write(lpBuffer + nWritten, cbBuffer - nWritten);
@@ -283,7 +284,7 @@ ssize_t CSpfmLight::Write(const unsigned char* lpBuffer, ssize_t cbBuffer, UINT 
  */
 bool CSpfmLight::AddEvent(UINT nData)
 {
-	const UINT nNow = GETTICK();
+	const UINT nNow = gettick();
 
 	m_queGuard.Enter();
 
@@ -317,7 +318,7 @@ bool CSpfmLight::Task()
 	UINT8 sData[64];
 	UINT nIndex = 0;
 
-	const UINT nNow = GETTICK();
+	const UINT nNow = gettick();
 
 	m_queGuard.Enter();
 	while (m_nQueCount)

@@ -29,7 +29,7 @@ void
 sysmng_workclockreset(void)
 {
 
-	workclock.tick = GETTICK();
+        workclock.tick = gettick();
 	workclock.clock = CPU_CLOCK;
 	workclock.draws = drawcount;
 	workclock.fps = 0;
@@ -40,7 +40,7 @@ BOOL
 sysmng_workclockrenewal(void)
 {
 	SINT32	tick;
-	tick = GETTICK() - workclock.tick;
+	tick = gettick() - workclock.tick;
 	if (tick >= 2000) {
 		workclock.tick += tick;
 		workclock.fps = ((drawcount - workclock.draws) * 10000) / tick;
