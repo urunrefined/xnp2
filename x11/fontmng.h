@@ -3,6 +3,8 @@
 
 G_BEGIN_DECLS
 
+#include "rect.h"
+
 enum {
 	FDAT_BOLD		= 0x01,
 	FDAT_PROPORTIONAL	= 0x02,

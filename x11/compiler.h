@@ -267,7 +267,6 @@ extern char timidity_cfgfile_path[MAX_PATH];
 #include "common.h"
 #include "milstr.h"
 #include "_memory.h"
-#include "rect.h"
 #include "lstarray.h"
 #include "trace.h"
 #include "toolkit.h"

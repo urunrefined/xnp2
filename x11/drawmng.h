@@ -27,8 +27,8 @@
 #define	NP2_X11_DRAWMNG_H__
 
 #include "compiler.h"
-
 #include "cmndraw.h"
+#include "rect.h"
 
 G_BEGIN_DECLS
 
