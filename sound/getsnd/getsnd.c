@@ -1,6 +1,7 @@
 #include	"compiler.h"
 #include	"getsnd.h"
 #include	"trace.h"
+#include	"_memory.h"
 
 
 GETSND getsnd_create(void *datptr, UINT datsize) {

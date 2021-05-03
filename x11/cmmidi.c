@@ -5,6 +5,7 @@
 #include "kdispwin.h"
 #include "mimpidef.h"
 #include "sound.h"
+#include "_memory.h"
 
 #include "sound/vermouth/vermouth.h"
 

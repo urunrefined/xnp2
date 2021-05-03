@@ -12,6 +12,8 @@
 #include "codecnv/textcnv.h"
 #endif
 
+#include "_memory.h"
+
 /**
  * End of line style
  */

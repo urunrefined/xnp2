@@ -3,6 +3,7 @@
 #include	"cpucore.h"
 #include	"sound.h"
 #include	"cmjasts.h"
+#include	"_memory.h"
 
 
 #define	JSEVENTS	512

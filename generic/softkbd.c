@@ -6,6 +6,7 @@
 #include	"softkbd.h"
 #include	"keystat.h"
 #include	"trace.h"
+#include	"_memory.h"
 
 
 #define	SOFTKEY_MENU	0xfe

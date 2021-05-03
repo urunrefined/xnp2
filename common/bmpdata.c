@@ -1,5 +1,6 @@
 #include	"compiler.h"
 #include	"bmpdata.h"
+#include	"_memory.h"
 
 
 UINT bmpdata_getalign(const BMPINFO *bi) {

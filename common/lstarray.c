@@ -1,6 +1,7 @@
 #include	"compiler.h"
 
 #include	"lstarray.h"
+#include	"_memory.h"
 
 
 LISTARRAY listarray_new(size_t listsize, UINT maxitems) {

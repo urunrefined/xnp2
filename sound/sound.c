@@ -12,6 +12,8 @@
 #include "beep.h"
 #include "soundmng.h"
 #include "trace.h"
+#include "_memory.h"
+
 #if defined(SUPPORT_WAVEREC)
 #include "common/wavefile.h"
 #endif	/* defined(SUPPORT_WAVEREC) */

@@ -10,6 +10,8 @@
 #include	"dosio.h"
 #endif
 
+#include "_memory.h"
+
 
 // ---- arc support?
 

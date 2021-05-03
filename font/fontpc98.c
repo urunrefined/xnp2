@@ -4,6 +4,7 @@
 #include	"cpucore.h"
 #include	"font.h"
 #include	"fontdata.h"
+#include	"_memory.h"
 
 
 #define	FONTYSIZE		16

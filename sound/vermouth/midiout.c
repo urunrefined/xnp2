@@ -1,6 +1,7 @@
 #include	"compiler.h"
 #include	"midiout.h"
 #include	"trace.h"
+#include	"_memory.h"
 
 
 #define	MIDIOUT_VERSION		0x116

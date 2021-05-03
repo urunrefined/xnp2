@@ -7,7 +7,7 @@
 #include	"font.h"
 #include	"fontdata.h"
 #include	"fontmake.h"
-
+#include	"_memory.h"
 
 typedef struct {
 	UINT16	jis1;

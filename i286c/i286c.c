@@ -7,6 +7,9 @@
 #include	"dmax86.h"
 #include	"i286c.mcr"
 #include	"trace.h"
+#include	"_memory.h"
+#include	"_memory.h"
+
 #if defined(ENABLE_TRAP)
 #include "trap/steptrap.h"
 #endif
@@ -240,7 +243,7 @@ void CPUCALL i286c_intnum(UINT vect, REG16 IP) {
 
 const UINT8	*ptr;
 
-	if (vect < 0x10) TRACEOUT(("i286c_intnum - %.2x", vect));
+        if (vect < 0x10) TRACEOUT(("i286c_intnum - %.2x", vect));
 	REGPUSH0(REAL_FLAGREG)
 	REGPUSH0(I286_CS)
 	REGPUSH0(IP)

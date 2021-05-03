@@ -12,6 +12,7 @@
 #include	"scrndraw.h"
 #include	"dispsync.h"
 #include	"palettes.h"
+#include	"_memory.h"
 
 /**
  * @brief The structure of screen saver

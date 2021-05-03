@@ -34,6 +34,7 @@
 #include "gtk2/xnp2.h"
 #include "gtk2/gtk_drawmng.h"
 
+#include "_memory.h"
 
 DRAWMNG_HDL
 drawmng_create(void *parent, int width, int height)

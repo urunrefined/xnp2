@@ -36,6 +36,7 @@
 
 #include "sysmng.h"
 #include "sound.h"
+#include "_memory.h"
 
 #if defined(VERMOUTH_LIB)
 #include "sound/vermouth/vermouth.h"

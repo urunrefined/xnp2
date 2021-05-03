@@ -7,6 +7,7 @@
 #include <math.h>
 #include "rhythm.h"
 #include "pccore.h"
+#include "_memory.h"
 
 static const OEMCHAR file_2608bd[] = OEMTEXT("2608_bd.wav");
 static const OEMCHAR file_2608sd[] = OEMTEXT("2608_sd.wav");

@@ -6,6 +6,7 @@
 #include	"cpucore.h"
 #include	"pccore.h"
 #include	"sxsi.h"
+#include	"_memory.h"
 
 
 static const UINT8 cd001[7] = {0x01,'C','D','0','0','1',0x01};

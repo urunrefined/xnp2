@@ -3,6 +3,8 @@
 #include	"dosio.h"
 #include	"textfile.h"
 #include	"midiout.h"
+#include	"_memory.h"
+
 #if defined(SUPPORT_ARC)
 #include	"arc.h"
 #endif

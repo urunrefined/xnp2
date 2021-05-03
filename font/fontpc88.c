@@ -3,6 +3,7 @@
 #include	"cpucore.h"
 #include	"font.h"
 #include	"fontdata.h"
+#include	"_memory.h"
 
 
 static void pc88knjcpy1(UINT8 *dst, const UINT8 *src, int from, int to) {

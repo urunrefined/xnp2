@@ -14,6 +14,7 @@
 #include "sound/fmboard.h"
 #include "sound/pcmmix.h"
 #include "trace.h"
+#include "_memory.h"
 
 	AMD98	g_amd98;
 

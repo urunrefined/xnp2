@@ -1,6 +1,7 @@
 #include	"compiler.h"
 #include	"dosio.h"
 #include	"midiout.h"
+#include	"_memory.h"
 
 
 #if defined(SUPPORT_ARC)

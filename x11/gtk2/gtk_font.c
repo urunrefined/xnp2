@@ -32,6 +32,8 @@
 
 #include "gtk2/xnp2.h"
 
+#include "_memory.h"
+
 
 typedef struct {
 	int			size;

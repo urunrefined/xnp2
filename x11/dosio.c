@@ -6,6 +6,7 @@
 #include "codecnv/codecnv.h"
 #include "dosio.h"
 #include "trace.h"
+#include "_memory.h"
 
 
 static OEMCHAR curpath[MAX_PATH];

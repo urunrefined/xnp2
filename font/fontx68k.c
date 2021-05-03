@@ -3,6 +3,7 @@
 #include	"cpucore.h"
 #include	"font.h"
 #include	"fontdata.h"
+#include	"_memory.h"
 
 
 static void x68kknjcpy(UINT8 *dst, const UINT8 *src, int from, int to) {

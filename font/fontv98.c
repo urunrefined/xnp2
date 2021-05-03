@@ -3,6 +3,7 @@
 #include	"cpucore.h"
 #include	"font.h"
 #include	"fontdata.h"
+#include	"_memory.h"
 
 
 #define	V98FILESIZE		0x46800

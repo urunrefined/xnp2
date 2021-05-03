@@ -6,6 +6,7 @@
 #include "compiler.h"
 #include "wavefile.h"
 #include "dosio.h"
+#include "_memory.h"
 
 #if !defined(WAVE_FORMAT_PCM)
 #define WAVE_FORMAT_PCM			1		/*!< PCM */
