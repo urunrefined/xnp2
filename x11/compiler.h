@@ -269,6 +269,5 @@ extern char timidity_cfgfile_path[MAX_PATH];
 #include "_memory.h"
 #include "lstarray.h"
 #include "trace.h"
-#include "toolkit.h"
 
 #endif	/* NP2_X11_COMPILER_H__ */
