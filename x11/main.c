@@ -138,11 +138,6 @@ main(int argc, char *argv[])
 
 	progname = argv[0];
 
-	setlocale(LC_ALL, "");
-	(void) bindtextdomain("np2", NP2LOCALEDIR);
-	(void) bind_textdomain_codeset("np2", "UTF-8");
-	(void) textdomain("np2");
-
 	toolkit_initialize();
 	toolkit_arginit(&argc, &argv);
 

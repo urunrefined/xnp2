@@ -26,25 +26,6 @@
 #ifndef	NP2_X11_COMPILER_H__
 #define	NP2_X11_COMPILER_H__
 
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(s)				gettext(s)
-#ifdef gettext_noop
-#define N_(s)				gettext_noop(s)
-#else
-#define N_(s)				(s)
-#endif
-#else /* !ENABLE_NLS */
-#define _(s)				(s)
-#define N_(s) (s)
-#define textdomain(s)			(s)
-#define gettext(s)			(s)
-#define dgettext(d,s)			(s)
-#define dcgettext(d,s,t)		(s)
-#define bindtextdomain(d,dir)		(d)
-#define bind_textdomain_codeset(d,c)	(c)
-#endif /* ENABLE_NLS */
-
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #define	BYTESEX_BIG
 #elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
