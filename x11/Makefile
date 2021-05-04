@@ -36,7 +36,6 @@ SRC_C = \
 		./../x11/gtk2/window_keydisp.c                          \
 		./../x11/gtk2/window_softkbd.c                          \
 		./../x11/gtk2/gtk_drawmng.c                             \
-		./../x11/gtk2/gtk_screen.c                              \
 		./../x11/gtk2/gtk_font.c                                \
 		./../x11/gtk2/gtk_keyboard.c                            \
 		./../x11/gtk2/gtk_menu.c                                \
@@ -244,7 +243,8 @@ SRC_CPP = \
 		./../x11/ext/externalopl3.cpp                           \
 		./../x11/ext/externalopm.cpp                            \
 		./../x11/ext/externalopna.cpp                           \
-		./../x11/ext/externalpsg.cpp
+		./../x11/ext/externalpsg.cpp				\
+		./../x11/gtk2/gtk_screen.cpp
 
 
 OBJ = $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)

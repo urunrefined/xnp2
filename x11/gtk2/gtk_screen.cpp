@@ -42,6 +42,8 @@
 #include "gtk2/gtk_drawmng.h"
 #include "gtk2/gtk_menu.h"
 
+#include <algorithm>
+
 
 typedef struct {
 	UINT8		scrnmode;
@@ -57,11 +59,11 @@ typedef struct {
 	RECT_T		rect;		/* drawarea に描画するサイズ */
 
 	/* toolkit depend */
-	GdkPixbuf	*drawsurf;
-	GdkPixbuf	*backsurf;
-	GdkPixbuf	*surface;
-	double		ratio_w, ratio_h;
-	int		interp;
+	GdkPixbuf	   *drawsurf;
+	GdkPixbuf	   *backsurf;
+	GdkPixbuf	   *surface;
+	double		   ratio_w, ratio_h;
+	GdkInterpType  interp;
 
 	GdkColor	pal[NP2PAL_MAX];
 } DRAWMNG;
@@ -101,8 +103,8 @@ renewal_client_size(void)
 	int scrnheight;
 	int multiple;
 
-	width = min(scrnstat.width, drawmng.width);
-	height = min(scrnstat.height, drawmng.height);
+	width = std::min(scrnstat.width, drawmng.width);
+	height = std::min(scrnstat.height, drawmng.height);
 
 	multiple = scrnstat.multiple;
 
@@ -386,13 +388,62 @@ static unsigned int getCenteringOffset(unsigned int inner, unsigned int outer){
 	return (outer - inner) / 2;
 }
 
+static void getUpperSide(RECT_T& rect,
+	const uint offsetY, const uint parentWindowWidth){
+	rect.top = 0;
+	rect.left = 0;
+	rect.width = parentWindowWidth;
+	rect.height = offsetY;
+}
+
+static void getLeftSideWithoutUpper(RECT_T& rect,
+	const int offsetX, const uint offsetY, const uint parentWindowHeight){
+	rect.top = offsetY;
+	rect.left = 0;
+	rect.width = offsetX;
+	rect.height = parentWindowHeight - offsetY;
+}
+
+static void getLowerSideWithoutLeft(RECT_T& rect,
+	const int offsetX, const uint offsetY, const uint drawHeight, const uint parentWindowWidth, const uint parentWindowHeight){
+	rect.top = offsetY + drawHeight;
+	rect.left = offsetX;
+	rect.width = parentWindowWidth - offsetX;
+	rect.height = parentWindowHeight - offsetY;
+}
+
+static void getRightSideWithoutUpperOrLower(RECT_T& rect,
+	const int offsetX, const uint offsetY, const uint drawWidth, const uint drawHeight, const uint parentWindowWidth, const uint parentWindowHeight){
+	rect.top = offsetY;
+	rect.left = offsetX + drawWidth;
+	rect.width = parentWindowWidth - (offsetX + drawWidth);
+	rect.height = drawHeight;
+}
+
+static void getBorderRects(
+	const uint offsetX, const uint offsetY,
+		const uint drawWidth, const uint drawHeight,
+	const uint parentWindowWidth, const uint parentWindowHeight,
+	RECT_T (&rects)[4])
+{
+	rects[0] = {0,0,0,0};
+	rects[1] = {0,0,0,0};
+	rects[2] = {0,0,0,0};
+	rects[3] = {0,0,0,0};
+
+	getUpperSide(rects[0], offsetY, parentWindowWidth);
+	getLeftSideWithoutUpper(rects[1], offsetX, offsetY, parentWindowHeight);
+	getLowerSideWithoutLeft(rects[2], offsetX, offsetY, drawHeight, parentWindowWidth, parentWindowHeight);
+	getRightSideWithoutUpperOrLower(rects[3], offsetX, offsetY, drawWidth, drawHeight, parentWindowWidth, parentWindowHeight);
+};
+
 void
 scrnmng_update(void)
 {
 	GdkDrawable *d = drawarea->window;
 
-	int drawableWidth =  (unsigned int)gdk_window_get_width (d);
-	int drawableHeight = (unsigned int)gdk_window_get_height (d);
+	unsigned int drawableWidth =  (unsigned int)gdk_window_get_width (d);
+	unsigned int drawableHeight = (unsigned int)gdk_window_get_height (d);
 
 	unsigned int offsetX = getCenteringOffset(drawmng.rect.width, drawableWidth);
 	unsigned int offsetY = getCenteringOffset(drawmng.rect.height, drawableHeight);
@@ -408,6 +459,30 @@ scrnmng_update(void)
 		return;
 
 	drawmng.drawing = TRUE;
+
+	/*
+	 * We need to preserve the previous frame and can't
+	 * just paint over the entire canvas, as we might lose
+	 * previous pixels due to interlacing, so
+	 * we paint by finding out the border rectangles around
+	 * the drawing area
+	*/
+
+	RECT_T borderRects[4];
+
+	getBorderRects(
+		offsetX, offsetY,
+		drawmng.rect.width, drawmng.rect.height,
+		gdk_window_get_width(d), gdk_window_get_height(d),
+		borderRects
+	);
+
+	for(RECT_T& rect : borderRects){
+		if(rect.height && rect.width){
+			gdk_draw_rectangle(d, gc, TRUE,
+				rect.left, rect.top, rect.width, rect.height);
+		}
+	}
 
 	gdk_draw_pixbuf(d, gc, drawmng.drawsurf,
 		0, 0,
