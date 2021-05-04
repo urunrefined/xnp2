@@ -33,7 +33,7 @@ static int snd_read(GETSND snd, void *buffer, int size) {
 	if (rsize >= snd->datsize) {
 		rsize = snd->datsize;
 	}
-	CopyMemory(buffer, snd->datptr, rsize);
+	memcpy(buffer, snd->datptr, rsize);
 	snd->datptr += rsize;
 	snd->datsize -= rsize;
 	return((int)rsize);

@@ -61,12 +61,12 @@ UINT8 fontv98_read(const OEMCHAR *filename, UINT8 loading) {
 	// 8x16 フォント(～0x7f)を読む必要がある？
 	if (loading & FONT_ANK16a) {
 		loading &= ~FONT_ANK16a;
-		CopyMemory(fontrom + 0x80000, v98fnt + 0x0800, 16*128);
+		memcpy(fontrom + 0x80000, v98fnt + 0x0800, 16*128);
 	}
 	// 8x16 フォント(0x80～)を読む必要がある？
 	if (loading & FONT_ANK16b) {
 		loading &= ~FONT_ANK16b;
-		CopyMemory(fontrom + 0x80800, v98fnt + 0x1000, 16*128);
+		memcpy(fontrom + 0x80800, v98fnt + 0x1000, 16*128);
 	}
 
 	// 第一水準漢字を読む必要がある？

@@ -25,7 +25,7 @@ static void patch29(UINT jish, const UINT8 *src) {
 
 	p = fontrom + 0x21000 + (jish << 4);
 	for (i=0x21; i<0x7f; i++) {
-		CopyMemory(p, src, 16);
+		memcpy(p, src, 16);
 		p += 0x1000;
 		src += 16;
 	}
@@ -59,7 +59,7 @@ void fontdata_ank8store(const UINT8 *ptr, UINT pos, UINT cnt) {
 
 	dat = fontrom + 0x82000 + (pos * 16);
 	while(cnt--) {
-		CopyMemory(dat, ptr, 8);
+		memcpy(dat, ptr, 8);
 		dat += 16;
 		ptr += 8;
 	}
@@ -67,13 +67,13 @@ void fontdata_ank8store(const UINT8 *ptr, UINT pos, UINT cnt) {
 
 void fontdata_patch16a(void) {
 
-	CopyMemory(fontrom + 0x80000, fontdata_16 + 0*32*16, 32*16);
+	memcpy(fontrom + 0x80000, fontdata_16 + 0*32*16, 32*16);
 }
 
 void fontdata_patch16b(void) {
 
-	CopyMemory(fontrom + 0x80800, fontdata_16 + 1*32*16, 32*16);
-	CopyMemory(fontrom + 0x80e00, fontdata_16 + 2*32*16, 32*16);
+	memcpy(fontrom + 0x80800, fontdata_16 + 1*32*16, 32*16);
+	memcpy(fontrom + 0x80e00, fontdata_16 + 2*32*16, 32*16);
 }
 
 void fontdata_patchjis(void) {

@@ -116,7 +116,7 @@ static UINT getcatfilename(const ZIPCAT *cat, char *filename, UINT size) {
 	fnamesize = LOADINTELWORD(cat->filenamesize);
 	size = min(size, fnamesize);
 	if (size) {
-		CopyMemory(filename, cat + 1, size);
+		memcpy(filename, cat + 1, size);
 	}
 	filename[size] = '\0';
 	return(size);
@@ -278,7 +278,7 @@ static UINT method8read(METHOD8 *m8, void *buffer, UINT size) {
 		r = min(dstrem, size);
 		if (r) {
 			if (buffer != NULL) {
-				CopyMemory(ptr, m8->dst + m8->pos, r);
+				memcpy(ptr, m8->dst + m8->pos, r);
 			}
 			ptr += r;
 			size -= r;

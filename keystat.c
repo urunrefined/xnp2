@@ -81,7 +81,7 @@ void keystat_tblset(REG8 ref, const UINT8 *key, UINT cnt) {
 	}
 	nkey->keys = (UINT8)cnt;
 	if (cnt) {
-		CopyMemory(nkey->key, key, cnt);
+		memcpy(nkey->key, key, cnt);
 	}
 }
 

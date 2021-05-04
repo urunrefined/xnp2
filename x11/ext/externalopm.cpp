@@ -6,6 +6,8 @@
 #include "compiler.h"
 #include "externalopm.h"
 
+#include <string.h>
+
 /**
  * コンストラクタ
  * @param[in] pChip チップ

@@ -290,7 +290,7 @@ static int statflag_createsection(SFFILEH sffh, const SFENTRY *tbl) {
 		sffh->stat = SFFILEH_ERROR;
 		return(STATFLAG_FAILURE);
 	}
-	CopyMemory(sffh->sfh.hdr.index, tbl->index, sizeof(sffh->sfh.hdr.index));
+	memcpy(sffh->sfh.hdr.index, tbl->index, sizeof(sffh->sfh.hdr.index));
 	sffh->sfh.hdr.ver = tbl->ver;
 	sffh->sfh.hdr.size = 0;
 	return(STATFLAG_SUCCESS);

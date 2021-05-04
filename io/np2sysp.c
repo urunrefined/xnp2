@@ -13,6 +13,8 @@
 #include	"milstr.h"
 #endif
 
+#include	<string.h>
+
 
 #define		NP2SYSP_VER			"C"
 // #define	NP2SYSP_CREDIT		""					// 要るなら・・・
@@ -193,7 +195,7 @@ static BRESULT np2syspcmp(const char *p) {
 	int		len;
 	int		pos;
 
-	len = (int)STRLEN(p);
+	len = (int)strlen(p);
 	if (!len) {
 		return(FAILURE);
 	}

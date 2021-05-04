@@ -6,6 +6,7 @@
 #include "compiler.h"
 #include "c86ctlgimic.h"
 #include <algorithm>
+#include <string.h>
 
 namespace c86ctl
 {

@@ -310,7 +310,7 @@ const UINT8	*ptr;
 			continue;
 		}
 		src[0] = ptr[0];
-		CopyMemory(src + 2, ptr + 1, 7);
+		memcpy(src + 2, ptr + 1, 7);
 		cmndraw_setfg(vram, src, x, y, fg);
 		x += ptr[0] + 1;
 	}

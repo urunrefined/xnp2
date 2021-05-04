@@ -49,7 +49,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include <string.h>
 #include <unistd.h>
 
 #define	X11
@@ -99,15 +98,10 @@ typedef signed long nxp2ptr;
 #endif
 #endif	/* !__cplusplus */
 
-#ifndef	ZeroMemory
+#include <string.h>
+
 #define	ZeroMemory(d,n)		memset((d), 0, (n))
-#endif
-#ifndef	CopyMemory
-#define	CopyMemory(d,s,n)	memcpy((d), (s), (n))
-#endif
-#ifndef	FillMemory
 #define	FillMemory(a, b, c)	memset((a), (c), (b))
-#endif
 
 #ifndef	roundup
 #define	roundup(x, y)	((((x)+((y)-1))/(y))*(y))
@@ -139,12 +133,10 @@ typedef signed long nxp2ptr;
 
 #define	GETRAND()	random()
 #define	SPRINTF		sprintf
-#define	STRLEN		strlen
 
 #define	OEMCHAR		char
 #define OEMTEXT(s)	s
 #define	OEMSPRINTF	sprintf
-#define	OEMSTRLEN	strlen
 
 #if defined(CPUCORE_IA32)
 #define	msgbox(title, msg)	toolkit_messagebox(title, msg);

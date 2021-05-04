@@ -161,7 +161,7 @@ void atapicmd_a0(IDEDRV drv) {
 	case 0x12:		// inquiry
 		TRACEOUT(("atapicmd: inquiry"));
 		leng = drv->buf[4];
-		CopyMemory(drv->buf, cdrom_inquiry, sizeof(cdrom_inquiry));
+		memcpy(drv->buf, cdrom_inquiry, sizeof(cdrom_inquiry));
 		senddata(drv, sizeof(cdrom_inquiry), leng);
 		break;
 
@@ -432,7 +432,7 @@ static void atapi_cmd_mode_sense(IDEDRV drv) {
 		else {
 			ptr = defval_pagecode_01;
 		}
-		CopyMemory(drv->buf + cnt, ptr, min((leng - cnt), PC_01_SIZE));
+		memcpy(drv->buf + cnt, ptr, min((leng - cnt), PC_01_SIZE));
 		cnt += PC_01_SIZE;
 		if (cnt > leng) {
 			goto length_exceeded;
@@ -449,7 +449,7 @@ static void atapi_cmd_mode_sense(IDEDRV drv) {
 		else {
 			ptr = defval_pagecode_0d;
 		}
-		CopyMemory(drv->buf + cnt, ptr, min((leng - cnt), PC_0D_SIZE));
+		memcpy(drv->buf + cnt, ptr, min((leng - cnt), PC_0D_SIZE));
 		cnt += PC_0D_SIZE;
 		if (cnt > leng) {
 			goto length_exceeded;
@@ -466,7 +466,7 @@ static void atapi_cmd_mode_sense(IDEDRV drv) {
 		else {
 			ptr = defval_pagecode_0e;
 		}
-		CopyMemory(drv->buf + cnt, ptr, min((leng - cnt), PC_0E_SIZE));
+		memcpy(drv->buf + cnt, ptr, min((leng - cnt), PC_0E_SIZE));
 		cnt += PC_0E_SIZE;
 		if (cnt > leng) {
 			goto length_exceeded;
@@ -483,7 +483,7 @@ static void atapi_cmd_mode_sense(IDEDRV drv) {
 		else {
 			ptr = defval_pagecode_2a;
 		}
-		CopyMemory(drv->buf + cnt, ptr, min((leng - cnt), PC_2A_SIZE));
+		memcpy(drv->buf + cnt, ptr, min((leng - cnt), PC_2A_SIZE));
 		cnt += PC_2A_SIZE;
 		if (cnt > leng) {
 			goto length_exceeded;

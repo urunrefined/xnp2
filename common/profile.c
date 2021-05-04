@@ -16,6 +16,8 @@
 
 #include "_memory.h"
 
+#include <string.h>
+
 /**
  * End of line style
  */
@@ -148,7 +150,7 @@ BRESULT profile_enum(const OEMCHAR *lpFileName, void *lpParam, PROFILEENUMPROC l
 	szAppName[0] = '\0';
 	while (textfile_read(fh, szBuffer, NELEMENTS(szBuffer)) == SUCCESS)
 	{
-		cchBuffer = (UINT)OEMSTRLEN(szBuffer);
+	        cchBuffer = (UINT)strlen(szBuffer);
 		lpKeyName = ParseLine(szBuffer, &cchBuffer, &lpString, &cchString);
 		if (lpKeyName)
 		{
@@ -234,8 +236,8 @@ static BRESULT SearchKey(PFILEH hdl, PFPOS *pfp, const OEMCHAR *lpAppName, const
 		return FAILURE;
 	}
 	memset(&ret, 0, sizeof(ret));
-	ret.cchAppName = (UINT)OEMSTRLEN(lpAppName);
-	ret.cchKeyName = (UINT)OEMSTRLEN(lpKeyName);
+	ret.cchAppName = (UINT)strlen(lpAppName);
+	ret.cchKeyName = (UINT)strlen(lpKeyName);
 	if ((ret.cchAppName == 0) || (ret.cchKeyName == 0))
 	{
 		return FAILURE;
@@ -341,7 +343,7 @@ static BRESULT replace(PFILEH hdl, UINT nPos, UINT size1, UINT size2)
 			}
 			if (hdl->lpBuffer)
 			{
-				CopyMemory(p, hdl->lpBuffer, hdl->cchBuffer * sizeof(OEMCHAR));
+				memcpy(p, hdl->lpBuffer, hdl->cchBuffer * sizeof(OEMCHAR));
 				_MFREE(hdl->lpBuffer);
 			}
 			hdl->lpBuffer = p;
@@ -495,7 +497,7 @@ static PFILEH registfile(FILEH fh)
 	ret->nSize = nReadSize;
 	if (cbHeader)
 	{
-		CopyMemory(ret->szHeader, szHeader, cbHeader);
+		memcpy(ret->szHeader, szHeader, cbHeader);
 	}
 	ret->cbHeader = cbHeader;
 	return ret;
@@ -836,7 +838,7 @@ BRESULT profile_write(const OEMCHAR *lpAppName, const OEMCHAR *lpKeyName, const 
 		pfp.nPos += cchWrite;
 	}
 
-	cchString = (UINT)OEMSTRLEN(lpString);
+	cchString = (UINT)strlen(lpString);
 	cchWrite = pfp.cchKeyName + 1 + cchString + NELEMENTS(s_eol);
 	if (replace(hdl, pfp.nPos, pfp.nSize, cchWrite) != SUCCESS)
 	{

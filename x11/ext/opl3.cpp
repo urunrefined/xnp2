@@ -12,6 +12,8 @@
 #include "externalchipmanager.h"
 #include "externalopl3.h"
 
+#include <string.h>
+
 static void writeRegister(POPL3 opl3, UINT nAddress, REG8 cData);
 static void writeExtendedRegister(POPL3 opl3, UINT nAddress, REG8 cData);
 

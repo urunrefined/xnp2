@@ -9,6 +9,8 @@
 #include "sccisoundinterfacemanager.h"
 #include "milstr.h"
 
+#include <string.h>
+
 namespace scci
 {
 

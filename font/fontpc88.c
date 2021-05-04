@@ -110,13 +110,13 @@ UINT8 fontpc88_read(const OEMCHAR *filename, UINT8 loading) {
 				// 16dot ASCIIを読む必要があるか
 				if (loading & FONT_ANK16a) {
 					loading &= ~FONT_ANK16a;
-					CopyMemory(fontrom + 0x80000, work + 0x0000, 16*128);
+					memcpy(fontrom + 0x80000, work + 0x0000, 16*128);
 				}
 
 				// 16dot ANK(0x80～)を読む必要があるか
 				if (loading & FONT_ANK16b) {
 					loading &= ~FONT_ANK16b;
-					CopyMemory(fontrom + 0x80800, work + 0x0800, 16*128);
+					memcpy(fontrom + 0x80800, work + 0x0800, 16*128);
 				}
 
 				// 第一水準漢字を読み込む？
@@ -172,13 +172,13 @@ UINT8 fontpc88_read(const OEMCHAR *filename, UINT8 loading) {
 				// 16dot ASCIIを読む必要があるか
 				if (loading & FONT_ANK16a) {
 					loading &= ~FONT_ANK16a;
-					CopyMemory(fontrom + 0x80000, work + 0x0800, 16*128);
+					memcpy(fontrom + 0x80000, work + 0x0800, 16*128);
 				}
 
 				// 16dot ANK(0x80～)を読む必要があるか
 				if (loading & FONT_ANK16b) {
 					loading &= ~FONT_ANK16b;
-					CopyMemory(fontrom + 0x80800, work + 0x1000, 16*128);
+					memcpy(fontrom + 0x80800, work + 0x1000, 16*128);
 				}
 			}
 

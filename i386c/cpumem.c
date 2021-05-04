@@ -528,17 +528,17 @@ void MEMCALL memp_reads(UINT32 address, void *dat, UINT leng) {
 
 	/* fast memory access */
 	if ((address + leng) < I286_MEMREADMAX) {
-		CopyMemory(dat, mem + address, leng);
+		memcpy(dat, mem + address, leng);
 		return;
 	}
 	address = address & CPU_ADRSMASK;
 	if ((address >= USE_HIMEM) && (address < CPU_EXTLIMIT16)) {
 		diff = CPU_EXTLIMIT16 - address;
 		if (diff >= leng) {
-			CopyMemory(dat, CPU_EXTMEMBASE + address, leng);
+			memcpy(dat, CPU_EXTMEMBASE + address, leng);
 			return;
 		}
-		CopyMemory(dat, CPU_EXTMEMBASE + address, diff);
+		memcpy(dat, CPU_EXTMEMBASE + address, diff);
 		out += diff;
 		leng -= diff;
 		address += diff;
@@ -557,17 +557,17 @@ void MEMCALL memp_writes(UINT32 address, const void *dat, UINT leng) {
 
 	/* fast memory access */
 	if ((address + leng) < I286_MEMREADMAX) {
-		CopyMemory(mem + address, dat, leng);
+		memcpy(mem + address, dat, leng);
 		return;
 	}
 	address = address & CPU_ADRSMASK;
 	if ((address >= USE_HIMEM) && (address < CPU_EXTLIMIT16)) {
 		diff = CPU_EXTLIMIT16 - address;
 		if (diff >= leng) {
-			CopyMemory(CPU_EXTMEMBASE + address, dat, leng);
+			memcpy(CPU_EXTMEMBASE + address, dat, leng);
 			return;
 		}
-		CopyMemory(CPU_EXTMEMBASE + address, dat, diff);
+		memcpy(CPU_EXTMEMBASE + address, dat, diff);
 		out += diff;
 		leng -= diff;
 		address += diff;

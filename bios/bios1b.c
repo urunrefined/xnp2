@@ -737,11 +737,11 @@ static UINT16 boot_fd1(REG8 type, REG8 rpm) {
 			size = 128 << 3;
 		}
 		if (remain < size) {
-			CopyMemory(mem + pos, fdc.buf, remain);
+			memcpy(mem + pos, fdc.buf, remain);
 			break;
 		}
 		else {
-			CopyMemory(mem + pos, fdc.buf, size);
+			memcpy(mem + pos, fdc.buf, size);
 			pos += size;
 			remain -= size;
 			fdc.R++;

@@ -215,7 +215,7 @@ const OEMCHAR	*p;
 	if (len >= NELEMENTS(path)) {
 		return(NULL);
 	}
-	CopyMemory(path, fname, len * sizeof(OEMCHAR));
+	memcpy(path, fname, len * sizeof(OEMCHAR));
 	path[len] = '\0';
 	fname = fname + len + 1;
 	arch = arc_open(path);
@@ -250,7 +250,7 @@ const OEMCHAR	*p;
 	if (len >= NELEMENTS(path)) {
 		return(-1);
 	}
-	CopyMemory(path, fname, len * sizeof(OEMCHAR));
+	memcpy(path, fname, len * sizeof(OEMCHAR));
 	path[len] = '\0';
 	fname = fname + len + 1;
 	arch = arc_open(path);

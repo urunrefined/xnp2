@@ -336,7 +336,7 @@ const PALNUM	*s;
 	}
 	if (palsize) {
 		ZeroMemory(palwork, palsize);
-		CopyMemory(palwork, sd->pal, sd->pals * 4);
+		memcpy(palwork, sd->pal, sd->pals * 4);
 		if (file_write(fh, palwork, palsize) != palsize) {
 			goto sswb_err2;
 		}
@@ -528,7 +528,7 @@ const PALNUM	*s;
 		goto sswg_err3;
 	}
 
-	CopyMemory(bitbuf, "GIF87a", 6);
+	memcpy(bitbuf, "GIF87a", 6);
 	STOREINTELWORD(bitbuf + 6, sd->width);
 	STOREINTELWORD(bitbuf + 8, sd->height);
 	if (file_write(fh, bitbuf, 10) != 10) {

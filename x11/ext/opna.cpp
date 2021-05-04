@@ -14,6 +14,8 @@
 #include "externalchipmanager.h"
 #include "externalopna.h"
 
+#include <string.h>
+
 static void writeRegister(POPNA opna, UINT nAddress, REG8 cData);
 static void writeExtendedRegister(POPNA opna, UINT nAddress, REG8 cData);
 

@@ -84,7 +84,7 @@ void *listarray_append(LISTARRAY laHandle, const void *vpItem) {
 	p = (UINT8 *)(laHandle + 1);
 	p += laHandle->items * laHandle->listsize;
 	if (vpItem) {
-		CopyMemory(p, vpItem, laHandle->listsize);
+		memcpy(p, vpItem, laHandle->listsize);
 	}
 	else {
 		ZeroMemory(p, laHandle->listsize);

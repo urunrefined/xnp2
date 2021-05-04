@@ -1183,16 +1183,16 @@ static void v30patching(I286TBL *dst, const V30PATCH *patch, int length) {
 
 void v30xinit(void) {
 
-	CopyMemory(v30op, i286op, sizeof(v30op));
+	memcpy(v30op, i286op, sizeof(v30op));
 	V30PATCHING(v30op, v30patch_op);
-	CopyMemory(v30op_repne, i286op_repne, sizeof(v30op_repne));
+	memcpy(v30op_repne, i286op_repne, sizeof(v30op_repne));
 	V30PATCHING(v30op_repne, v30patch_repne);
-	CopyMemory(v30op_repe, i286op_repe, sizeof(v30op_repe));
+	memcpy(v30op_repe, i286op_repe, sizeof(v30op_repe));
 	V30PATCHING(v30op_repe, v30patch_repe);
-	CopyMemory(v30ope0xf6_xtable, ope0xf6_xtable, sizeof(v30ope0xf6_xtable));
+	memcpy(v30ope0xf6_xtable, ope0xf6_xtable, sizeof(v30ope0xf6_xtable));
 	v30ope0xf6_xtable[6] = v30div_ea8;
 	v30ope0xf6_xtable[7] = v30idiv_ea8;
-	CopyMemory(v30ope0xf7_xtable, ope0xf7_xtable, sizeof(v30ope0xf7_xtable));
+	memcpy(v30ope0xf7_xtable, ope0xf7_xtable, sizeof(v30ope0xf7_xtable));
 	v30ope0xf7_xtable[6] = v30div_ea16;
 	v30ope0xf7_xtable[7] = v30idiv_ea16;
 }

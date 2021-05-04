@@ -245,7 +245,7 @@ static void
 sendexclusive(CMMIDI midi, const UINT8 *buf, UINT leng)
 {
 
-	CopyMemory(midi->excvbuf, buf, leng);
+	memcpy(midi->excvbuf, buf, leng);
 	midi_write(midi, midi->excvbuf, leng);
 	midi->midiexcvwait = 1;
 }
@@ -607,7 +607,7 @@ midimsg(COMMNG self, UINT msg, INTPTR param)
 		if ((flag) &&
 		    (flag->size == sizeof(_COMFLAG) + sizeof(midi->mch)) &&
 		    (flag->sig == COMSIG_MIDI)) {
-			CopyMemory(midi->mch, flag + 1, sizeof(midi->mch));
+			memcpy(midi->mch, flag + 1, sizeof(midi->mch));
 			midisetparam(midi);
 			return 1;
 		}
@@ -620,7 +620,7 @@ midimsg(COMMNG self, UINT msg, INTPTR param)
 			flag->sig = COMSIG_MIDI;
 			flag->ver = 0;
 			flag->param = 0;
-			CopyMemory(flag + 1, midi->mch, sizeof(midi->mch));
+			memcpy(flag + 1, midi->mch, sizeof(midi->mch));
 			return (INTPTR)flag;
 		}
 		break;

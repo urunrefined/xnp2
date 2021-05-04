@@ -79,7 +79,7 @@ static UINT pcm_dec(GETSND snd, void *dst) {
 
 	size = min(snd->blocksize, snd->datsize);
 	if (size) {
-		CopyMemory(dst, snd->datptr, size);
+		memcpy(dst, snd->datptr, size);
 		snd->datptr += size;
 		snd->datsize -= size;
 		size >>= (int)(INTPTR)snd->snd;
@@ -107,7 +107,7 @@ static UINT pcm_dec(GETSND snd, UINT8 *dst) {
 			}
 		}
 		else {
-			CopyMemory(dst, snd->datptr, size);
+			memcpy(dst, snd->datptr, size);
 		}
 		snd->datptr += size;
 		snd->datsize -= size;

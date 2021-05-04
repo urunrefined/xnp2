@@ -51,7 +51,7 @@ static BRESULT writehddipl(FILEH fh, UINT ssize, UINT32 tsize) {
 	UINT	size;
 
 	ZeroMemory(work, sizeof(work));
-	CopyMemory(work, hdddiskboot, sizeof(hdddiskboot));
+	memcpy(work, hdddiskboot, sizeof(hdddiskboot));
 	if (ssize < 1024) {
 		work[ssize - 2] = 0x55;
 		work[ssize - 1] = 0xaa;
@@ -116,7 +116,7 @@ void newdisk_nhd(const OEMCHAR *fname, UINT hddsize) {
 		goto ndnhd_err;
 	}
 	ZeroMemory(&nhd, sizeof(nhd));
-	CopyMemory(&nhd.sig, sig_nhd, 15);
+	memcpy(&nhd.sig, sig_nhd, 15);
 	STOREINTELDWORD(nhd.headersize, sizeof(nhd));
 	size = hddsize * 15;
 	STOREINTELDWORD(nhd.cylinders, size);
@@ -188,7 +188,7 @@ void newdisk_vhd(const OEMCHAR *fname, UINT hddsize) {
 		goto ndvhd_err;
 	}
 	ZeroMemory(&vhd, sizeof(vhd));
-	CopyMemory(&vhd.sig, sig_vhd, 7);
+	memcpy(&vhd.sig, sig_vhd, 7);
 	STOREINTELWORD(vhd.mbsize, (UINT16)hddsize);
 	STOREINTELWORD(vhd.sectorsize, 256);
 	vhd.sectors = 32;

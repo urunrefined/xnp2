@@ -10,6 +10,8 @@
 #include	"dosio.h"
 #endif
 
+#include <string.h>
+
 #include "_memory.h"
 
 
@@ -287,7 +289,7 @@ const UINT8	*p;
 	while(size) {
 		wsize = min(size, tf->bufrem);
 		if (wsize) {
-			CopyMemory(tf->buf + tf->bufpos, p, wsize);
+			memcpy(tf->buf + tf->bufpos, p, wsize);
 			p += wsize;
 			size -= wsize;
 			tf->bufpos += wsize;
@@ -315,7 +317,7 @@ const UINT8	*p;
 		wsize = min(size, tf->bufrem);
 		if (wsize) {
 			q = tf->buf + (tf->bufpos * sizeof(UINT16));
-			CopyMemory(q, p, wsize * sizeof(UINT16));
+			memcpy(q, p, wsize * sizeof(UINT16));
 #if defined(SUPPORT_TEXTCNV)
 			if (tf->xendian) {
 				textcnv_swapendian16(q, wsize);
@@ -561,7 +563,7 @@ const void		*buf;
 		flushfile(tf);
 		tf->mode = TFMODE_WRITE;
 	}
-	leng = (UINT)OEMSTRLEN(buffer);
+	leng = (UINT)strlen(buffer);
 #if defined(SUPPORT_TEXTCNV)
 	if (tf->fromoem != NULL) {
 		leng = (tf->fromoem)(tf->cnvbuf, tf->cnvbufsize / tf->width,

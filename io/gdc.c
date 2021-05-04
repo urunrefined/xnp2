@@ -130,7 +130,7 @@ void gdc_paletteinit(void) {
 
 	int		c;
 
-	CopyMemory(gdc.degpal, defdegpal, 4);
+	memcpy(gdc.degpal, defdegpal, 4);
 	for (c=0; c<8; c++) {
 		gdc.anapal[c+0].p.b = ((c&1)?0x0f:0);
 		gdc.anapal[c+8].p.b = ((c&1)?0x0a:0);
@@ -1059,9 +1059,9 @@ void gdc_biosreset(void) {
 		gdc.m.para[GDC_CSRFORM + 0] = 0x0f;
 		gdc.m.para[GDC_CSRFORM + 1] = 0xc0;
 		gdc.m.para[GDC_CSRFORM + 2] = 0x7b;
-		CopyMemory(gdc.m.para + GDC_SYNC, defsyncm24, 8);
+		memcpy(gdc.m.para + GDC_SYNC, defsyncm24, 8);
 		gdc.s.para[GDC_CSRFORM + 0] = 1;
-		CopyMemory(gdc.s.para + GDC_SYNC, defsyncs24, 8);
+		memcpy(gdc.s.para + GDC_SYNC, defsyncs24, 8);
 	}
 	else {
 		gdc.crt15khz = 3;
@@ -1069,8 +1069,8 @@ void gdc_biosreset(void) {
 		gdc.m.para[GDC_CSRFORM + 0] = 0x07;
 		gdc.m.para[GDC_CSRFORM + 1] = 0xc0;
 		gdc.m.para[GDC_CSRFORM + 2] = 0x3b;
-		CopyMemory(gdc.m.para + GDC_SYNC, defsyncm15, 8);
-		CopyMemory(gdc.s.para + GDC_SYNC, defsyncs15, 8);
+		memcpy(gdc.m.para + GDC_SYNC, defsyncm15, 8);
+		memcpy(gdc.s.para + GDC_SYNC, defsyncs15, 8);
 	}
 	if (pccore.dipsw[0] & 0x80) {
 		gdc.s.para[GDC_SYNC] = 0x16;
@@ -1105,7 +1105,7 @@ void gdc_biosreset(void) {
 	MEMM_VRAM(vramop.operate);
 
 	// palette
-	CopyMemory(gdc.degpal, defdegpal, 4);
+	memcpy(gdc.degpal, defdegpal, 4);
 	if (gdc.display & (1 << GDCDISP_ANALOG)) {
 		gdc_setanalogpalall(defanapal);
 	}

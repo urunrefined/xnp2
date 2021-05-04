@@ -148,7 +148,7 @@ static void store_srch(INTRST is) {
 	// SDA内のSRCHRECにセット
 	srchrec = is->srchrec_ptr;
 	srchrec->drive_no = 0xc0 | hostdrv.stat.drive_no;
-	CopyMemory(srchrec->srch_mask, is->fcbname_ptr, 11);
+	memcpy(srchrec->srch_mask, is->fcbname_ptr, 11);
 	srchrec->attr_mask = *is->srch_attr_ptr;
 	STOREINTELWORD(srchrec->dir_entry_no, ((UINT16)-1));
 	STOREINTELWORD(srchrec->dir_sector, ((UINT16)-1));
@@ -162,7 +162,7 @@ static void store_dir(INTRST is, const HDRVFILE *phdf) {
 
 	// SDA内のDIRRECにセット
 	dirrec = is->dirrec_ptr;
-	CopyMemory(dirrec->file_name, phdf->fcbname, 11);
+	memcpy(dirrec->file_name, phdf->fcbname, 11);
 	attr = (UINT8)(phdf->attr & 0x3f);
 	if (!IS_PERMITWRITE) {
 		attr |= 0x01;
@@ -215,7 +215,7 @@ static void fill_sft(INTRST is, SFTREC sft, UINT num, const HDRVFILE *phdf) {
 	STOREINTELDWORD(sft->file_size, phdf->size);
 	STOREINTELWORD(sft->dir_sector, (UINT16)-1);
 	sft->dir_entry_no = (UINT8)-1;
-	CopyMemory(sft->file_name, is->fcbname_ptr, 11);
+	memcpy(sft->file_name, is->fcbname_ptr, 11);
 	TRACEOUT(("open -> size %d", phdf->size));
 }
 
@@ -1656,7 +1656,7 @@ static BOOL fhdl_wr(void *vpItem, void *vpArg) {
 	UINT	len;
 
 	p = ((HDRVHANDLE)vpItem)->path;
-	len = (UINT)OEMSTRLEN(p);
+	len = (UINT)strlen(p);
 	statflag_write((STFLAGH)vpArg, &len, sizeof(len));
 	if (len) {
 		if (len < MAX_PATH) {
@@ -1673,7 +1673,7 @@ static BOOL flist_wr(void *vpItem, void *vpArg) {
 	UINT	len;
 
 	p = ((HDRVLST)vpItem)->szFilename;
-	len = (UINT)OEMSTRLEN(p);
+	len = (UINT)strlen(p);
 	if (len < MAX_PATH) {
 		ZeroMemory(p + len, (MAX_PATH - len) * sizeof(OEMCHAR));
 	}

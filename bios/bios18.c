@@ -357,7 +357,7 @@ const CRTDATA	*p;
 		gdc.display &= ~(1 << GDCDISP_31);
 	}
 
-	CopyMemory(gdc.m.para + GDC_SYNC, gdcmastersync[master], 8);
+	memcpy(gdc.m.para + GDC_SYNC, gdcmastersync[master], 8);
 	ZeroMemory(gdc.m.para + GDC_SCROLL, 4);
 	gdc.m.para[GDC_PITCH] = 80;
 
@@ -372,7 +372,7 @@ const CRTDATA	*p;
 	crtc.reg.sur = 1;
 	crtc.reg.sdr = 0;
 
-	CopyMemory(gdc.s.para + GDC_SYNC, gdcslavesync[slave], 8);
+	memcpy(gdc.s.para + GDC_SYNC, gdcslavesync[slave], 8);
 	ZeroMemory(gdc.s.para + GDC_SCROLL, 4);
 	if (slave & 1) {
 		gdc.s.para[GDC_PITCH] = 80;
@@ -489,7 +489,7 @@ void bios0x18_42(REG8 mode) {
 			if ((mem[MEMB_PRXDUPD] & 0x24) == 0x20) {
 				mem[MEMB_PRXDUPD] ^= 4;
 				gdc.clock |= 3;
-				CopyMemory(gdc.s.para + GDC_SYNC, gdcslavesync[3], 8);
+				memcpy(gdc.s.para + GDC_SYNC, gdcslavesync[3], 8);
 				gdc.s.para[GDC_PITCH] = 80;
 				gdcs.grphdisp |= GDCSCRN_EXT;
 				mem[MEMB_PRXDUPD] |= 0x08;
@@ -504,7 +504,7 @@ void bios0x18_42(REG8 mode) {
 				else
 #endif
 				slave = (mem[MEMB_PRXCRT] & 0x40)?2:0;
-				CopyMemory(gdc.s.para + GDC_SYNC, gdcslavesync[slave], 8);
+				memcpy(gdc.s.para + GDC_SYNC, gdcslavesync[slave], 8);
 				gdc.s.para[GDC_PITCH] = 40;
 				gdcs.grphdisp |= GDCSCRN_EXT;
 				mem[MEMB_PRXDUPD] |= 0x08;

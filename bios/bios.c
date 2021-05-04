@@ -255,11 +255,11 @@ void bios_initialize(void) {
 		}
 	}
 	else {
-		CopyMemory(mem + 0x0e8000, nosyscode, sizeof(nosyscode));
+		memcpy(mem + 0x0e8000, nosyscode, sizeof(nosyscode));
 		if ((!biosrom) && (!(pccore.model & PCMODEL_EPSON))) {
-			CopyMemory(mem + 0xe8dd8, neccheck, 0x25);
+			memcpy(mem + 0xe8dd8, neccheck, 0x25);
 			pos = LOADINTELWORD(itfrom + 2);
-			CopyMemory(mem + 0xf538e, itfrom + pos, 0x27);
+			memcpy(mem + 0xf538e, itfrom + pos, 0x27);
 		}
 		setbiosseed(mem + 0x0e8000, 0x10000, 0xb1f0);
 	}
@@ -288,7 +288,7 @@ void bios_initialize(void) {
 #endif
 
 #if defined(BIOS_SIMULATE)
-	CopyMemory(mem + BIOS_BASE, biosfd80, sizeof(biosfd80));
+	memcpy(mem + BIOS_BASE, biosfd80, sizeof(biosfd80));
 	if (!biosrom) {
 		lio_initialize();
 	}
@@ -298,18 +298,18 @@ void bios_initialize(void) {
 		STOREINTELWORD(mem + 0xfd800 + 0x1ad7 + i, 0x1adf);
 		STOREINTELWORD(mem + 0xfd800 + 0x2361 + i, 0x1980);
 	}
-	CopyMemory(mem + 0xfd800 + 0x1ab7, fdfmt2hd, sizeof(fdfmt2hd));
-	CopyMemory(mem + 0xfd800 + 0x1adf, fdfmt2dd, sizeof(fdfmt2dd));
-	CopyMemory(mem + 0xfd800 + 0x1980, fdfmt144, sizeof(fdfmt144));
+	memcpy(mem + 0xfd800 + 0x1ab7, fdfmt2hd, sizeof(fdfmt2hd));
+	memcpy(mem + 0xfd800 + 0x1adf, fdfmt2dd, sizeof(fdfmt2dd));
+	memcpy(mem + 0xfd800 + 0x1980, fdfmt144, sizeof(fdfmt144));
 
 	SETBIOSMEM16(0xfffe8, 0xcb90);
 	SETBIOSMEM16(0xfffec, 0xcb90);
 	mem[0xffff0] = 0xea;
 	STOREINTELDWORD(mem + 0xffff1, 0xfd800000);
 
-	CopyMemory(mem + 0x0fd800 + 0x0e00, keytable[0], 0x300);
+	memcpy(mem + 0x0fd800 + 0x0e00, keytable[0], 0x300);
 
-	CopyMemory(mem + ITF_ADRS, itfrom, sizeof(itfrom));
+	memcpy(mem + ITF_ADRS, itfrom, sizeof(itfrom));
 	mem[ITF_ADRS + 0x7ff0] = 0xea;
 	STOREINTELDWORD(mem + ITF_ADRS + 0x7ff1, 0xf8000000);
 	if (pccore.model & PCMODEL_EPSON) {
@@ -328,8 +328,8 @@ void bios_initialize(void) {
 	}
 #endif
 
-	CopyMemory(mem + 0x1c0000, mem + ITF_ADRS, 0x08000);
-	CopyMemory(mem + 0x1e8000, mem + 0x0e8000, 0x10000);
+	memcpy(mem + 0x1c0000, mem + ITF_ADRS, 0x08000);
+	memcpy(mem + 0x1e8000, mem + 0x0e8000, 0x10000);
 }
 
 

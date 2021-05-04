@@ -54,7 +54,7 @@ static UINT8 rasterdraw(SDRAWFN sdrawfn, SDRAW sdraw, int maxy) {
 	int			y;
 
 	TRACEOUT(("rasterdraw: maxy = %d", maxy));
-	CopyMemory(pal, palevent.pal, sizeof(pal));
+	memcpy(pal, palevent.pal, sizeof(pal));
 	clk = maxy;
 	clk += 2;
 	clk += np2cfg.realpal;

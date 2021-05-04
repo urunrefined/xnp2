@@ -88,17 +88,17 @@ static void cc24by16(RSZHDL hdl, UINT8 *dst, const UINT8 *src) {
 #if defined(RESIZE_FASTCOPY)
 static void cc8(RSZHDL hdl, UINT8 *dst, const UINT8 *src) {
 
-	CopyMemory(dst, src, hdl->width);
+	memcpy(dst, src, hdl->width);
 }
 
 static void cc16(RSZHDL hdl, UINT8 *dst, const UINT8 *src) {
 
-	CopyMemory(dst, src, hdl->width * 2);
+	memcpy(dst, src, hdl->width * 2);
 }
 
 static void cc24(RSZHDL hdl, UINT8 *dst, const UINT8 *src) {
 
-	CopyMemory(dst, src, hdl->width * 3);
+	memcpy(dst, src, hdl->width * 3);
 }
 
 static const FNCNV cnvcpy[RSZFNMAX] = {cc8, cc16, cc24, cc16by24, cc24by16};

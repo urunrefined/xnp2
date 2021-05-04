@@ -8,6 +8,8 @@
 
 #include "skbdwin.h"
 
+#include <string.h>
+
 SKBDCFG skbdcfg;
 
 

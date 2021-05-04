@@ -719,7 +719,7 @@ static void VERMOUTHCL _allresetmidi(MIDIHDL hdl)
 VEXTERN UINT VEXPORT midiout_getver(char *string, UINT leng) {
 
 	leng = min(leng, sizeof(vermouthver));
-	CopyMemory(string, vermouthver, leng);
+	memcpy(string, vermouthver, leng);
 	return((MIDIOUT_VERSION << 8) | 0x00);
 }
 

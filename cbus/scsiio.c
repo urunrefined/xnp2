@@ -100,10 +100,10 @@ static void IOOUTCALL scsiio_occ2(UINT port, REG8 dat) {
 			case SCSICTR_MEMBANK:
 				scsiio.membank = dat;
 				if (!(dat & 0x40)) {
-					CopyMemory(mem + 0xd2000, scsiio.bios[0], 0x2000);
+					memcpy(mem + 0xd2000, scsiio.bios[0], 0x2000);
 				}
 				else {
-					CopyMemory(mem + 0xd2000, scsiio.bios[1], 0x2000);
+					memcpy(mem + 0xd2000, scsiio.bios[1], 0x2000);
 				}
 				break;
 
@@ -227,10 +227,10 @@ void scsiio_reset(const NP2CFG *pConfig) {
 		}
 		else {
 			ZeroMemory(mem + 0xd2000, 0x4000);
-			CopyMemory(scsiio.bios, scsibios, sizeof(scsibios));
+			memcpy(scsiio.bios, scsibios, sizeof(scsibios));
 			TRACEOUT(("use simulate scsi.rom"));
 		}
-		CopyMemory(mem + 0xd2000, scsiio.bios[0], 0x2000);
+		memcpy(mem + 0xd2000, scsiio.bios[0], 0x2000);
 	}
 
 	(void)pConfig;

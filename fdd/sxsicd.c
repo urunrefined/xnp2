@@ -221,7 +221,7 @@ static BRESULT openimg(SXSIDEV sxsi, const OEMCHAR *path,
 	cdinfo->type = type;
 	if ((trk != NULL) && (trks != 0)) {
 		trks = min(trks, NELEMENTS(cdinfo->trk) - 1);
-		CopyMemory(cdinfo->trk, trk, trks * sizeof(_CDTRK));
+		memcpy(cdinfo->trk, trk, trks * sizeof(_CDTRK));
 	}
 	else {
 		cdinfo->trk[0].type = 0x14;

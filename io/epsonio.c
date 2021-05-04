@@ -70,25 +70,25 @@ static void IOOUTCALL epsonio_oc07(UINT port, REG8 dat) {
 	switch(dat) {
 		case 0x2a:	// 0010|1010
 		case 0x2b:
-			CopyMemory(mem + 0x1e8000, mem + 0x1c8000, 0x18000);
+			memcpy(mem + 0x1e8000, mem + 0x1c8000, 0x18000);
 			break;
 
 		case 0x2c:	// 0010|1100
 		case 0x2d:
-			CopyMemory(mem + 0x1e8000, mem + 0x0e8000, 0x10000);
-			CopyMemory(mem + 0x1f8000, mem + 0x1c0000, 0x08000);
+			memcpy(mem + 0x1e8000, mem + 0x0e8000, 0x10000);
+			memcpy(mem + 0x1f8000, mem + 0x1c0000, 0x08000);
 			break;
 
 		case 0xa6:	// 1010|0110
-			CopyMemory(mem + 0x1c8000, mem + 0x0e8000, 0x10000);
-			CopyMemory(mem + 0x1d8000, mem + 0x1c0000, 0x08000);
-			CopyMemory(mem + 0x1e8000, mem + 0x0e8000, 0x10000);
-			CopyMemory(mem + 0x1f8000, mem + 0x1c0000, 0x08000);
+			memcpy(mem + 0x1c8000, mem + 0x0e8000, 0x10000);
+			memcpy(mem + 0x1d8000, mem + 0x1c0000, 0x08000);
+			memcpy(mem + 0x1e8000, mem + 0x0e8000, 0x10000);
+			memcpy(mem + 0x1f8000, mem + 0x1c0000, 0x08000);
 			break;
 
 		case 0xe6:	// 1110|0110
-			CopyMemory(mem + 0x1d8000, mem + 0x1c0000, 0x08000);
-			CopyMemory(mem + 0x1f8000, mem + 0x1c0000, 0x08000);
+			memcpy(mem + 0x1d8000, mem + 0x1c0000, 0x08000);
+			memcpy(mem + 0x1f8000, mem + 0x1c0000, 0x08000);
 			break;
 	}
 	(void)port;

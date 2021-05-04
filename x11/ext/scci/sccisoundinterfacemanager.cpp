@@ -5,12 +5,14 @@
 
 #include "compiler.h"
 #include "sccisoundinterfacemanager.h"
-#include <algorithm>
 #include "sccisoundinterface.h"
 #include "sccispfmlight.h"
 #include "dosio.h"
 #include "common/profile.h"
 #include "milstr.h"
+
+#include <algorithm>
+#include <string.h>
 
 namespace scci
 {
@@ -250,7 +252,7 @@ bool CSoundInterfaceManager::initializeInstance()
 		while (*lpSections != '\0')
 		{
 			OEMCHAR* lpKeyName = lpSections;
-			const size_t cchKeyName = OEMSTRLEN(lpSections);
+			const size_t cchKeyName = strlen(lpSections);
 			lpSections += cchKeyName + 1;
 
 			if (milstr_memcmp(lpKeyName, OEMTEXT("SPFM Light")) != 0)

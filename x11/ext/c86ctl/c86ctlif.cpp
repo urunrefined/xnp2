@@ -6,6 +6,7 @@
 #include "compiler.h"
 #include "c86ctlif.h"
 #include "c86ctl.h"
+#include <string.h>
 
 using namespace c86ctl;
 

@@ -16,7 +16,7 @@
 
 void lio_initialize(void) {
 
-	CopyMemory(mem + (LIO_SEGMENT << 4), liorom, sizeof(liorom));
+	memcpy(mem + (LIO_SEGMENT << 4), liorom, sizeof(liorom));
 }
 
 void bios_lio(REG8 cmd) {

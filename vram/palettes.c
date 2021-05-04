@@ -469,7 +469,7 @@ void pal_eventclear(void) {
 		palevent.events--;					// 0xffffffff にする...
 	}
 	else {
-		CopyMemory(palevent.pal, gdc.anapal, sizeof(gdc.anapal));
+		memcpy(palevent.pal, gdc.anapal, sizeof(gdc.anapal));
 		palevent.vsyncpal = 0;
 	}
 }

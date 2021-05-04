@@ -77,14 +77,14 @@ UINT8 fontx68k_read(const OEMCHAR *filename, UINT8 loading) {
 	// 16dot ASCIIを読む必要があるか
 	if (loading & FONT_ANK16a) {
 		loading &= ~FONT_ANK16a;
-		CopyMemory(fontrom + 0x80200, work + 0x3aa00, 0x60*16);
+		memcpy(fontrom + 0x80200, work + 0x3aa00, 0x60*16);
 		fontdata_patch16a();
 	}
 
 	// 16dot ANK(0x80～)を読む必要があるか
 	if (loading & FONT_ANK16b) {
 		loading &= ~FONT_ANK16b;
-		CopyMemory(fontrom + 0x80a00, work + 0x3b200, 0x40*16);
+		memcpy(fontrom + 0x80a00, work + 0x3b200, 0x40*16);
 		fontdata_patch16b();
 	}
 

@@ -10,6 +10,8 @@
 #include	"sound/soundrom.h"
 #include	"milstr.h"
 
+#include	<string.h>
+
 static const OEMCHAR str_comma[] = OEMTEXT(", ");
 static const OEMCHAR str_2halfMHz[] = OEMTEXT("2.5MHz");
 #define str_5MHz	(str_2halfMHz + 2)
@@ -445,7 +447,7 @@ const INFOPROC	*infterm;
 				}
 			}
 		}
-		leng = (UINT)OEMSTRLEN(dst);
+		leng = (UINT)strlen(dst);
 		dst += leng;
 		maxlen -= leng;
 	}

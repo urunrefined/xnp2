@@ -389,7 +389,7 @@ BRESULT fdd_read_d88(void) {
 		size = secsize;
 	}
 	if (size) {
-		CopyMemory(fdc.buf, p+1, size);
+		memcpy(fdc.buf, p+1, size);
 	}
 	fddlasterror = p->stat;
 	return(SUCCESS);
@@ -423,7 +423,7 @@ BRESULT fdd_write_d88(void) {
 		size = secsize;
 	}
 	if (size) {
-		CopyMemory(p+1, fdc.buf, size);
+		memcpy(p+1, fdc.buf, size);
 		d88trk.write = TRUE;
 	}
 	fddlasterror = 0x00;

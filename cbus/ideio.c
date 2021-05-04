@@ -1033,7 +1033,7 @@ void ideio_reset(const NP2CFG *pConfig) {
 		devinit(drv, i);
 	}
 
-	CopyMemory(mem + 0xd0000, idebios, sizeof(idebios));
+	memcpy(mem + 0xd0000, idebios, sizeof(idebios));
 	TRACEOUT(("use simulate ide.rom"));
 
 	(void)pConfig;

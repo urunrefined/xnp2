@@ -460,7 +460,7 @@ void sasiio_reset(const NP2CFG *pConfig) {
 			TRACEOUT(("load sasi.rom"));
 		}
 		else {
-			CopyMemory(mem + 0xd0000, sasibios, sizeof(sasibios));
+			memcpy(mem + 0xd0000, sasibios, sizeof(sasibios));
 			TRACEOUT(("use simulate sasi.rom"));
 		}
 	}

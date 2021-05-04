@@ -72,7 +72,7 @@ void soundrom_load(UINT32 address, const OEMCHAR *primary) {
 	if (loadsoundrom(address, NULL) == SUCCESS) {
 		return;
 	}
-	CopyMemory(mem + address + 0x2e00, defsoundrom, sizeof(defsoundrom));
+	memcpy(mem + address + 0x2e00, defsoundrom, sizeof(defsoundrom));
 	soundrom.name[0] = '\0';
 	soundrom.address = address;
 }
