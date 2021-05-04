@@ -494,9 +494,9 @@ ini_write(const char *path, const char *title, INITBL *tbl, UINT count, BOOL cre
 
 static const char ini_title[] =
 #if !defined(CPUCORE_IA32)
-	"NekoProjectII";
+	"NekoProjectII_Katze";
 #else
-	"NekoProjectII_IA32";
+	"NekoProjectII_IA32_Katze";
 #endif
 
 enum {
