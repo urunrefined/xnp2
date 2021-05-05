@@ -273,29 +273,5 @@ gtkdrawmng_getformat(GtkWidget *w, GtkWidget *pw, pixmap_format_t *fmtp)
 		return FALSE;
 	}
 
-	switch (visual->depth) {
-#if defined(SUPPORT_32BPP)
-	case 32:
-#endif
-#if defined(SUPPORT_24BPP)
-	case 24:
-#endif
-#if defined(SUPPORT_16BPP)
-	case 16:
-	case 15:
-#endif
-#if defined(SUPPORT_8BPP)
-	case 8:
-#endif
-		break;
-
-	default:
-		if (visual->depth < 8) {
-			g_printerr("Too few allocable color.\n");
-		}
-		g_printerr("No support depth.\n");
-		return FALSE;
-	}
-
 	return gdk_window_get_pixmap_format(pw->window, visual, fmtp);
 }

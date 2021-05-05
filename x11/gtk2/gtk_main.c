@@ -108,11 +108,10 @@ expose_evhandler(GtkWidget *w, GdkEventExpose *ev, gpointer p)
 static gboolean
 key_press_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer p)
 {
-
 	if (ev->keyval == GDK_KEY_F11) {
 		xmenu_toggle();
 	} else if ((ev->keyval == GDK_KEY_F12) && (np2oscfg.F12KEY == 0))
-		xmenu_toggle_item(NULL, "mousemode", !np2oscfg.MOUSE_SW);
+		xmenu_toggle_item("mousemode", !np2oscfg.MOUSE_SW);
 	else
 		gtkkbd_keydown(ev->keyval);
 	return TRUE;
@@ -144,8 +143,9 @@ button_press_evhandler(GtkWidget *w, GdkEventButton *ev, gpointer p)
 		mouse_btn(MOUSE_LEFTDOWN);
 		break;
 
+	//middle mouse button
 	case 2:
-		xmenu_toggle_item(NULL, "mousemode", !np2oscfg.MOUSE_SW);
+		xmenu_toggle_item("mousemode", !np2oscfg.MOUSE_SW);
 		break;
 
 	case 3:

@@ -37,7 +37,8 @@ BOOL dispsync_renewalmode(void) {
 	}
 	if (dsync.scrnxextend != disp) {
 		dsync.scrnxextend = disp;
-		scrnmng_setextend(disp);
+		//TOOD: Reimplement this mode
+		//scrnmng_setextend(disp);
 		return(TRUE);
 	}
 	return(FALSE);

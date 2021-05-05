@@ -15,10 +15,10 @@ enum {
 
 typedef struct {
 	UINT8	*ptr;
-	int	xalign;
-	int	yalign;
-	int	width;
-	int	height;
+	int		xalign;
+	int		yalign;
+	int		width;
+	int		height;
 	UINT	bpp;
 } SCRNSURF;
 
@@ -45,7 +45,7 @@ BRESULT scrnmng_create(UINT8 scrnmode);
 void scrnmng_destroy(void);
 
 void scrnmng_setwidth(int posx, int width);
-void scrnmng_setextend(int extend);
+void scrnmng_renewal();
 void scrnmng_setheight(int posy, int height);
 const SCRNSURF* scrnmng_surflock(void);
 void scrnmng_surfunlock(const SCRNSURF *surf);

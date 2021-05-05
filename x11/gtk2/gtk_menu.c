@@ -477,18 +477,13 @@ static _MENU_HDL menu_hdl;
  * Menu utilities
  */
 void
-xmenu_toggle_item(MENU_HDL hdl, const char *name, BOOL onoff)
+xmenu_toggle_item(const char *name, BOOL onoff)
 {
-	GtkAction *action;
-	gboolean b, f;
+	GtkAction *action = gtk_action_group_get_action(menu_hdl.action_group, name);
 
-	if (hdl == NULL)
-		hdl = &menu_hdl;
-
-	action = gtk_action_group_get_action(hdl->action_group, name);
 	if (action != NULL) {
-		b = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(action));
-		f = (b ? 1 : 0) ^ (onoff ? 1 : 0);
+		gboolean b = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(action));
+		gboolean f = (b ? 1 : 0) ^ (onoff ? 1 : 0);
 		if (f) {
 			gtk_action_activate(action);
 		}
@@ -568,14 +563,14 @@ cb_bmpsave(GtkAction *action, gpointer user_data)
 		goto end;
 
 	gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 8)
 	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
 	    TRUE);
-#endif
+
 	if (strlen(bmpfilefolder) == 0) {
 		g_strlcpy(bmpfilefolder, modulefile, sizeof(bmpfilefolder));
 		file_cutname(bmpfilefolder);
 	}
+
 	utf8 = g_filename_to_utf8(bmpfilefolder, -1, NULL, NULL, NULL);
 	if (utf8) {
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), utf8);
@@ -1025,10 +1020,9 @@ cb_newdisk(GtkAction *action, gpointer user_data)
 		goto end;
 
 	gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 8)
 	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
 	    TRUE);
-#endif
+
 	if (strlen(fddfolder) == 0) {
 		g_strlcpy(fddfolder, modulefile, sizeof(fddfolder));
 		file_cutname(fddfolder);
@@ -1312,14 +1306,16 @@ cb_clockdisp(GtkToggleAction *action, gpointer user_data)
 static void
 cb_dispvsync(GtkToggleAction *action, gpointer user_data)
 {
-	gboolean b = gtk_toggle_action_get_active(action);
-	gboolean f;
 
-	f = (np2cfg.DISPSYNC ? 1 : 0) ^ (b ? 1 : 0);
-	if (f) {
-		np2cfg.DISPSYNC = !np2cfg.DISPSYNC;
-		sysmng_update(SYS_UPDATECFG);
-	}
+
+    gboolean b = gtk_toggle_action_get_active(action);
+    gboolean f;
+
+    f = (np2cfg.DISPSYNC ? 1 : 0) ^ (b ? 1 : 0);
+    if (f) {
+	np2cfg.DISPSYNC = !np2cfg.DISPSYNC;
+	sysmng_update(SYS_UPDATECFG);
+    }
 }
 
 static void
@@ -1738,7 +1734,7 @@ static gboolean menubar_timeout(gpointer p)
 
 	if (np2oscfg.autohidemenu) {
 		xmenu_hide();
-		scrnmng_setextend(0);
+		scrnmng_renewal();
 	}
 
 	return TRUE;
@@ -1905,25 +1901,25 @@ create_menu(void)
 		}
 	}
 
-	xmenu_toggle_item(NULL, "dispvsync", np2cfg.DISPSYNC);
-	xmenu_toggle_item(NULL, "joyrapid", np2cfg.BTN_RAPID);
-	xmenu_toggle_item(NULL, "joyreverse", np2cfg.BTN_MODE);
-	xmenu_toggle_item(NULL, "mouserapid", np2cfg.MOUSERAPID);
-	xmenu_toggle_item(NULL, "realpalettes", np2cfg.RASTER);
-	xmenu_toggle_item(NULL, "seeksound", np2cfg.MOTOR);
-	xmenu_toggle_item(NULL, "xctrlkey", np2cfg.XSHIFT & 2);
-	xmenu_toggle_item(NULL, "xgrphkey", np2cfg.XSHIFT & 4);
-	xmenu_toggle_item(NULL, "xshiftkey", np2cfg.XSHIFT & 1);
+	xmenu_toggle_item("dispvsync", np2cfg.DISPSYNC);
+	xmenu_toggle_item("joyrapid", np2cfg.BTN_RAPID);
+	xmenu_toggle_item("joyreverse", np2cfg.BTN_MODE);
+	xmenu_toggle_item("mouserapid", np2cfg.MOUSERAPID);
+	xmenu_toggle_item("realpalettes", np2cfg.RASTER);
+	xmenu_toggle_item("seeksound", np2cfg.MOTOR);
+	xmenu_toggle_item("xctrlkey", np2cfg.XSHIFT & 2);
+	xmenu_toggle_item("xgrphkey", np2cfg.XSHIFT & 4);
+	xmenu_toggle_item("xshiftkey", np2cfg.XSHIFT & 1);
 
-	xmenu_toggle_item(NULL, "clockdisp", np2oscfg.DISPCLK & 1);
-	xmenu_toggle_item(NULL, "framedisp", np2oscfg.DISPCLK & 2);
-	xmenu_toggle_item(NULL, "jastsound", np2oscfg.jastsnd);
-	xmenu_toggle_item(NULL, "keydisplay", np2oscfg.keydisp);
-	xmenu_toggle_item(NULL, "mousemode", np2oscfg.MOUSE_SW);
-	xmenu_toggle_item(NULL, "nowait", np2oscfg.NOWAIT);
-	xmenu_toggle_item(NULL, "softkeyboard", np2oscfg.softkbd);
-	xmenu_toggle_item(NULL, "autohidemenu", np2oscfg.autohidemenu);
-	xmenu_toggle_item(NULL, "toolwindow", np2oscfg.toolwin);
+	xmenu_toggle_item("clockdisp", np2oscfg.DISPCLK & 1);
+	xmenu_toggle_item("framedisp", np2oscfg.DISPCLK & 2);
+	xmenu_toggle_item("jastsound", np2oscfg.jastsnd);
+	xmenu_toggle_item("keydisplay", np2oscfg.keydisp);
+	xmenu_toggle_item("mousemode", np2oscfg.MOUSE_SW);
+	xmenu_toggle_item("nowait", np2oscfg.NOWAIT);
+	xmenu_toggle_item("softkeyboard", np2oscfg.softkbd);
+	xmenu_toggle_item("autohidemenu", np2oscfg.autohidemenu);
+	xmenu_toggle_item("toolwindow", np2oscfg.toolwin);
 
 	xmenu_select_beepvol(np2cfg.BEEP_VOL);
 	xmenu_select_f11key(np2oscfg.F11KEY);

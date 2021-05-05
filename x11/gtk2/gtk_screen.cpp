@@ -282,7 +282,6 @@ scrnmng_create(UINT8 mode)
 
 	drawmng.drawsurf = (scrnstat.multiple == SCREEN_DEFMUL)
 		? drawmng.backsurf : drawmng.surface;
-	gtk_window_restore_mode(main_window);
 
 	drawmng.drawing = FALSE;
 
@@ -329,7 +328,7 @@ scrnmng_setheight(int posy, int height)
 }
 
 void
-scrnmng_setextend(int extend)
+scrnmng_renewal()
 {
 	renewal_client_size();
 }
@@ -413,7 +412,7 @@ static void getLowerSideWithoutLeft(RECT_T& rect,
 }
 
 static void getRightSideWithoutUpperOrLower(RECT_T& rect,
-	const int offsetX, const uint offsetY, const uint drawWidth, const uint drawHeight, const uint parentWindowWidth, const uint parentWindowHeight){
+	const int offsetX, const uint offsetY, const uint drawWidth, const uint drawHeight, const uint parentWindowWidth){
 	rect.top = offsetY;
 	rect.left = offsetX + drawWidth;
 	rect.width = parentWindowWidth - (offsetX + drawWidth);
@@ -426,15 +425,10 @@ static void getBorderRects(
 	const uint parentWindowWidth, const uint parentWindowHeight,
 	RECT_T (&rects)[4])
 {
-	rects[0] = {0,0,0,0};
-	rects[1] = {0,0,0,0};
-	rects[2] = {0,0,0,0};
-	rects[3] = {0,0,0,0};
-
 	getUpperSide(rects[0], offsetY, parentWindowWidth);
 	getLeftSideWithoutUpper(rects[1], offsetX, offsetY, parentWindowHeight);
 	getLowerSideWithoutLeft(rects[2], offsetX, offsetY, drawHeight, parentWindowWidth, parentWindowHeight);
-	getRightSideWithoutUpperOrLower(rects[3], offsetX, offsetY, drawWidth, drawHeight, parentWindowWidth, parentWindowHeight);
+	getRightSideWithoutUpperOrLower(rects[3], offsetX, offsetY, drawWidth, drawHeight, parentWindowWidth);
 };
 
 void
