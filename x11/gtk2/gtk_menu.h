@@ -27,6 +27,7 @@
 #define	NP2_GTK2_GTKMENU_H__
 
 #include "gtk2/xnp2.h"
+#include "compiler.h"
 
 G_BEGIN_DECLS
 

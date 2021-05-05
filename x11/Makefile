@@ -42,6 +42,7 @@ SRC_C = \
 		./../x11/gtk2/gtk_mouse.c                               \
 		./../x11/gtk2/gtk_main.c                                \
 		./../x11/gtk2/gtk_wrapper.c                             \
+		./../x11/gtk2/gtk_maximize.c                             \
 		./../x11/debug/viewmem.c                                \
 		./../pccore.c                                           \
 		./../nevent.c                                           \

@@ -42,6 +42,7 @@
 #include "gtk2/xnp2.h"
 #include "gtk2/gtk_keyboard.h"
 #include "gtk2/gtk_menu.h"
+#include "gtk2/gtk_maximize.h"
 
 #include "resources/np2.xbm"
 
@@ -101,17 +102,24 @@ expose_evhandler(GtkWidget *w, GdkEventExpose *ev, gpointer p)
 	return TRUE;
 }
 
-/*
- - Signal: gboolean GtkWidget::key_press_event (GtkWidget *widget,
-          GdkEventKey *event, gpointer user_data)
-*/
+
+
 static gboolean
-key_press_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer p)
+key_press_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer windowPtr)
 {
-        if ((ev->keyval == GDK_KEY_F12) && (np2oscfg.F12KEY == 0))
+	assert(w); assert(ev); assert(windowPtr);
+
+	(void) w;
+
+	if (ev->keyval == GDK_KEY_F12){
 		xmenu_toggle_item("mousemode", !np2oscfg.MOUSE_SW);
-	else
+	}
+	else if(ev->keyval == GDK_KEY_F11){
+		xmenu_toggle_item("borderlessmax", !isBorderlessMaximized());
+	}
+	else {
 		gtkkbd_keydown(ev->keyval);
+	}
 	return TRUE;
 }
 
@@ -122,9 +130,14 @@ key_press_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer p)
 static gboolean
 key_release_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer p)
 {
+	assert(w); assert(ev); assert(p);
 
-	if ((ev->keyval != GDK_KEY_F12) || (np2oscfg.F12KEY != 0))
+	(void) w; (void) p;
+
+	if(ev->keyval != GDK_KEY_F12){
 		gtkkbd_keyup(ev->keyval);
+	}
+
 	return TRUE;
 }
 
@@ -295,11 +308,11 @@ gui_gtk_widget_create(void)
 	g_signal_connect(G_OBJECT(main_window), "destroy", 
 	    G_CALLBACK(destroy_evhandler), (gpointer)"WM destroy");
 	g_signal_connect(G_OBJECT(main_window), "key_press_event",
-	    G_CALLBACK(key_press_evhandler), NULL);
+		G_CALLBACK(key_press_evhandler), main_window);
 	g_signal_connect(G_OBJECT(main_window), "key_release_event",
-	    G_CALLBACK(key_release_evhandler), NULL);
+		G_CALLBACK(key_release_evhandler), NULL);
 	g_signal_connect(G_OBJECT(main_window), "button_press_event",
-	    G_CALLBACK(button_press_evhandler), NULL);
+		G_CALLBACK(button_press_evhandler), NULL);
 	g_signal_connect(G_OBJECT(main_window), "button_release_event",
 	    G_CALLBACK(button_release_evhandler), NULL);
 

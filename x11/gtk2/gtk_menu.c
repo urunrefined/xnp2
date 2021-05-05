@@ -56,6 +56,7 @@
 #include "gtk2/xnp2.h"
 #include "gtk2/gtk_menu.h"
 #include "gtk2/gtk_keyboard.h"
+#include "gtk2/gtk_maximize.h"
 
 #ifndef	NSTATSAVE
 #define	NSTATSAVE	10
@@ -197,27 +198,29 @@ static void cb_xctrlkey(GtkToggleAction *action, gpointer user_data);
 static void cb_xgrphkey(GtkToggleAction *action, gpointer user_data);
 static void cb_xshiftkey(GtkToggleAction *action, gpointer user_data);
 static void cb_autohide(GtkToggleAction *action, gpointer user_data);
+static void cb_borderlessmax(GtkToggleAction *action, gpointer user_data);
 
 static GtkToggleActionEntry togglemenu_entries[] = {
-{ "clockdisp",    NULL, "_Clock disp",        NULL, NULL, G_CALLBACK(cb_clockdisp), FALSE },
-{ "dispvsync",    NULL, "_Disp Vsync",        NULL, NULL, G_CALLBACK(cb_dispvsync), FALSE },
-{ "framedisp",    NULL, "_Frame disp",        NULL, NULL, G_CALLBACK(cb_framedisp), FALSE },
-{ "jastsound",    NULL, "_Jast sound",        NULL, NULL, G_CALLBACK(cb_jastsound), FALSE },
-{ "joyrapid",     NULL, "Joy _rapid",         NULL, NULL, G_CALLBACK(cb_joyrapid), FALSE },
-{ "joyreverse",   NULL, "Joy re_verse",       NULL, NULL, G_CALLBACK(cb_joyreverse), FALSE },
-{ "keydisplay",   NULL, "Key display",        NULL, NULL, G_CALLBACK(cb_keydisplay), FALSE },
-{ "mousemode",    NULL, "_Mouse mode (F12)",        NULL, NULL, G_CALLBACK(cb_mousemode), FALSE },
-{ "mouserapid",   NULL, "_Mouse rapid",       NULL, NULL, G_CALLBACK(cb_mouserapid), FALSE },
-{ "nowait",       NULL, "_No wait",           NULL, NULL, G_CALLBACK(cb_nowait), FALSE },
-{ "realpalettes", NULL, "Real _palettes",     NULL, NULL, G_CALLBACK(cb_realpalettes), FALSE },
-{ "s98logging",   NULL, "_S98 logging",       NULL, NULL, G_CALLBACK(cb_s98logging), FALSE },
-{ "seeksound",    NULL, "_Seek sound",        NULL, NULL, G_CALLBACK(cb_seeksound), FALSE },
-{ "softkeyboard", NULL, "S_oftware keyboard", NULL, NULL, G_CALLBACK(cb_softkeyboard), FALSE },
-{ "toolwindow",   NULL, "_Tool window",       NULL, NULL, G_CALLBACK(cb_toolwindow), FALSE },
-{ "xctrlkey",     NULL, "mechanical _CTRL",   NULL, NULL, G_CALLBACK(cb_xctrlkey), FALSE },
-{ "xgrphkey",     NULL, "mechanical _GRPH",   NULL, NULL, G_CALLBACK(cb_xgrphkey), FALSE },
-{ "xshiftkey",    NULL, "mechanical _SHIFT",  NULL, NULL, G_CALLBACK(cb_xshiftkey), FALSE },
-{ "autohidemenu",  NULL, "_Autohide Menu",    NULL, NULL, G_CALLBACK(cb_autohide), FALSE},
+{ "clockdisp",       NULL, "_Clock disp",        NULL, NULL, G_CALLBACK(cb_clockdisp), FALSE },
+{ "dispvsync",       NULL, "_Disp Vsync",        NULL, NULL, G_CALLBACK(cb_dispvsync), FALSE },
+{ "framedisp",       NULL, "_Frame disp",        NULL, NULL, G_CALLBACK(cb_framedisp), FALSE },
+{ "jastsound",       NULL, "_Jast sound",        NULL, NULL, G_CALLBACK(cb_jastsound), FALSE },
+{ "joyrapid",        NULL, "Joy _rapid",         NULL, NULL, G_CALLBACK(cb_joyrapid), FALSE },
+{ "joyreverse",      NULL, "Joy re_verse",       NULL, NULL, G_CALLBACK(cb_joyreverse), FALSE },
+{ "keydisplay",      NULL, "Key display",        NULL, NULL, G_CALLBACK(cb_keydisplay), FALSE },
+{ "mousemode",       NULL, "_Mouse mode (F12)",  NULL, NULL, G_CALLBACK(cb_mousemode), FALSE },
+{ "mouserapid",      NULL, "_Mouse rapid",       NULL, NULL, G_CALLBACK(cb_mouserapid), FALSE },
+{ "nowait",          NULL, "_No wait",           NULL, NULL, G_CALLBACK(cb_nowait), FALSE },
+{ "realpalettes",    NULL, "Real _palettes",     NULL, NULL, G_CALLBACK(cb_realpalettes), FALSE },
+{ "s98logging",      NULL, "_S98 logging",       NULL, NULL, G_CALLBACK(cb_s98logging), FALSE },
+{ "seeksound",       NULL, "_Seek sound",        NULL, NULL, G_CALLBACK(cb_seeksound), FALSE },
+{ "softkeyboard",    NULL, "S_oftware keyboard", NULL, NULL, G_CALLBACK(cb_softkeyboard), FALSE },
+{ "toolwindow",      NULL, "_Tool window",       NULL, NULL, G_CALLBACK(cb_toolwindow), FALSE },
+{ "xctrlkey",        NULL, "mechanical _CTRL",   NULL, NULL, G_CALLBACK(cb_xctrlkey), FALSE },
+{ "xgrphkey",        NULL, "mechanical _GRPH",   NULL, NULL, G_CALLBACK(cb_xgrphkey), FALSE },
+{ "xshiftkey",       NULL, "mechanical _SHIFT",  NULL, NULL, G_CALLBACK(cb_xshiftkey), FALSE },
+{ "autohidemenu",    NULL, "_Autohide Menu",     NULL, NULL, G_CALLBACK(cb_autohide), FALSE},
+{ "borderlessmax",   NULL, "_Fullscreen (F11)",  NULL, NULL, G_CALLBACK(cb_borderlessmax), FALSE},
 };
 
 static const guint n_togglemenu_entries = G_N_ELEMENTS(togglemenu_entries);
@@ -238,22 +241,6 @@ static GtkRadioActionEntry joykey_entries[] = {
 { "joykey2",  NULL, "Joykey-_2", NULL, NULL, 2 },
 };
 static const guint n_joykey_entries = G_N_ELEMENTS(joykey_entries);
-
-static GtkRadioActionEntry f11key_entries[] = {
-{ "f11none", NULL, "F11 = None",        NULL, NULL, 0 },
-{ "f11menu", NULL, "F11 = Menu toggle", NULL, NULL, 1 },
-};
-static const guint n_f11key_entries = G_N_ELEMENTS(f11key_entries);
-
-static GtkRadioActionEntry f12key_entries[] = {
-{ "f12mouse", NULL, "F12 = _Mouse",     NULL, NULL, 0 },
-{ "f12copy",  NULL, "F12 = Co_py",      NULL, NULL, 1 },
-{ "f12stop",  NULL, "F12 = S_top",      NULL, NULL, 2 },
-{ "f12help",  NULL, "F12 = _Help",      NULL, NULL, 7 },
-{ "f12equal", NULL, "F12 = tenkey [=]", NULL, NULL, 4 },
-{ "f12comma", NULL, "F12 = tenkey [,]", NULL, NULL, 3 },
-};
-static const guint n_f12key_entries = G_N_ELEMENTS(f12key_entries);
 
 static GtkRadioActionEntry beepvol_entries[] = {
 { "beepoff",  NULL, "Beep _off",  NULL, NULL, 0 },
@@ -300,8 +287,6 @@ static GtkRadioActionEntry screensize_entries[] = {
 static const guint n_screensize_entries = G_N_ELEMENTS(screensize_entries);
 
 static void cb_beepvol(gint idx);
-static void cb_f11key(gint idx);
-static void cb_f12key(gint idx);
 static void cb_framerate(gint idx);
 static void cb_joykey(gint idx);
 static void cb_memory(gint idx);
@@ -314,8 +299,6 @@ static const struct {
 	void			(*func)(gint idx);
 } radiomenu_entries[] = {
 	{ beepvol_entries, G_N_ELEMENTS(beepvol_entries), cb_beepvol },
-	{ f11key_entries, G_N_ELEMENTS(f11key_entries), cb_f11key },
-	{ f12key_entries, G_N_ELEMENTS(f12key_entries), cb_f12key },
 	{ framerate_entries, G_N_ELEMENTS(framerate_entries), cb_framerate },
 	{ joykey_entries, G_N_ELEMENTS(joykey_entries), cb_joykey },
 	{ memory_entries, G_N_ELEMENTS(memory_entries), cb_memory },
@@ -391,6 +374,7 @@ static const gchar *ui_info =
 "    <menuitem action='1280x800'/>\n"
 "    <menuitem action='2560x1600'/>\n"
 "   </menu>\n"
+"   <menuitem action='borderlessmax'/>\n"
 "   <separator/>\n"
 "   <menuitem action='screenopt'/>\n"
 "  </menu>\n"
@@ -404,15 +388,6 @@ static const gchar *ui_info =
 "    <menuitem action='xctrlkey'/>\n"
 "    <menuitem action='xgrphkey'/>\n"
 "    <separator/>\n"
-"    <menuitem action='f11none'/>\n"
-"    <menuitem action='f11menu'/>\n"
-"    <separator/>\n"
-"    <menuitem action='f12mouse'/>\n"
-"    <menuitem action='f12copy'/>\n"
-"    <menuitem action='f12stop'/>\n"
-"    <menuitem action='f12help'/>\n"
-"    <menuitem action='f12equal'/>\n"
-"    <menuitem action='f12comma'/>\n"
 "   </menu>\n"
 "   <menu name='Sound' action='SoundMenu'>\n"
 "    <menuitem action='beepoff'/>\n"
@@ -519,10 +494,6 @@ xmenu_select_item_by_index(MENU_HDL hdl, GtkRadioActionEntry *entry, guint nentr
 
 #define	xmenu_select_beepvol(v) \
 	xmenu_select_item_by_index(NULL, beepvol_entries, n_beepvol_entries, v);
-#define	xmenu_select_f11key(v) \
-	xmenu_select_item_by_index(NULL, f11key_entries, n_f11key_entries, v);
-#define	xmenu_select_f12key(v) \
-	xmenu_select_item_by_index(NULL, f12key_entries, n_f12key_entries, v);
 #define	xmenu_select_framerate(v) \
 	xmenu_select_item_by_index(NULL, framerate_entries, n_framerate_entries, v);
 #define	xmenu_select_joykey(v) \
@@ -1559,6 +1530,14 @@ cb_xshiftkey(GtkToggleAction *action, gpointer user_data)
 }
 
 static void
+cb_borderlessmax(GtkToggleAction *action, gpointer windowPtr)
+{
+	(void) action;
+
+	toggleBorderlessMaximize(windowPtr);
+}
+
+static void
 cb_autohide(GtkToggleAction *action, gpointer user_data)
 {
 	np2oscfg.autohidemenu = gtk_toggle_action_get_active(action);
@@ -1582,39 +1561,6 @@ cb_beepvol(gint idx)
 		np2cfg.BEEP_VOL = value;
 		beep_setvol(value);
 		sysmng_update(SYS_UPDATECFG);
-	}
-}
-
-static void
-cb_f11key(gint idx)
-{
-	guint value;
-
-	if (idx >= 0) {
-		value = f11key_entries[idx].value;
-	} else {
-		value = np2oscfg_default.F11KEY;
-	}
-	if (np2oscfg.F11KEY != value) {
-		np2oscfg.F11KEY = value;
-		sysmng_update(SYS_UPDATEOSCFG);
-	}
-}
-
-static void
-cb_f12key(gint idx)
-{
-	guint value;
-
-	if (idx >= 0) {
-		value = f12key_entries[idx].value;
-	} else {
-		value = np2oscfg_default.F12KEY;
-	}
-	if (np2oscfg.F12KEY != value) {
-		np2oscfg.F12KEY = value;
-		kbdmng_resetf12();
-		sysmng_update(SYS_UPDATEOSCFG);
 	}
 }
 
@@ -1850,10 +1796,13 @@ create_menu(GtkWidget *main_window)
 	guint i;
 
 	menu_hdl.action_group = gtk_action_group_new("MenuActions");
+
 	gtk_action_group_add_actions(menu_hdl.action_group,
 	    menu_entries, n_menu_entries, NULL);
+
 	gtk_action_group_add_toggle_actions(menu_hdl.action_group,
-	    togglemenu_entries, n_togglemenu_entries, NULL);
+		togglemenu_entries, n_togglemenu_entries, main_window);
+
 	for (i = 0; i < n_radiomenu_entries; i++) {
 		gtk_action_group_add_radio_actions(menu_hdl.action_group,
 		    radiomenu_entries[i].entry, radiomenu_entries[i].count, 0,
@@ -1909,8 +1858,6 @@ create_menu(GtkWidget *main_window)
 	xmenu_toggle_item("toolwindow", np2oscfg.toolwin);
 
 	xmenu_select_beepvol(np2cfg.BEEP_VOL);
-	xmenu_select_f11key(np2oscfg.F11KEY);
-	xmenu_select_f12key(np2oscfg.F12KEY);
 	xmenu_select_framerate(np2oscfg.DRAW_SKIP);
 	xmenu_select_joykey(np2cfg.KEY_MODE);
 	xmenu_select_memory(np2cfg.EXTMEM);
