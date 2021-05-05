@@ -30,10 +30,7 @@
 
 G_BEGIN_DECLS
 
-GtkWidget *create_menu(void);
-void xmenu_hide(void);
-void xmenu_show(void);
-void xmenu_toggle(void);
+GtkWidget *create_menu(GtkWidget *main_window);
 
 void create_about_dialog(void);
 void create_calendar_dialog(void);

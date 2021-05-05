@@ -375,6 +375,7 @@ static const gchar *ui_info =
 "   <menuitem action='dispvsync'/>\n"
 "   <menuitem action='realpalettes'/>\n"
 "   <menuitem action='nowait'/>\n"
+"   <separator/>\n"
 "   <menuitem action='autoframe'/>\n"
 "   <menuitem action='fullframe'/>\n"
 "   <menuitem action='1/2 frame'/>\n"
@@ -1716,65 +1717,12 @@ cb_radio(GtkRadioAction *action, GtkRadioAction *current, gpointer user_data)
 	}
 }
 
-
 /*
  * create menubar
  */
 static GtkWidget *menubar;
-static guint menubar_timerid;
 
 #define	EVENT_MASK	(GDK_ENTER_NOTIFY_MASK|GDK_LEAVE_NOTIFY_MASK)
-
-static gboolean menubar_timeout(gpointer p)
-{
-	if (menubar_timerid) {
-		g_source_remove(menubar_timerid);
-		menubar_timerid = 0;
-	}
-
-	if (np2oscfg.autohidemenu) {
-		xmenu_hide();
-		scrnmng_renewal();
-	}
-
-	return TRUE;
-}
-
-/*
- - Signal: gboolean GtkWidget::enter_notify_event (GtkWidget *widget,
-          GdkEventCrossing *event, gpointer user_data)
-*/
-static gboolean
-enter_notify_evhandler(GtkWidget *w, GdkEventCrossing *ev, gpointer p)
-{
-
-	if (menubar_timerid) {
-		g_source_remove(menubar_timerid);
-		menubar_timerid = 0;
-	}
-
-	return TRUE;
-}
-
-/*
- - Signal: gboolean GtkWidget::leave_notify_event (GtkWidget *widget,
-          GdkEventCrossing *event, gpointer user_data)
-*/
-static gboolean
-leave_notify_evhandler(GtkWidget *w, GdkEventCrossing *ev, gpointer p)
-{
-
-	if (menubar_timerid) {
-		g_source_remove(menubar_timerid);
-		menubar_timerid = 0;
-	}
-
-	if (np2oscfg.autohidemenu) {
-		menubar_timerid = g_timeout_add(1000, menubar_timeout, NULL);
-	}
-
-	return TRUE;
-}
 
 #if defined(SUPPORT_STATSAVE)
 static void
@@ -1855,8 +1803,47 @@ equip_fddrive(GtkUIManager *ui_manager, guint no)
 	g_free(path);
 }
 
+void
+xmenu_hide(void)
+{
+	gtk_widget_hide(menubar);
+}
+
+void
+xmenu_show(void)
+{
+	gtk_widget_show(menubar);
+}
+
+//TODO: Remove this global
+static int savedMenuSizeY = -1;
+
+static gboolean
+main_window_motion_notify_evhandler(GtkWidget *w, GdkEventMotion *ev, gpointer p)
+{
+	assert(w); assert(ev); assert(p);
+
+	(void) w;
+
+	if(np2oscfg.autohidemenu){
+		assert(savedMenuSizeY >= 0);
+
+		if(ev->y < savedMenuSizeY){
+			xmenu_show();
+		}
+		else {
+			GtkAllocation allocation;
+			gtk_widget_get_allocation((GtkWidget *) p, &allocation);
+			savedMenuSizeY = allocation.height;
+			xmenu_hide();
+		}
+	}
+
+	return TRUE;
+}
+
 GtkWidget *
-create_menu(void)
+create_menu(GtkWidget *main_window)
 {
 	GError *err = NULL;
 	gint rv;
@@ -1933,34 +1920,9 @@ create_menu(void)
 	menubar = gtk_ui_manager_get_widget(menu_hdl.ui_manager, "/MainMenu");
 
 	gtk_widget_add_events(menubar, EVENT_MASK);
-	g_signal_connect(G_OBJECT(menubar), "enter_notify_event",
-	            G_CALLBACK(enter_notify_evhandler), NULL);
-	g_signal_connect(G_OBJECT(menubar), "leave_notify_event",
-	            G_CALLBACK(leave_notify_evhandler), NULL);
+
+	g_signal_connect(G_OBJECT(main_window), "motion_notify_event",
+		G_CALLBACK(main_window_motion_notify_evhandler), menubar);
 
 	return menubar;
-}
-
-void
-xmenu_toggle(void)
-{
-	if(gtk_widget_get_visible (menubar)){
-		gtk_widget_hide(menubar);
-	}
-	else {
-		gtk_widget_show(menubar);
-	}
-
-}
-
-void
-xmenu_hide(void)
-{
-	gtk_widget_hide(menubar);
-}
-
-void
-xmenu_show(void)
-{
-	gtk_widget_show(menubar);
 }

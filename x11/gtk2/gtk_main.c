@@ -108,9 +108,7 @@ expose_evhandler(GtkWidget *w, GdkEventExpose *ev, gpointer p)
 static gboolean
 key_press_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer p)
 {
-	if (ev->keyval == GDK_KEY_F11) {
-		xmenu_toggle();
-	} else if ((ev->keyval == GDK_KEY_F12) && (np2oscfg.F12KEY == 0))
+        if ((ev->keyval == GDK_KEY_F12) && (np2oscfg.F12KEY == 0))
 		xmenu_toggle_item("mousemode", !np2oscfg.MOUSE_SW);
 	else
 		gtkkbd_keydown(ev->keyval);
@@ -152,6 +150,7 @@ button_press_evhandler(GtkWidget *w, GdkEventButton *ev, gpointer p)
 		mouse_btn(MOUSE_RIGHTDOWN);
 		break;
 	}
+
 	return TRUE;
 }
 
@@ -175,19 +174,6 @@ button_release_evhandler(GtkWidget *w, GdkEventButton *ev, gpointer p)
 		mouse_btn(MOUSE_RIGHTUP);
 		break;
 	}
-	return TRUE;
-}
-
-/*
- - Signal: gboolean GtkWidget::motion_notify_event (GtkWidget *widget,
-          GdkEventMotion *event, gpointer user_data)
-*/
-static gboolean
-motion_notify_evhandler(GtkWidget *w, GdkEventMotion *ev, gpointer p)
-{
-	if (ev->y < 8.0)
-		xmenu_show();
-
 	return TRUE;
 }
 
@@ -283,7 +269,7 @@ gui_gtk_widget_create(void)
 	gtk_container_add(GTK_CONTAINER(main_window), main_vbox);
 	gtk_widget_show(main_vbox);
 
-	menubar = create_menu();
+	menubar = create_menu(main_window);
 	gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, TRUE, 0);
 	gtk_widget_show(menubar);
 
@@ -316,8 +302,6 @@ gui_gtk_widget_create(void)
 	    G_CALLBACK(button_press_evhandler), NULL);
 	g_signal_connect(G_OBJECT(main_window), "button_release_event",
 	    G_CALLBACK(button_release_evhandler), NULL);
-	g_signal_connect(G_OBJECT(main_window), "motion_notify_event",
-	    G_CALLBACK(motion_notify_evhandler), NULL);
 
 	g_signal_connect(G_OBJECT(drawarea), "configure_event",
 	    G_CALLBACK(configure_evhandler), NULL);
