@@ -72,6 +72,11 @@ Makefile support. Therefore CMake (or equivalent)
 will be supported in the future along with the Makefile, 
 which should ALWAYS be kept, even just as a reminder 
 what the hell is actually necessary to build the thing
+* Add back IA32 support. Currently only the Intel 286 machines
+and the NEC V30 286 clones are considered, so if you see any
+error message with _386_ in it, then this is the reason.
+If you need 386 support please try the original np2 project
+files.
 
 While all of the menus are in English,
 you will need some experience in Japanese
