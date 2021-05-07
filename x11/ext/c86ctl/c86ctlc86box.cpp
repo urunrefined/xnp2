@@ -504,4 +504,8 @@ C86CtlErr CC86Box::Chip3::getChipType(ChipType* pnType)
 	return C86CTL_ERR_NONE;
 }
 
+CC86Box::Chip3::~Chip3(){
+
+}
+
 }	// namespace c86ctl

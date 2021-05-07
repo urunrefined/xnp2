@@ -12,6 +12,8 @@
 #include "toolkit.h"
 #include "milstr.h"
 
+#include <glib.h>
+
 UINT	sys_updates;
 
 static char titlestr[512];

@@ -13,6 +13,8 @@
 #include "soundmng.h"
 #include "milstr.h"
 
+#include <glib.h>
+
 
 typedef struct {
 	const char	*title;

@@ -32,6 +32,8 @@
 
 #include <SDL.h>
 #include <SDL_joystick.h>
+#include <glib.h>
+#include <string.h>
 
 static struct {
 	void *hdl;

@@ -60,6 +60,7 @@ private:
 
 		// IRealChip3
 		virtual C86CtlErr getChipType(ChipType* pnType);
+		virtual ~Chip3();
 
 	private:
 		CC86Box* m_pC86Box;			/*!< The instance of the device */

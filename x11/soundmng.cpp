@@ -44,7 +44,8 @@
 #if defined(VERMOUTH_LIB)
 #include "sound/vermouth/vermouth.h"
 
-extern "C" MIDIMOD vermouth_module = NULL;
+extern "C" MIDIMOD vermouth_module;
+MIDIMOD vermouth_module = NULL;
 #endif
 
 UINT8
