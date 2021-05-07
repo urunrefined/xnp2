@@ -38,7 +38,7 @@
 #define	VERMOUTH_LIB
 #define USE_SDLAUDIO
 
-#include <sys/param.h>
+
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <assert.h>
@@ -85,8 +85,11 @@ typedef signed long nxp2ptr;
 #define	TRUE	(!FALSE)
 #endif
 
+//for PATH_MAX
+#include <limits.h>
+
 #ifndef	MAX_PATH
-#define	MAX_PATH	MAXPATHLEN
+#define	MAX_PATH	PATH_MAX
 #endif
 
 #ifndef	__cplusplus
