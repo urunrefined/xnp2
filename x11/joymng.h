@@ -65,8 +65,6 @@ typedef struct {
 	int button[JOY_NBUTTON];
 } joymng_devinfo_t;
 
-#if defined(SUPPORT_JOYSTICK)
-
 REG8 joymng_getstat(void);
 
 // -- X11
@@ -74,18 +72,6 @@ void joymng_initialize(void);
 void joymng_deinitialize(void);
 joymng_devinfo_t **joymng_get_devinfo_list(void);
 void joymng_sync(void);
-
-#else	/* !SUPPORT_JOYSTICK */
-
-#define	joymng_getstat()		(REG8)0xff
-
-// -- X11
-#define	joymng_initialize()		(np2oscfg.JOYPAD1 |= 2)
-#define	joymng_deinitialize()		(np2oscfg.JOYPAD1 &= 1)
-#define	joymng_get_devinfo_list()	NULL
-#define	joymng_sync()
-
-#endif	/* SUPPORT_JOYSTICK */
 
 #ifdef __cplusplus
 }

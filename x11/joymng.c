@@ -26,11 +26,12 @@
 #include "compiler.h"
 #include "_memory.h"
 
-#if defined(SUPPORT_JOYSTICK)
-
 #include "np2.h"
 
 #include "joymng.h"
+
+#include <SDL.h>
+#include <SDL_joystick.h>
 
 static struct {
 	void *hdl;
@@ -158,11 +159,6 @@ joymng_getstat(void)
 
 	return joyinfo.flag;
 }
-
-#if defined(USE_SDL_JOYSTICK)
-
-#include <SDL.h>
-#include <SDL_joystick.h>
 
 typedef struct {
 	joymng_devinfo_t	dev;
@@ -296,12 +292,9 @@ joydrv_open(const char *dvname)
 
 	dev = &shdl->dev;
 	dev->devindex = drv;
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	dev->devname = strdup(SDL_JoystickName(joy));
-#else
-	dev->devname = strdup(SDL_JoystickName(drv));
-#endif
 	dev->naxis = naxis;
+
 	for (i = 0; i < JOY_NAXIS; ++i) {
 		if (np2oscfg.JOYAXISMAP[0][i] < naxis) {
 			dev->axis[i] = np2oscfg.JOYAXISMAP[0][i];
@@ -372,6 +365,3 @@ joydrv_getstat(void *hdl, JOYINFO_T *ji)
 
 	return SUCCESS;
 }
-#endif	/* USE_SDL_JOYSTICK */
-
-#endif	/* SUPPORT_JOYSTICK */

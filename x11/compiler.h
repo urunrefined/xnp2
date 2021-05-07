@@ -216,9 +216,6 @@ typedef signed long nxp2ptr;
 #define	SUPPORT_KEYDISP
 #define	SUPPORT_SOFTKBD	0
 
-#define	SUPPORT_JOYSTICK
-#define	USE_SDL_JOYSTICK
-
 /*
  * You could specify a complete path, e.g. "/etc/timidity.cfg", and
  * then specify the library directory in the configuration file.
