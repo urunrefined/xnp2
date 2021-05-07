@@ -39,6 +39,7 @@
 #include "_memory.h"
 
 #include <glib.h>
+#include <SDL.h>
 
 #if defined(VERMOUTH_LIB)
 #include "sound/vermouth/vermouth.h"
@@ -197,26 +198,17 @@ calc_blocksize(UINT size)
 static void
 snddrv_setup(void)
 {
-
 	if (np2oscfg.snddrv < SNDDRV_DRVMAX) {
 		switch (np2oscfg.snddrv) {
-#if defined(USE_SDLAUDIO) || defined(USE_SDLMIXER)
 		case SNDDRV_SDL:
 			sdlaudio_setup();
 			return;
-#endif
 		}
 	} else {
-#if defined(USE_SDLAUDIO) || defined(USE_SDLMIXER)
 		if (sdlaudio_setup() == SUCCESS) {
 			np2oscfg.snddrv = SNDDRV_SDL;
 			sysmng_update(SYS_UPDATEOSCFG);
 			return;
-		} else
-#endif
-		{
-			/* Nothing to do */
-			/* fall thourgh "no match" */
 		}
 	}
 
@@ -905,10 +897,6 @@ saturation_s16mmx(SINT16 *dst, const SINT32 *src, UINT size)
 }
 #endif	/* GCC_CPU_ARCH_AMD64 */
 
-#if defined(USE_SDLAUDIO)
-
-#include <SDL.h>
-
 static void sdlaudio_callback(void *, unsigned char *, int);
 
 static UINT8 sound_silence;
@@ -1056,5 +1044,3 @@ sdlaudio_setup(void)
 
 	return SUCCESS;
 }
-
-#endif	/* USE_SDLAUDIO */

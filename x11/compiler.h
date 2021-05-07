@@ -36,8 +36,6 @@
 
 #undef	NOSOUND
 #define	VERMOUTH_LIB
-#define USE_SDLAUDIO
-
 
 #include <sys/time.h>
 #include <sys/stat.h>

@@ -30,9 +30,7 @@
 #include <locale.h>
 #include <signal.h>
 
-#if defined(USE_SDLAUDIO) || defined(USE_SDLMIXER)
 #include <SDL.h>
-#endif
 
 #include "np2.h"
 #include "fdd/diskdrv.h"
@@ -248,9 +246,7 @@ main(int argc, char *argv[])
 
 	TRACEINIT();
 
-#if defined(USE_SDLAUDIO) || defined(USE_SDLMIXER)
 	SDL_Init(0);
-#endif
 
 	if (fontmng_init() != SUCCESS)
 		goto fontmng_failure;
@@ -373,9 +369,7 @@ fontmng_failure:
 
 	skbdwin_deinitialize();
 
-#if defined(USE_SDLAUDIO) || defined(USE_SDLMIXER)
 	SDL_Quit();
-#endif
 
 	TRACETERM();
 	dosio_term();
