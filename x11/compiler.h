@@ -37,8 +37,6 @@
 #define	X11
 #define	OSLINEBREAK_LF
 
-#define VERMOUTH_LIB
-
 #include <stdint.h>
 
 typedef	int32_t		SINT;

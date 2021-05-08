@@ -3,8 +3,6 @@
 #include	"cmver.h"
 
 
-#if defined(VERMOUTH_LIB)
-
 #include	"sound.h"
 #include	"sound/vermouth/vermouth.h"
 #include	"keydisp.h"
@@ -447,16 +445,3 @@ cmcre_err2:
 cmcre_err1:
 	return(NULL);
 }
-
-#else
-
-void cmvermouth_initialize(void) {
-}
-
-COMMNG cmvermouth_create(void) {
-
-	return(NULL);
-}
-
-#endif
-

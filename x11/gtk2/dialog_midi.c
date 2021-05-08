@@ -56,9 +56,7 @@ static const char *mpu98_devname_str[] = {
 static const char *mpu98_midiout_str[] = {
 	"N/C",
 	cmmidi_midiout_device,
-#if defined(VERMOUTH_LIB)
 	cmmidi_vermouth,
-#endif
 };
 
 static const char *mpu98_midiin_str[] = {
