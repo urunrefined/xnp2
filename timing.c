@@ -3,6 +3,7 @@
 #include	"fdd/diskdrv.h"
 #include	"fdd/fdd_mtr.h"
 #include	"timing.h"
+#include    "np2.h"
 
 
 #define	MSSHIFT		16
@@ -19,7 +20,7 @@ static	TIMING	timing;
 
 void timing_reset(void) {
 
-        timing.tick = gettick();
+	timing.tick = gettick();
 	timing.cnt = 0;
 	timing.fraction = 0;
 }

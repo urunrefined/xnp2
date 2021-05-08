@@ -5,8 +5,11 @@
 
 #include "compiler.h"
 #include "c86ctlc86box.h"
-#include <algorithm>
+
+#include <stdio.h>
 #include <string.h>
+
+#include <algorithm>
 
 namespace c86ctl
 {

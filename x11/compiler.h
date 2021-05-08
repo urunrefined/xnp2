@@ -34,28 +34,15 @@
 #error Please set preprocessor macro __BYTE_ORDER__ to __ORDER_BIG_ENDIAN__ or __ORDER_LITTLE_ENDIAN__
 #endif
 
-#undef	NOSOUND
-#define	VERMOUTH_LIB
-
-#include <sys/time.h>
-#include <sys/stat.h>
-#include <assert.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <setjmp.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <unistd.h>
-
 #define	X11
 #define	OSLINEBREAK_LF
+
+#define VERMOUTH_LIB
 
 #include <stdint.h>
 
 typedef	int32_t		SINT;
-typedef	u_int32_t	UINT;
+typedef	uint32_t	UINT;
 
 typedef	int8_t		SINT8;
 typedef	int16_t		SINT16;
@@ -83,12 +70,8 @@ typedef signed long nxp2ptr;
 #define	TRUE	(!FALSE)
 #endif
 
-//for PATH_MAX
-#include <limits.h>
-
-#ifndef	MAX_PATH
-#define	MAX_PATH	PATH_MAX
-#endif
+//TODO: Sort this out later
+#define	MAX_PATH 4096
 
 #ifndef	__cplusplus
 #ifndef	max
@@ -99,6 +82,7 @@ typedef signed long nxp2ptr;
 #endif
 #endif	/* !__cplusplus */
 
+//TODO: Remove this and the ZeroMemory / FillMemory macros
 #include <string.h>
 
 #define	ZeroMemory(d,n)		memset((d), 0, (n))
@@ -137,7 +121,6 @@ typedef signed long nxp2ptr;
 
 #define	OEMCHAR		char
 #define OEMTEXT(s)	s
-#define	OEMSPRINTF	sprintf
 
 #if defined(CPUCORE_IA32)
 #define	msgbox(title, msg)	toolkit_messagebox(title, msg);
@@ -180,7 +163,6 @@ typedef signed long nxp2ptr;
 #define	SOUNDCALL	FASTCALL
 #define	VRAMCALL	FASTCALL
 #define	SCRNCALL	FASTCALL
-#define	VERMOUTHCL	FASTCALL
 
 #ifdef	DEBUG
 #define	INLINE

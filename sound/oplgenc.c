@@ -5,10 +5,12 @@
 
 #include "compiler.h"
 #include "oplgen.h"
-#include <math.h>
 #include "oplgencfg.h"
 
-	OPLCFG oplcfg;
+#include <math.h>
+#include <stdio.h>
+
+OPLCFG oplcfg;
 
 #define	OPM_ARRATE		 399128L
 #define	OPM_DRRATE		5514396L

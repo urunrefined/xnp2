@@ -9,6 +9,8 @@
 #include	"palettes.h"
 #include	"timing.h"
 
+#include	<stddef.h>
+
 #if !defined(CPUCORE_IA32)
 #define	SEARCH_SYNC
 #endif

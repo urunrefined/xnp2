@@ -5,6 +5,8 @@
 
 #include "taskmng.h"
 
+#include <unistd.h>
+
 
 void
 taskmng_initialize(void)

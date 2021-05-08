@@ -285,13 +285,13 @@ bool CSoundInterfaceManager::initializeInstance()
 				info.dBusID = i;
 
 				OEMCHAR szAppName[32];
-				OEMSPRINTF(szAppName, OEMTEXT("SLOT_%02d_CHIP_NAME"), i);
+				sprintf(szAppName, OEMTEXT("SLOT_%02d_CHIP_NAME"), i);
 				profile_read(lpKeyName, szAppName, OEMTEXT(""), info.cSoundChipName, NELEMENTS(info.cSoundChipName), pfh);
 
-				OEMSPRINTF(szAppName, OEMTEXT("SLOT_%02d_CHIP_ID"), i);
+				sprintf(szAppName, OEMTEXT("SLOT_%02d_CHIP_ID"), i);
 				info.iSoundChip = static_cast<SC_CHIP_TYPE>(profile_readint(lpKeyName, szAppName, 0, pfh));
 
-				OEMSPRINTF(szAppName, OEMTEXT("SLOT_%02d_CHIP_CLOCK"), i);
+				sprintf(szAppName, OEMTEXT("SLOT_%02d_CHIP_CLOCK"), i);
 				info.dClock = profile_readint(lpKeyName, szAppName, 0, pfh);
 
 				if (info.iSoundChip == 0)
@@ -301,14 +301,14 @@ bool CSoundInterfaceManager::initializeInstance()
 
 				for (UINT j = 0; j < 2; j++)
 				{
-					OEMSPRINTF(szAppName, OEMTEXT("SLOT_%02d_CHIP_ID_CMP%d"), i, j + 1);
+					sprintf(szAppName, OEMTEXT("SLOT_%02d_CHIP_ID_CMP%d"), i, j + 1);
 					info.iCompatibleSoundChip[j] = static_cast<SC_CHIP_TYPE>(profile_readint(lpKeyName, szAppName, 0, pfh));
 
-					OEMSPRINTF(szAppName, OEMTEXT("SLOT_%02d_CHIP_CLOCK_CMP%d"), i, j + 1);
+					sprintf(szAppName, OEMTEXT("SLOT_%02d_CHIP_CLOCK_CMP%d"), i, j + 1);
 					info.dCompatibleClock[j] = profile_readint(lpKeyName, szAppName, 0, pfh);
 				}
 
-				OEMSPRINTF(szAppName, OEMTEXT("SLOT_%02d_CHIP_LOCATION"), i);
+				sprintf(szAppName, OEMTEXT("SLOT_%02d_CHIP_LOCATION"), i);
 				info.dSoundLocation = static_cast<SC_CHIP_LOCATION>(profile_readint(lpKeyName, szAppName, 0, pfh));
 
 				pInterface->Add(info);

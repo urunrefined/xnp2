@@ -1,9 +1,11 @@
+#pragma once
 
 #ifndef STRCALL
 #define	STRCALL
 #endif
 
 #include "oemtext.h"
+#include "compiler.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +34,8 @@ void STRCALL milutf8_ncat(char *dst, const char *src, UINT maxlen);
 
 // 文字を検索
 char * STRCALL milutf8_chr(const char *str, int c);
+
+int STRCALL milutf8_charsize(const char *str);
 
 
 // 0~9, A~Z のみを大文字小文字を同一視して比較

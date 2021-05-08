@@ -46,6 +46,7 @@
 
 #include "resources/np2.xbm"
 
+#include <assert.h>
 
 #define	APPNAME		"NP2"
 

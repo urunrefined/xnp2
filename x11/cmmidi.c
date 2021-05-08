@@ -8,13 +8,16 @@
 #include "_memory.h"
 #include "milstr.h"
 
+#include <sys/time.h>
+#include <time.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+
 #include "sound/vermouth/vermouth.h"
 
-#if defined(VERMOUTH_LIB)
 extern MIDIMOD vermouth_module;
-
 const char cmmidi_vermouth[] = "VERMOUTH";
-#endif
 
 #define	MIDI_RESETWAIT	80000
 
@@ -205,6 +208,9 @@ midi_write(CMMIDI midi, const UINT8 *cmd, UINT cnt)
 
 	gettimeofday(&midi->hmidiout_nextstart, NULL);
 	midi->hmidiout_nextstart.tv_usec += np2oscfg.MIDIWAIT * cnt;
+
+	//TODO: ../x11/cmmidi.c:209:7: warning: ‘__builtin_memcmp_eq’ reading 6 bytes from a region of size 3 [-Wstringop-overflow=]
+
 	if ((memcmp(cmd, EXCV_GMRESET, sizeof(EXCV_GMRESET)) == 0)
 	 || (memcmp(cmd, EXCV_GSRESET, sizeof(EXCV_GSRESET)) == 0)
 	 || (memcmp(cmd, EXCV_XGRESET, sizeof(EXCV_XGRESET)) == 0)
@@ -270,7 +276,6 @@ midiout_device(CMMIDI midi, UINT32 msg, UINT cnt)
 	midi_write(midi, buf, cnt);
 }
 
-#if defined(VERMOUTH_LIB)
 static void
 midiout_vermouth(CMMIDI midi, UINT32 msg, UINT cnt)
 {
@@ -300,7 +305,6 @@ vermouth_getpcm(MIDIHDL hdl, SINT32 *pcm, UINT count)
 		} while (--size);
 	}
 }
-#endif
 
 static void
 midireset(CMMIDI midi)
@@ -348,11 +352,9 @@ midireset(CMMIDI midi)
 			waitlastexclusiveout(midi);
 			sendexclusive(midi, excv, excvsize);
 		}
-#if defined(VERMOUTH_LIB)
 		else if (midi->opened & CMMIDI_VERMOUTH) {
 			midiout_longmsg(midi->vermouth, excv, excvsize);
 		}
-#endif
 	}
 
 	work[1] = 0x7b;
@@ -549,11 +551,9 @@ midiwrite(COMMNG self, UINT8 data)
 				waitlastexclusiveout(midi);
 				sendexclusive(midi, midi->buffer, midi->mpos);
 			}
-#if defined(VERMOUTH_LIB)
 			else if (midi->opened & CMMIDI_VERMOUTH) {
 				midiout_longmsg(midi->vermouth, midi->buffer, midi->mpos);
 			}
-#endif
 			midi->midictrl = MIDICTRL_READY;
 			return midi->mpos;
 		} else if (midi->mpos >= MIDI_BUFFER) {	// おーばーふろー
@@ -644,11 +644,9 @@ midirelease(COMMNG self)
 		waitlastexclusiveout(midi);
 		close(midi->hmidiout);
 	}
-#if defined(VERMOUTH_LIB)
 	if (midi->opened & CMMIDI_VERMOUTH) {
 		midiout_destroy(midi->vermouth);
 	}
-#endif
 	_MFREE(self);
 }
 
@@ -675,9 +673,8 @@ cmmidi_create(const char *midiout, const char *midiin, const char *module)
 	void (*outfn)(CMMIDI midi, UINT32 msg, UINT cnt);
 	int hmidiout;
 	int hmidiin;
-#if defined(VERMOUTH_LIB)
 	MIDIHDL vermouth = NULL;
-#endif
+
 	int opened = 0;
 
 	/* MIDI-IN */
@@ -693,7 +690,6 @@ cmmidi_create(const char *midiout, const char *midiin, const char *module)
 		outfn = midiout_device;
 		opened |= CMMIDI_MIDIOUT;
 	}
-#if defined(VERMOUTH_LIB)
 	else if (!milstr_cmp(midiout, cmmidi_vermouth)) {
 		vermouth = midiout_create(vermouth_module, 512);
 		if (vermouth != NULL) {
@@ -701,7 +697,7 @@ cmmidi_create(const char *midiout, const char *midiin, const char *module)
 			opened |= CMMIDI_VERMOUTH;
 		}
 	}
-#endif
+
 	if (!opened) {
 		goto cmcre_err1;
 	}
@@ -725,12 +721,12 @@ cmmidi_create(const char *midiout, const char *midiin, const char *module)
 	if (opened & CMMIDI_MIDIOUT) {
 		gettimeofday(&midi->hmidiout_nextstart, NULL);
 	}
-#if defined(VERMOUTH_LIB)
+
 	midi->vermouth = vermouth;
 	if (opened & CMMIDI_VERMOUTH) {
 		sound_streamregist((void *)vermouth, (SOUNDCB)vermouth_getpcm);
 	}
-#endif
+
 	midi->midilast = 0x80;
 	midi->midimodule = (UINT8)module2number(module);
 	FillMemory(midi->mch, sizeof(midi->mch), 0xff);
@@ -747,11 +743,11 @@ cmcre_err2:
 			close(hmidiout);
 		}
 	}
-#if defined(VERMOUTH_LIB)
+
 	if (opened & CMMIDI_VERMOUTH) {
 		midiout_destroy(vermouth);
 	}
-#endif
+
 cmcre_err1:
 	return NULL;
 }

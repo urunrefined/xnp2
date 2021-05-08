@@ -7,6 +7,8 @@
 #include "opngen.h"
 #include "opngencfg.h"
 
+#include <stdio.h>
+
 #if defined(OPNGENX86)
 extern char envshift[EVC_ENT];
 extern char sinshift[SIN_ENT];

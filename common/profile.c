@@ -868,7 +868,7 @@ BRESULT profile_writeint(const OEMCHAR *lpAppName, const OEMCHAR *lpKeyName, int
 {
 	OEMCHAR szBuffer[32];
 
-	OEMSPRINTF(szBuffer, OEMTEXT("%d"), nValue);
+	sprintf(szBuffer, OEMTEXT("%d"), nValue);
 	return profile_write(lpAppName, lpKeyName, szBuffer, hdl);
 
 }
@@ -978,12 +978,12 @@ static void binget(OEMCHAR *lpString, int cchString, const UINT8 *lpBin, UINT cb
 
 	if (cbBin)
 	{
-		OEMSPRINTF(tmp, OEMTEXT("%.2x"), lpBin[0]);
+	        sprintf(tmp, OEMTEXT("%.2x"), lpBin[0]);
 		milstr_ncpy(lpString, tmp, cchString);
 	}
 	for (i = 1; i < cbBin; i++)
 	{
-		OEMSPRINTF(tmp, OEMTEXT(" %.2x"), lpBin[i]);
+	        sprintf(tmp, OEMTEXT(" %.2x"), lpBin[i]);
 		milstr_ncat(lpString, tmp, cchString);
 	}
 }
@@ -1120,39 +1120,39 @@ void profile_iniwrite(const OEMCHAR *lpPath, const OEMCHAR *lpApp, const PFTBL *
 					break;
 
 				case PFTYPE_SINT8:
-					OEMSPRINTF(work, str_d, *((SINT8 *)p->value));
+			                sprintf(work, str_d, *((SINT8 *)p->value));
 					break;
 
 				case PFTYPE_SINT16:
-					OEMSPRINTF(work, str_d, *((SINT16 *)p->value));
+			                sprintf(work, str_d, *((SINT16 *)p->value));
 					break;
 
 				case PFTYPE_SINT32:
-					OEMSPRINTF(work, str_d, *((SINT32 *)p->value));
+			                sprintf(work, str_d, *((SINT32 *)p->value));
 					break;
 
 				case PFTYPE_UINT8:
-					OEMSPRINTF(work, str_u, *((UINT8 *)p->value));
+			                sprintf(work, str_u, *((UINT8 *)p->value));
 					break;
 
 				case PFTYPE_UINT16:
-					OEMSPRINTF(work, str_u, *((UINT16 *)p->value));
+			                sprintf(work, str_u, *((UINT16 *)p->value));
 					break;
 
 				case PFTYPE_UINT32:
-					OEMSPRINTF(work, str_u, *((UINT32 *)p->value));
+			                sprintf(work, str_u, *((UINT32 *)p->value));
 					break;
 
 				case PFTYPE_HEX8:
-					OEMSPRINTF(work, str_x, *((UINT8 *)p->value));
+			                sprintf(work, str_x, *((UINT8 *)p->value));
 					break;
 
 				case PFTYPE_HEX16:
-					OEMSPRINTF(work, str_x, *((UINT16 *)p->value));
+			                sprintf(work, str_x, *((UINT16 *)p->value));
 					break;
 
 				case PFTYPE_HEX32:
-					OEMSPRINTF(work, str_x, *((UINT32 *)p->value));
+			                sprintf(work, str_x, *((UINT32 *)p->value));
 					break;
 
 				default:

@@ -14,6 +14,8 @@
 #include "dosio.h"
 #include "fmboard.h"
 
+#include <stddef.h>
+
 #define S98LOG_BUFSIZE (32 * 1024)
 
 typedef struct {

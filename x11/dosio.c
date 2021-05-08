@@ -1,14 +1,16 @@
 #include "compiler.h"
 
-#include <sys/stat.h>
-#include <time.h>
-
 #include "codecnv/codecnv.h"
 #include "dosio.h"
 #include "trace.h"
 #include "_memory.h"
 #include "milstr.h"
 
+#include <unistd.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <stdio.h>
+#include <string.h>
 
 static OEMCHAR curpath[MAX_PATH];
 static OEMCHAR *curfilep = curpath;

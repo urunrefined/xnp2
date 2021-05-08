@@ -38,15 +38,16 @@
 #include "sound.h"
 #include "_memory.h"
 
+#include <sys/stat.h>
+
 #include <glib.h>
 #include <SDL.h>
 
-#if defined(VERMOUTH_LIB)
+
 #include "sound/vermouth/vermouth.h"
 
 extern "C" MIDIMOD vermouth_module;
 MIDIMOD vermouth_module = NULL;
-#endif
 
 UINT8
 snddrv_drv2num(const char* cfgstr)
@@ -272,10 +273,8 @@ soundmng_create(UINT rate, UINT bufmsec)
 		return 0;
 	}
 
-#if defined(VERMOUTH_LIB)
 	vermouth_module = midimod_create(rate);
 	midimod_loadall(vermouth_module);
-#endif
 
 	soundmng_setreverse(FALSE);
 	buffer_init();
@@ -309,10 +308,9 @@ soundmng_destroy(void)
 	UINT i;
 
 	if (opened) {
-#if defined(VERMOUTH_LIB)
 		midimod_destroy(vermouth_module);
 		vermouth_module = NULL;
-#endif
+
 		for (i = 0; i < SOUND_MAXPCM; i++) {
 			soundmng_pcmstop(i);
 		}

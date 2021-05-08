@@ -14,6 +14,7 @@
 #endif
 
 #include	<string.h>
+#include	<stdio.h>
 
 
 #define		NP2SYSP_VER			"C"
@@ -92,7 +93,7 @@ static void np2sysp_clock(const void *arg1, long arg2) {
 
 	OEMCHAR	str[16];
 
-	OEMSPRINTF(str, str_mhz, (pccore.realclock + 500000) / 1000000);
+	sprintf(str, str_mhz, (pccore.realclock + 500000) / 1000000);
 	setoutstr(str);
 	(void)arg1;
 	(void)arg2;
@@ -102,7 +103,7 @@ static void np2sysp_multiple(const void *arg1, long arg2) {
 
 	OEMCHAR	str[16];
 
-	OEMSPRINTF(str, str_u, pccore.multiple);
+	sprintf(str, str_u, pccore.multiple);
 	setoutstr(str);
 	(void)arg1;
 	(void)arg2;

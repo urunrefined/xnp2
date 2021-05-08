@@ -6,6 +6,8 @@
 #include "compiler.h"
 #include "codecnv.h"
 
+#include <stdlib.h>
+
 static UINT euctoucs2(UINT16 *lpOutput, UINT cchOutput, const char *lpInput, UINT cchInput);
 
 /**

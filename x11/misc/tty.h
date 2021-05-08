@@ -6,6 +6,7 @@
 #pragma once
 
 #include <termios.h>
+#include <sys/types.h>
 
 /**
  * @brief シリアル通信

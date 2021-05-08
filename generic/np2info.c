@@ -11,6 +11,7 @@
 #include	"milstr.h"
 
 #include	<string.h>
+#include	<stdio.h>
 
 static const OEMCHAR str_comma[] = OEMTEXT(", ");
 static const OEMCHAR str_2halfMHz[] = OEMTEXT("2.5MHz");
@@ -66,7 +67,7 @@ static void info_clock(OEMCHAR *str, int maxlen, const NP2INFOEX *ex) {
 	OEMCHAR	clockstr[16];
 
 	clk = (pccore.realclock + 50000) / 100000;
-	OEMSPRINTF(clockstr, str_clockfmt, clk/10, clk % 10);
+	sprintf(clockstr, str_clockfmt, clk/10, clk % 10);
 	milstr_ncpy(str, clockstr, maxlen);
 	(void)ex;
 }
@@ -91,10 +92,10 @@ static void info_mem1(OEMCHAR *str, int maxlen, const NP2INFOEX *ex) {
 		memsize = 640;
 	}
 	if (pccore.extmem) {
-		OEMSPRINTF(memstr, str_memfmt2, memsize, pccore.extmem * 1024);
+	        sprintf(memstr, str_memfmt2, memsize, pccore.extmem * 1024);
 	}
 	else {
-		OEMSPRINTF(memstr, str_memfmt, memsize);
+	        sprintf(memstr, str_memfmt, memsize);
 	}
 	milstr_ncpy(str, memstr, maxlen);
 	(void)ex;
@@ -113,7 +114,7 @@ static void info_mem2(OEMCHAR *str, int maxlen, const NP2INFOEX *ex) {
 		memsize = 640;
 	}
 	memsize += pccore.extmem * 1024;
-	OEMSPRINTF(memstr, str_memfmt, memsize);
+	sprintf(memstr, str_memfmt, memsize);
 	milstr_ncpy(str, memstr, maxlen);
 	(void)ex;
 }
@@ -131,10 +132,10 @@ static void info_mem3(OEMCHAR *str, int maxlen, const NP2INFOEX *ex) {
 		memsize = 640;
 	}
 	if (pccore.extmem > 1) {
-		OEMSPRINTF(memstr, str_memfmt3, pccore.extmem, memsize / 100);
+	        sprintf(memstr, str_memfmt3, pccore.extmem, memsize / 100);
 	}
 	else {
-		OEMSPRINTF(memstr, str_memfmt, memsize);
+	        sprintf(memstr, str_memfmt, memsize);
 	}
 	milstr_ncpy(str, memstr, maxlen);
 	(void)ex;
@@ -151,7 +152,7 @@ static void info_gdc2(OEMCHAR *str, int maxlen, const NP2INFOEX *ex) {
 
 	OEMCHAR	textstr[32];
 
-	OEMSPRINTF(textstr, str_dispclock,
+	sprintf(textstr, str_dispclock,
 						gdc.hclock / 1000, (gdc.hclock / 10) % 100,
 						gdc.vclock / 10, gdc.vclock % 10);
 	milstr_ncpy(str, textstr, maxlen);
@@ -167,7 +168,7 @@ const OEMCHAR	*p;
 		p = str_disable;
 	}
 	else {
-		OEMSPRINTF(textstr, str_twidth, ((gdc.mode1 & 0x4)?40:80));
+	        sprintf(textstr, str_twidth, ((gdc.mode1 & 0x4)?40:80));
 		p = textstr;
 	}
 	milstr_ncpy(str, p, maxlen);
@@ -282,13 +283,13 @@ static void info_extsnd(OEMCHAR *str, int maxlen, const NP2INFOEX *ex) {
 	info_sound(str, maxlen, ex);
 	if (g_nSoundID & 4) {
 		milstr_ncat(str, ex->cr, maxlen);
-		OEMSPRINTF(buf, str_pcm86a,
+		sprintf(buf, str_pcm86a,
 							pcm86rate8[g_pcm86.cFifoCtrl & 7] >> 3,
 							(16 - ((g_pcm86.cDacCtrl >> 3) & 8)),
 							milstr_list(str_chpan, (g_pcm86.cDacCtrl >> 4) & 3));
 		milstr_ncat(str, buf, maxlen);
 		milstr_ncat(str, ex->cr, maxlen);
-		OEMSPRINTF(buf, str_pcm86b, g_pcm86.nFifoRemain, g_pcm86.nFifoIntrSize);
+		sprintf(buf, str_pcm86b, g_pcm86.nFifoRemain, g_pcm86.nFifoIntrSize);
 		milstr_ncat(str, buf, maxlen);
 	}
 }

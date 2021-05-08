@@ -7,6 +7,8 @@
 #include "oplgen.h"
 #include "oplgencfg.h"
 
+#include <stdio.h>
+
 #define	CALCENV(e, c, s)													\
 	(c)->slot[(s)].env_cnt += (c)->slot[(s)].env_inc;						\
 	if ((c)->slot[(s)].env_cnt >= (c)->slot[(s)].env_end)					\

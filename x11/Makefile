@@ -3,8 +3,8 @@ INC=-I.  -I./.. -I./../x11/gtk2 -I./../x11/debug -I./../common -I./../cbus -I./.
 LDLIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lharfbuzz -lfontconfig -lfreetype -pthread -lSDL2 -lX11 -lm
 
 #General flags
-CXXFLAGS = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -Wall -Wextra -std=c++11 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
-CFLAGS   = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -Wall -Wextra -std=gnu99 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
+CXXFLAGS = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -Wall -Wextra -std=gnu++11 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
+CFLAGS   = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -Wall -Wextra -std=gnu99   -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
 
 SRC_C = \
 		./../x11/main.c                                         \

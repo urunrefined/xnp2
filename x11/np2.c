@@ -48,6 +48,8 @@
 #include "sysmng.h"
 #include "taskmng.h"
 
+#include <sys/time.h>
+
 
 NP2OSCFG np2oscfg = {
 #if !defined(CPUCORE_IA32)		/* titles */

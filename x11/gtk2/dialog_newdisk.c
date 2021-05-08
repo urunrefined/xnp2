@@ -37,6 +37,7 @@
 #include "fdd/fddfile.h"
 #include "fdd/newdisk.h"
 
+#include "milstr.h"
 
 
 /*

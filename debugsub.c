@@ -105,7 +105,7 @@ const OEMCHAR *debugsub_regs(void) {
 
 static OEMCHAR	work[256];
 
-	OEMSPRINTF(work, str_register,	CPU_AX, CPU_BX, CPU_CX, CPU_DX,
+	sprintf(work, str_register,	CPU_AX, CPU_BX, CPU_CX, CPU_DX,
 									CPU_SP, CPU_BP, CPU_SI, CPU_DI,
 									CPU_DS, CPU_ES, CPU_SS, CPU_CS, CPU_IP);
 	milstr_ncat(work, debugsub_flags(CPU_FLAG), NELEMENTS(work));
@@ -142,12 +142,12 @@ static int		filenum = 0;
 	OEMCHAR		work[512];
 const OEMCHAR	*p;
 
-	OEMSPRINTF(work, file_i286reg, filenum);
+	sprintf(work, file_i286reg, filenum);
 	tfh = textfile_create(file_getcd(work), 0);
 	if (tfh != NULL) {
 		p = debugsub_regs();
 		textfile_write(tfh, p);
-		OEMSPRINTF(work, str_picstat,
+		sprintf(work, str_picstat,
 								pic.pi[0].imr, pic.pi[0].irr, pic.pi[0].isr,
 								pic.pi[1].imr, pic.pi[1].irr, pic.pi[1].isr,
 								mouseif.upd8255.portc, sysport.c);
@@ -155,13 +155,13 @@ const OEMCHAR	*p;
 		textfile_close(tfh);
 	}
 
-	OEMSPRINTF(work, file_i286cs, filenum);
+	sprintf(work, file_i286cs, filenum);
 	writeseg(work, CS_BASE, 0xffff);
-	OEMSPRINTF(work, file_i286ds, filenum);
+	sprintf(work, file_i286ds, filenum);
 	writeseg(work, DS_BASE, 0xffff);
-	OEMSPRINTF(work, file_i286es, filenum);
+	sprintf(work, file_i286es, filenum);
 	writeseg(work, ES_BASE, 0xffff);
-	OEMSPRINTF(work, file_i286ss, filenum);
+	sprintf(work, file_i286ss, filenum);
 	writeseg(work, SS_BASE, 0xffff);
 	filenum++;
 }

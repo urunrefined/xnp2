@@ -1,4 +1,6 @@
 
+#pragma once
+
 #define RESIZE_AREAAVG
 #define RESIZE_FASTCOPY
 

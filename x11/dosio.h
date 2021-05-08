@@ -1,9 +1,12 @@
 #ifndef	NP2_X11_DOSIO_H__
 #define	NP2_X11_DOSIO_H__
 
-#include <dirent.h>
+
 #include "compiler.h"
 #include "common.h"
+
+#include <stdio.h>
+#include <dirent.h>
 
 #ifdef __cplusplus
 extern "C" {

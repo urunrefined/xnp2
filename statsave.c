@@ -434,13 +434,13 @@ static int statflag_checkpath(STFLAGH sfh, const OEMCHAR *dvname) {
 			if ((memcmp(&sp.date, &dosdate, sizeof(dosdate))) ||
 				(memcmp(&sp.time, &dostime, sizeof(dostime)))) {
 				ret |= STATFLAG_DISKCHG;
-				OEMSPRINTF(buf, str_updated, dvname);
+				sprintf(buf, str_updated, dvname);
 				statflag_seterr(sfh, buf);
 			}
 		}
 		else {
 			ret |= STATFLAG_DISKCHG;
-			OEMSPRINTF(buf, str_notfound, dvname);
+			sprintf(buf, str_notfound, dvname);
 			statflag_seterr(sfh, buf);
 		}
 	}
@@ -948,7 +948,7 @@ static int flagcheck_fdd(STFLAGH sfh, const SFENTRY *tbl) {
 
 	ret = STATFLAG_SUCCESS;
 	for (i=0; i<4; i++) {
-		OEMSPRINTF(buf, str_fddx, i+1);
+	        sprintf(buf, str_fddx, i+1);
 		ret |= statflag_checkpath(sfh, buf);
 	}
 	(void)tbl;
@@ -1027,13 +1027,13 @@ static int flagcheck_sxsi(STFLAGH sfh, const SFENTRY *tbl) {
 	ret = statflag_read(sfh, &sds, sizeof(sds));
 	for (i=0; i<NELEMENTS(sds.ide); i++) {
 		if (sds.ide[i] != SXSIDEV_NC) {
-			OEMSPRINTF(buf, str_sasix, i+1);
+		        sprintf(buf, str_sasix, i+1);
 			ret |= statflag_checkpath(sfh, buf);
 		}
 	}
 	for (i=0; i<NELEMENTS(sds.scsi); i++) {
 		if (sds.scsi[i] != SXSIDEV_NC) {
-			OEMSPRINTF(buf, str_scsix, i);
+		        sprintf(buf, str_scsix, i);
 			ret |= statflag_checkpath(sfh, buf);
 		}
 	}

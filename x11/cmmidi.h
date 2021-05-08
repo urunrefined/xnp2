@@ -25,9 +25,8 @@ enum {
 	MIDI_OTHER
 };
 
-#if defined(VERMOUTH_LIB)
 extern const char cmmidi_vermouth[];
-#endif
+
 extern const char cmmidi_midiout_device[];
 extern const char cmmidi_midiin_device[];
 

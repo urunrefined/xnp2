@@ -1,3 +1,4 @@
+#pragma once
 
 #ifndef PARTSCALL
 #define	PARTSCALL

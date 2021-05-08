@@ -25,9 +25,6 @@
 
 #include "compiler.h"
 
-#include <sys/stat.h>
-#include <errno.h>
-
 #include "np2.h"
 #include "dosio.h"
 #include "ini.h"
@@ -57,6 +54,10 @@
 #include "gtk2/gtk_menu.h"
 #include "gtk2/gtk_keyboard.h"
 #include "gtk2/gtk_maximize.h"
+
+#include <assert.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 #ifndef	NSTATSAVE
 #define	NSTATSAVE	10

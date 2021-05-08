@@ -5,11 +5,15 @@
 
 #include "compiler.h"
 #include "tty.h"
+
+#include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <string.h>
+#include <sys/types.h>
+
 
 #if defined(TIOCSSERIAL)
 #include <linux/serial.h>
