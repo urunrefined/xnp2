@@ -3,6 +3,8 @@
 
 // ---- com manager midi for unix
 
+#include "commng.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -88,6 +88,5 @@ void commng_initialize(void);
 
 #include "cmmidi.h"
 #include "cmserial.h"
-#include "cmpara.h"
 
 #endif	/* NP2_X11_COMMNG_H__ */

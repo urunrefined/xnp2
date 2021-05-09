@@ -70,7 +70,6 @@
 static gboolean
 destroy_evhandler(GtkWidget *w, GdkEventAny *ev, gpointer p)
 {
-
 	toolkit_widget_quit();
 
 	return TRUE;
@@ -83,7 +82,6 @@ destroy_evhandler(GtkWidget *w, GdkEventAny *ev, gpointer p)
 static gboolean
 configure_evhandler(GtkWidget *w, GdkEventConfigure *ev, gpointer p)
 {
-
 	gdk_draw_rectangle(w->window, w->style->black_gc, TRUE,
 	    0, 0, w->allocation.width, w->allocation.height);
 	return TRUE;
