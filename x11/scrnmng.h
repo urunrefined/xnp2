@@ -29,8 +29,14 @@ enum {
 enum {
 	SCRNFLAG_FULLSCREEN	= 0x01,
 	SCRNFLAG_HAVEEXTEND	= 0x02,
-	SCRNFLAG_ENABLE		= 0x80
 };
+
+enum ScaleMode {
+	SCALEMODE_INTEGER        = 0x01,
+	SCALEMODE_STRETCH        = 0x02,
+	SCALEMODE_STRETCH_ASPECT = 0x03
+};
+
 
 typedef struct {
 	UINT8	flag;
@@ -44,24 +50,17 @@ void scrnmng_initialize(void);
 BRESULT scrnmng_create(UINT8 scrnmode);
 void scrnmng_destroy(void);
 
-void scrnmng_setwidth(int posx, int width);
-void scrnmng_renewal();
-void scrnmng_setheight(int posy, int height);
+void scrnmng_setmultiple(int multiple);
+void scrnmng_setScaleMode(enum ScaleMode scale_mode);
+
 const SCRNSURF* scrnmng_surflock(void);
 void scrnmng_surfunlock(const SCRNSURF *surf);
-void scrnmng_update(void);
-#define	scrnmng_dispclock()
 
-#define	scrnmng_isfullscreen()	(scrnmngp->flag & SCRNFLAG_FULLSCREEN)
+void scrnmng_renewal();
+
 #define	scrnmng_haveextend()	(scrnmngp->flag & SCRNFLAG_HAVEEXTEND)
 #define	scrnmng_getbpp()	(scrnmngp->bpp)
 #define	scrnmng_palchanged()	do { scrnmngp->palchanged = TRUE; } while (0)
-
-RGB16 scrnmng_makepal16(RGB32 pal32);
-
-/* -- for X11 */
-
-void scrnmng_setmultiple(int multiple);
 
 #ifdef __cplusplus
 }

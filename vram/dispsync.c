@@ -68,7 +68,7 @@ BOOL dispsync_renewalhorizontal(void) {
 	if ((dsync.scrnxpos != scrnxpos) || (dsync.scrnxmax != scrnxmax)) {
 		dsync.scrnxpos = scrnxpos;
 		dsync.scrnxmax = scrnxmax;
-		scrnmng_setwidth(scrnxpos, scrnxmax);
+		//scrnmng_setwidth(scrnxpos, scrnxmax);
 		return(TRUE);
 	}
 	else {
@@ -128,7 +128,7 @@ BOOL dispsync_renewalvertical(void) {
 	scrnymax = (scrnymax + 7) & (~7);
 	if (dsync.scrnymax != scrnymax) {
 		dsync.scrnymax = scrnymax;
-		scrnmng_setheight(0, scrnymax);
+		//scrnmng_setheight(0, scrnymax);
 	}
 
 	dsync.textvad = text_vbp * 640;

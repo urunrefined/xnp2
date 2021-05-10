@@ -277,14 +277,12 @@ static GtkRadioActionEntry memory_entries[] = {
 static const guint n_memory_entries = G_N_ELEMENTS(memory_entries);
 
 static GtkRadioActionEntry screensize_entries[] = {
-{ "320x200",  NULL, "320x200",  NULL, NULL, 4 },
-{ "480x300",  NULL, "480x300",  NULL, NULL, 6 },
 { "640x400",  NULL, "640x400",  NULL, NULL, 8 },
-{ "800x500",  NULL, "800x500",  NULL, NULL, 10 },
-{ "960x600",  NULL, "960x600",  NULL, NULL, 12 },
 { "1280x800", NULL, "1280x800", NULL, NULL, 16 },
-{ "2560x1600", NULL, "2560x1600", NULL, NULL, 32 }
+{ "2560x1600", NULL, "2560x1600", NULL, NULL, 32 },
+{ "stretch", NULL, "Stretch", NULL, NULL, -1 }
 };
+
 static const guint n_screensize_entries = G_N_ELEMENTS(screensize_entries);
 
 static void cb_beepvol(gint idx);
@@ -367,13 +365,10 @@ static const gchar *ui_info =
 "   <menuitem action='1/4 frame'/>\n"
 "   <separator/>\n"
 "   <menu name='Size' action='ScrnSizeMenu'>\n"
-"    <menuitem action='320x200'/>\n"
-"    <menuitem action='480x300'/>\n"
 "    <menuitem action='640x400'/>\n"
-"    <menuitem action='800x500'/>\n"
-"    <menuitem action='960x600'/>\n"
 "    <menuitem action='1280x800'/>\n"
 "    <menuitem action='2560x1600'/>\n"
+"    <menuitem action='stretch'/>\n"
 "   </menu>\n"
 "   <menuitem action='borderlessmax'/>\n"
 "   <separator/>\n"
@@ -1617,14 +1612,19 @@ cb_memory(gint idx)
 static void
 cb_screensize(gint idx)
 {
-	guint value;
-
 	if (idx >= 0) {
-		value = screensize_entries[idx].value;
-	} else {
-		value = 0;
+
+		gint value = screensize_entries[idx].value;
+
+		if(value >= 0){
+			scrnmng_setmultiple(value);
+			scrnmng_setScaleMode(SCALEMODE_INTEGER);
+		}
+		else {
+			scrnmng_setScaleMode(SCALEMODE_STRETCH);
+		}
 	}
-	scrnmng_setmultiple(value);
+
 }
 
 static void

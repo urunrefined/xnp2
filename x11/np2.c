@@ -257,7 +257,7 @@ framereset(UINT cnt)
 {
 
 	framecnt = 0;
-	scrnmng_dispclock();
+	//scrnmng_dispclock();
 	kdispwin_draw((UINT8)cnt);
 	skbdwin_process();
 	debugwin_process();

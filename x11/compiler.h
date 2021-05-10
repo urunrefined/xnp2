@@ -174,8 +174,6 @@ typedef signed long nxp2ptr;
 #endif
 #endif
 
-#undef	SUPPORT_8BPP
-#define	SUPPORT_16BPP
 #define	SUPPORT_24BPP
 #define	SUPPORT_32BPP
 #define	SUPPORT_NORMALDISP

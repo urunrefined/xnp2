@@ -44,39 +44,24 @@
 
 #include <algorithm>
 
-
 typedef struct {
-	UINT8		scrnmode;
+	//TODO: Replace with a proper mutex
 	volatile int	drawing;
-	int		width;		/* drawarea の width */
-	int		height;		/* drawarea の height */
-	int		extend;
-	int		clipping;
 
-	PAL16MASK	pal16mask;
-
-	RECT_T		scrn;		/* drawarea 内の描画領域位置 */
-	RECT_T		rect;		/* drawarea に描画するサイズ */
-
-	/* toolkit depend */
-	GdkPixbuf	   *drawsurf;
 	GdkPixbuf	   *backsurf;
 	GdkPixbuf	   *surface;
-	double		   ratio_w, ratio_h;
-	GdkInterpType  interp;
 
-	GdkColor	pal[NP2PAL_MAX];
+	GdkInterpType  interp;
+	ScaleMode      scaleMode;
+	int	multiple;
+
 } DRAWMNG;
 
-typedef struct {
-	int	width;
-	int	height;
-	int	multiple;
-} SCRNSTAT;
+static const unsigned int pc98Width = 640;
+static const unsigned int pc98Height = 400;
 
 static SCRNMNG scrnmng;
 static DRAWMNG drawmng;
-static SCRNSTAT scrnstat = { 640, 400, SCREEN_DEFMUL };
 static SCRNSURF scrnsurf;
 
 SCRNMNG *scrnmngp = &scrnmng;
@@ -87,116 +72,13 @@ GtkWidget *drawarea;
 #define	BITS_PER_PIXEL	24
 #define	BYTES_PER_PIXEL	3
 
-static void
-set_window_size(int width, int height)
-{
-	gtk_widget_set_size_request(drawarea, width, height);
-}
-
-static void
-renewal_client_size(void)
-{
-	int width;
-	int height;
-
-	int scrnwidth;
-	int scrnheight;
-	int multiple;
-
-	width = std::min(scrnstat.width, drawmng.width);
-	height = std::min(scrnstat.height, drawmng.height);
-
-	multiple = scrnstat.multiple;
-
-	scrnwidth = (width * multiple) / SCREEN_DEFMUL;
-	scrnheight = (height * multiple) / SCREEN_DEFMUL;
-
-	drawmng.rect.width = scrnwidth;
-	drawmng.rect.height = scrnheight;
-
-	drawmng.ratio_w = (double)drawmng.rect.width / width;
-	drawmng.ratio_h = (double)drawmng.rect.height / height;
-
-	drawmng.scrn.left = 0;
-	drawmng.scrn.top = 0;
-
-	drawmng.scrn.width = scrnwidth;
-	drawmng.scrn.height = scrnheight;
-
-	set_window_size(scrnwidth, scrnheight);
-
-	scrnsurf.width = width;
-	scrnsurf.height = height;
-}
-
-static void
-palette_init(void)
-{
-	GdkColormap *cmap;
-	gboolean success;
-	int i;
-
-	cmap = gdk_colormap_get_system();
-	for (i = 0; i < 8; i++) {
-		drawmng.pal[NP2PAL_TEXT + i + 1].pixel =
-		    (np2_pal32[NP2PAL_TEXT + i + 1].p.r << 0) |
-		    (np2_pal32[NP2PAL_TEXT + i + 1].p.g << 8) |
-		    (np2_pal32[NP2PAL_TEXT + i + 1].p.b << 16);
-		drawmng.pal[NP2PAL_TEXT + i + 1].red =
-		    np2_pal32[NP2PAL_TEXT + i + 1].p.r << 8;
-		drawmng.pal[NP2PAL_TEXT + i + 1].green =
-		    np2_pal32[NP2PAL_TEXT + i + 1].p.g << 8;
-		drawmng.pal[NP2PAL_TEXT + i + 1].blue =
-		    np2_pal32[NP2PAL_TEXT + i + 1].p.b << 8;
-	}
-
-	gdk_colormap_alloc_colors(cmap, &drawmng.pal[NP2PAL_TEXT + 1], 8,
-	    TRUE, FALSE, &success);
-}
-
-static void
-palette_set(void)
-{
-	static int first = 1;
-	GdkColormap *cmap;
-	gboolean success;
-	int i;
-
-	cmap = gdk_colormap_get_system();
-
-	if (!first) {
-		gdk_colormap_free_colors(cmap, &drawmng.pal[NP2PAL_GRPH],
-		    NP2PALS_GRPH);
-	}
-	first = 0;
-
-	for (i = 0; i < NP2PALS_GRPH; i++) {
-		drawmng.pal[NP2PAL_GRPH + i].pixel =
-		    (np2_pal32[NP2PAL_GRPH + i].p.r << 0) |
-		    (np2_pal32[NP2PAL_GRPH + i].p.g << 8) |
-		    (np2_pal32[NP2PAL_GRPH + i].p.b << 16);
-		drawmng.pal[NP2PAL_GRPH + i].red =
-		    np2_pal32[NP2PAL_GRPH + i].p.r << 8;
-		drawmng.pal[NP2PAL_GRPH + i].green =
-		    np2_pal32[NP2PAL_GRPH + i].p.g << 8;
-		drawmng.pal[NP2PAL_GRPH + i].blue =
-		    np2_pal32[NP2PAL_GRPH + i].p.b << 8;
-	}
-	gdk_colormap_alloc_colors(cmap, &drawmng.pal[NP2PAL_GRPH], NP2PALS_GRPH,
-	    TRUE, FALSE, &success);
-}
-
 void
 scrnmng_initialize(void)
 {
-
 	drawmng.drawing = FALSE;
-	scrnstat.width = 640;
-	scrnstat.height = 400;
-	scrnstat.multiple = SCREEN_DEFMUL;
-	set_window_size(scrnstat.width, scrnstat.height);
+	drawmng.multiple = SCREEN_DEFMUL;
 
-	//real_fullscreen = gtk_window_init_fullscreen(main_window);
+	gtk_widget_set_size_request(drawarea, pc98Width, pc98Height);
 
 	switch (np2oscfg.drawinterp) {
 	case INTERP_NEAREST:
@@ -216,73 +98,69 @@ scrnmng_initialize(void)
 		drawmng.interp = GDK_INTERP_BILINEAR;
 		break;
 	}
+
+	drawmng.scaleMode = ScaleMode::SCALEMODE_INTEGER;
+}
+
+static void
+scrnmng_setMinimumCanvasSize(void){
+	gtk_widget_set_size_request(drawarea,
+		pc98Width * drawmng.multiple /SCREEN_DEFMUL,
+		pc98Height * drawmng.multiple /SCREEN_DEFMUL);
+}
+
+
+static GdkPixbuf *getPixmapWithDimensions(
+		unsigned int wantedWidth, unsigned int wantedHeight){
+
+	if(drawmng.surface){
+		unsigned int currentWidth = gdk_pixbuf_get_width(drawmng.surface);
+		unsigned int currentHeight = gdk_pixbuf_get_height(drawmng.surface);
+
+		if(wantedWidth == currentWidth && wantedHeight == currentHeight){
+			//Old surface matches, no need to recreate.
+			return drawmng.surface;
+		}
+
+		//Doesn't fit, recreate it
+		g_object_unref(drawmng.surface);
+		drawmng.surface = NULL;
+	}
+
+	drawmng.surface = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
+		wantedWidth, wantedHeight);
+
+	gdk_pixbuf_fill(drawmng.surface, 0xAA);
+
+	return drawmng.surface;
 }
 
 BRESULT
 scrnmng_create(UINT8 mode)
 {
-	GdkScreen *screen;
-	GdkVisual *visual;
-	RECT_T rect;
-	pixmap_format_t fmt;
+	(void) mode;
 
 	while (drawmng.drawing)
 		gtk_main_iteration_do(FALSE);
 	drawmng.drawing = TRUE;
 
-	visual = gtk_widget_get_visual(drawarea);
-	if (!gtkdrawmng_getformat(drawarea, main_window, &fmt))
-		return FAILURE;
-
-	switch (fmt.bits_per_pixel) {
-	case 16:
-		drawmng_make16mask(&drawmng.pal16mask, visual->blue_mask,
-		    visual->red_mask, visual->green_mask);
-		break;
-
-	case 8:
-		palette_init();
-		break;
-	}
-
-	scrnmng.flag = 0;
-	drawmng.extend = 0;
-
-	screen = gdk_screen_get_default();
-	drawmng.width = gdk_screen_get_width(screen);
-	drawmng.height = gdk_screen_get_height(screen);
-
-	rect.width = 640;
-	rect.height = 480;
-
 	scrnmng.bpp = BITS_PER_PIXEL;
 	scrnsurf.bpp = BITS_PER_PIXEL;
-	drawmng.scrnmode = mode;
-	drawmng.clipping = 0;
-	renewal_client_size();
+	scrnsurf.height = pc98Height;
+	scrnsurf.width = pc98Width;
 
-	drawmng.backsurf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
-		rect.width, rect.height);
+	//This is what the engine will draw into
+	drawmng.backsurf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, pc98Width, pc98Height);
 	if (drawmng.backsurf == NULL) {
 		drawmng.drawing = FALSE;
 		g_message("can't create backsurf.");
 		return FAILURE;
 	}
-	gdk_pixbuf_fill(drawmng.backsurf, 50);
 
-	drawmng.surface = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
-		drawmng.rect.width, drawmng.rect.height);
-	if (drawmng.surface == NULL) {
-		drawmng.drawing = FALSE;
-		g_message("can't create surface.");
-		return FAILURE;
-	}
-	gdk_pixbuf_fill(drawmng.surface, 80);
+	gdk_pixbuf_fill(drawmng.backsurf, 0);
 
-
-	drawmng.drawsurf = (scrnstat.multiple == SCREEN_DEFMUL)
-		? drawmng.backsurf : drawmng.surface;
-
+	//This surface will be shown to the user
+	drawmng.surface = NULL;
 	drawmng.drawing = FALSE;
 
 	return SUCCESS;
@@ -296,89 +174,39 @@ scrnmng_destroy(void)
 		g_object_unref(drawmng.backsurf);
 		drawmng.backsurf = NULL;
 	}
+
 	if (drawmng.surface) {
 		g_object_unref(drawmng.surface);
 		drawmng.surface = NULL;
 	}
 }
 
-RGB16
-scrnmng_makepal16(RGB32 pal32)
-{
-
-	return drawmng_makepal16(&drawmng.pal16mask, pal32);
-}
-
-void
-scrnmng_setwidth(int posx, int width)
-{
-	(void) posx;
-
-	scrnstat.width = width;
-	renewal_client_size();
-}
-
-void
-scrnmng_setheight(int posy, int height)
-{
-	(void) posy;
-
-	scrnstat.height = height;
-	renewal_client_size();
-}
-
 void
 scrnmng_renewal()
 {
-	renewal_client_size();
+	scrnmng_surfunlock(0);
 }
 
 void
 scrnmng_setmultiple(int multiple)
 {
+	drawmng.multiple = multiple;
+	scrnmng_setMinimumCanvasSize();
+}
 
-	if (scrnstat.multiple != multiple) {
-		scrnstat.multiple = multiple;
-
-		soundmng_stop();
-		mouse_running(MOUSE_STOP);
-		scrnmng_destroy();
-		if (scrnmng_create(scrnmode) != SUCCESS) {
-			toolkit_widget_quit();
-			return;
-		}
-		renewal_client_size();
-		scrndraw_redraw();
-		mouse_running(MOUSE_CONT);
-		soundmng_play();
-	}
+void scrnmng_setScaleMode(ScaleMode scaleMode){
+	drawmng.scaleMode = scaleMode;
 }
 
 const SCRNSURF *
 scrnmng_surflock(void)
 {
-	const int lpitch = gdk_pixbuf_get_rowstride(drawmng.backsurf);
 
 	scrnsurf.ptr = (UINT8 *)gdk_pixbuf_get_pixels(drawmng.backsurf);
-
 	scrnsurf.xalign = BYTES_PER_PIXEL;
-	scrnsurf.yalign = lpitch;
+	scrnsurf.yalign = gdk_pixbuf_get_rowstride(drawmng.backsurf);
 
 	return &scrnsurf;
-}
-
-void
-scrnmng_surfunlock(const SCRNSURF *surf)
-{
-
-	if (drawmng.drawsurf == drawmng.surface) {
-		gdk_pixbuf_scale(drawmng.backsurf, drawmng.surface,
-			0, 0, drawmng.rect.width, drawmng.rect.height,
-			0, 0, drawmng.ratio_w, drawmng.ratio_h,
-		    drawmng.interp);
-	}
-
-	scrnmng_update();
 }
 
 static unsigned int getCenteringOffset(unsigned int inner, unsigned int outer){
@@ -431,28 +259,28 @@ static void getBorderRects(
 	getRightSideWithoutUpperOrLower(rects[3], offsetX, offsetY, drawWidth, drawHeight, parentWindowWidth);
 };
 
-void
-scrnmng_update(void)
-{
-	GdkDrawable *d = drawarea->window;
+static void
+scrnmng_update(GdkDrawable *d, GdkPixbuf *toDraw)
+{	
+	unsigned int updateWidth = gdk_pixbuf_get_width(drawmng.surface);
+	unsigned int updateHeight = gdk_pixbuf_get_height(drawmng.surface);
 
 	unsigned int drawableWidth =  (unsigned int)gdk_window_get_width (d);
 	unsigned int drawableHeight = (unsigned int)gdk_window_get_height (d);
 
-	unsigned int offsetX = getCenteringOffset(drawmng.rect.width, drawableWidth);
-	unsigned int offsetY = getCenteringOffset(drawmng.rect.height, drawableHeight);
-
-	GdkGC *gc = drawarea->style->fg_gc[gtk_widget_get_state(drawarea)];
+	unsigned int offsetX = getCenteringOffset(updateWidth, drawableWidth);
+	unsigned int offsetY = getCenteringOffset(updateHeight, drawableHeight);
 
 	if (scrnmng.palchanged) {
 		scrnmng.palchanged = FALSE;
-		palette_set();
 	}
 
 	if (drawmng.drawing)
 		return;
 
 	drawmng.drawing = TRUE;
+
+	GdkGC *gc = drawarea->style->fg_gc[gtk_widget_get_state(drawarea)];
 
 	/*
 	 * We need to preserve the previous frame and can't
@@ -466,7 +294,7 @@ scrnmng_update(void)
 
 	getBorderRects(
 		offsetX, offsetY,
-		drawmng.rect.width, drawmng.rect.height,
+		updateWidth, updateHeight,
 		gdk_window_get_width(d), gdk_window_get_height(d),
 		borderRects
 	);
@@ -478,11 +306,58 @@ scrnmng_update(void)
 		}
 	}
 
-	gdk_draw_pixbuf(d, gc, drawmng.drawsurf,
+	gdk_draw_pixbuf(d, gc, toDraw,
 		0, 0,
 		offsetX, offsetY,
-		drawmng.rect.width, drawmng.rect.height,
+		updateWidth, updateHeight,
 		GDK_RGB_DITHER_NONE, 0, 0);
 
 	drawmng.drawing = FALSE;
+}
+
+void
+scrnmng_surfunlock(const SCRNSURF *surf)
+{
+	(void) surf;
+
+	/* scale up the backsurface (which is always 640x400)
+	 * to whatever we need and put it into the actual surface,
+	 * which will be shown on the screen.
+	 * */
+
+	if(drawmng.scaleMode == SCALEMODE_INTEGER){
+		int drawWidth = pc98Width * drawmng.multiple / SCREEN_DEFMUL;
+		int drawHeight = pc98Height * drawmng.multiple / SCREEN_DEFMUL;
+
+		double ratio_w = (double)drawWidth / pc98Width;
+		double ratio_h = (double)drawHeight / pc98Height;
+
+		GdkPixbuf *front = getPixmapWithDimensions(drawWidth, drawHeight);
+
+		gdk_pixbuf_scale(drawmng.backsurf, front,
+			0, 0, drawWidth, drawHeight,
+			0, 0, ratio_w, ratio_h,
+			drawmng.interp);
+
+		scrnmng_update(drawarea->window, front);
+	}
+	else {
+		GdkDrawable *d = drawarea->window;
+
+		unsigned int drawableWidth =  (unsigned int)gdk_window_get_width (d);
+		unsigned int drawableHeight = (unsigned int)gdk_window_get_height (d);
+
+		GdkPixbuf *front = getPixmapWithDimensions(drawableWidth, drawableHeight);
+
+		double ratio_w = (double)drawableWidth / pc98Width;
+		double ratio_h = (double)drawableHeight / pc98Height;
+
+		gdk_pixbuf_scale(drawmng.backsurf, front,
+			0, 0, drawableWidth, drawableHeight,
+			0, 0, ratio_w, ratio_h,
+			drawmng.interp);
+
+		scrnmng_update(drawarea->window, front);
+	}
+
 }
