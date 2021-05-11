@@ -69,8 +69,6 @@ NP2OSCFG np2oscfg = {
 	KEY_KEY106,		/* KEYBOARD */
 	0,			/* F12KEY */
 
-	0,			/* MOUSE_SW */
-
 	0,			/* JOYPAD1 */
 	0,			/* JOYPAD2 */
 	{ 1, 2, 5, 6 },		/* JOY1BTN */

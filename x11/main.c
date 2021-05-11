@@ -281,9 +281,6 @@ main(int argc, char *argv[])
 
 	joymng_initialize();
 	mousemng_initialize();
-	if (np2oscfg.MOUSE_SW) {
-		mouse_running(MOUSE_ON);
-	}
 
 	commng_initialize();
 	sysmng_initialize();

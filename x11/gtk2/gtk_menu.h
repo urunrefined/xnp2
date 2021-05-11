@@ -47,7 +47,8 @@ typedef struct {
 	GtkUIManager	*ui_manager;
 } _MENU_HDL, *MENU_HDL;
 
-void xmenu_toggle_item(const char *, BOOL);
+void xmenu_toggle_item(const char *name, BOOL);
+void xmenu_toggle_item_always(const char *name);
 void xmenu_select_screen(UINT8 mode);
 
 G_END_DECLS

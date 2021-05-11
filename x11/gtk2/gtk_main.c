@@ -111,7 +111,7 @@ key_press_evhandler(GtkWidget *w, GdkEventKey *ev, gpointer windowPtr)
 	(void) w;
 
 	if (ev->keyval == GDK_KEY_F12){
-		xmenu_toggle_item("mousemode", !np2oscfg.MOUSE_SW);
+		xmenu_toggle_item_always("mousemode");
 	}
 	else if(ev->keyval == GDK_KEY_F11){
 		xmenu_toggle_item("borderlessmax", !isBorderlessMaximized());
@@ -155,7 +155,7 @@ button_press_evhandler(GtkWidget *w, GdkEventButton *ev, gpointer p)
 
 	//middle mouse button
 	case 2:
-		xmenu_toggle_item("mousemode", !np2oscfg.MOUSE_SW);
+		xmenu_toggle_item_always("mousemode");
 		break;
 
 	case 3:

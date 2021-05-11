@@ -464,6 +464,16 @@ xmenu_toggle_item(const char *name, BOOL onoff)
 	}
 }
 
+void
+xmenu_toggle_item_always(const char *name)
+{
+	GtkAction *action = gtk_action_group_get_action(menu_hdl.action_group, name);
+
+	if (action != NULL) {
+		gtk_action_activate(action);
+	}
+}
+
 static void
 xmenu_select_item_by_index(MENU_HDL hdl, GtkRadioActionEntry *entry, guint nentry, int newvalue)
 {
@@ -1364,14 +1374,8 @@ static void
 cb_mousemode(GtkToggleAction *action, gpointer user_data)
 {
 	gboolean b = gtk_toggle_action_get_active(action);
-	gboolean f;
 
-	f = (np2oscfg.MOUSE_SW ? 1 : 0) ^ (b ? 1 : 0);
-	if (f) {
-		mouse_running(MOUSE_XOR);
-		np2oscfg.MOUSE_SW = !np2oscfg.MOUSE_SW;
-		sysmng_update(SYS_UPDATEOSCFG);
-	}
+	mouse_running(b ? MOUSE_ON : MOUSE_OFF);
 }
 
 static void
@@ -1857,7 +1861,7 @@ create_menu(GtkWidget *main_window)
 	xmenu_toggle_item("framedisp", np2oscfg.DISPCLK & 2);
 	xmenu_toggle_item("jastsound", np2oscfg.jastsnd);
 	xmenu_toggle_item("keydisplay", np2oscfg.keydisp);
-	xmenu_toggle_item("mousemode", np2oscfg.MOUSE_SW);
+	//xmenu_toggle_item("mousemode", 0);
 	xmenu_toggle_item("nowait", np2oscfg.NOWAIT);
 	xmenu_toggle_item("softkeyboard", np2oscfg.softkbd);
 	xmenu_toggle_item("autohidemenu", np2oscfg.autohidemenu);

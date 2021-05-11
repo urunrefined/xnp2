@@ -568,7 +568,6 @@ static INITBL iniitem[] = {
 
 	{"btnRAPID", INITYPE_BOOL,	&np2cfg.BTN_RAPID,	0},
 	{"btn_MODE", INITYPE_BOOL,	&np2cfg.BTN_MODE,	0},
-	{"Mouse_sw", INITYPE_BOOL,	&np2oscfg.MOUSE_SW,	0},
 	{"MS_RAPID", INITYPE_BOOL,	&np2cfg.MOUSERAPID,	0},
 
 	{"VRAMwait", INITYPE_ARGH8,	np2cfg.wait,		6},
