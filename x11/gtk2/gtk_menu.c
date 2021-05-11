@@ -280,7 +280,8 @@ static GtkRadioActionEntry screensize_entries[] = {
 { "640x400",  NULL, "640x400",  NULL, NULL, 8 },
 { "1280x800", NULL, "1280x800", NULL, NULL, 16 },
 { "2560x1600", NULL, "2560x1600", NULL, NULL, 32 },
-{ "stretch", NULL, "Stretch", NULL, NULL, -1 }
+{ "stretch", NULL, "Stretch", NULL, NULL, -1 },
+{ "stretchaspect", NULL, "Stretch (Keep Aspect)", NULL, NULL, -2 }
 };
 
 static const guint n_screensize_entries = G_N_ELEMENTS(screensize_entries);
@@ -369,6 +370,7 @@ static const gchar *ui_info =
 "    <menuitem action='1280x800'/>\n"
 "    <menuitem action='2560x1600'/>\n"
 "    <menuitem action='stretch'/>\n"
+"    <menuitem action='stretchaspect'/>\n"
 "   </menu>\n"
 "   <menuitem action='borderlessmax'/>\n"
 "   <separator/>\n"
@@ -1620,8 +1622,11 @@ cb_screensize(gint idx)
 			scrnmng_setmultiple(value);
 			scrnmng_setScaleMode(SCALEMODE_INTEGER);
 		}
-		else {
+		else if (value == -1){
 			scrnmng_setScaleMode(SCALEMODE_STRETCH);
+		}
+		else {
+			scrnmng_setScaleMode(SCALEMODE_STRETCH_ASPECT);
 		}
 	}
 

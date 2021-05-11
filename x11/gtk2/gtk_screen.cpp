@@ -44,6 +44,17 @@
 
 #include <algorithm>
 
+class Dimensions2D{
+public:
+	unsigned int width = 0;
+	unsigned int height = 0;
+
+	Dimensions2D(
+		unsigned int width_, unsigned int height_) :
+		width(width_), height(height_)
+	{}
+};
+
 typedef struct {
 	//TODO: Replace with a proper mutex
 	volatile int	drawing;
@@ -315,6 +326,41 @@ scrnmng_update(GdkDrawable *d, GdkPixbuf *toDraw)
 	drawmng.drawing = FALSE;
 }
 
+static void drawWithDimensions(unsigned int width, unsigned int height){
+	GdkPixbuf *front = getPixmapWithDimensions(width, height);
+
+	double ratio_w = (double)width / pc98Width;
+	double ratio_h = (double)height / pc98Height;
+
+	gdk_pixbuf_scale(drawmng.backsurf, front,
+		0, 0, width, height,
+		0, 0, ratio_w, ratio_h,
+		drawmng.interp);
+
+	scrnmng_update(drawarea->window, front);
+}
+
+static Dimensions2D getScissorExtent(double ideal, unsigned int width, unsigned int height){
+	unsigned int xOffset = 0;
+	unsigned int yOffset = 0;
+
+	double ratio = (double)width / (double)height;
+
+	if(ratio > ideal){
+		xOffset = (width - (unsigned int)((double) width / (ratio / ideal)));
+	}
+	else if(ratio < ideal){
+		yOffset = (height - (unsigned int)((double) height / (1 / (ratio / ideal))));
+	}
+
+	if(xOffset > width) xOffset = width;
+	if(yOffset > height) yOffset = height;
+
+	return {width - xOffset, height - yOffset};
+}
+
+
+
 void
 scrnmng_surfunlock(const SCRNSURF *surf)
 {
@@ -329,35 +375,26 @@ scrnmng_surfunlock(const SCRNSURF *surf)
 		int drawWidth = pc98Width * drawmng.multiple / SCREEN_DEFMUL;
 		int drawHeight = pc98Height * drawmng.multiple / SCREEN_DEFMUL;
 
-		double ratio_w = (double)drawWidth / pc98Width;
-		double ratio_h = (double)drawHeight / pc98Height;
-
-		GdkPixbuf *front = getPixmapWithDimensions(drawWidth, drawHeight);
-
-		gdk_pixbuf_scale(drawmng.backsurf, front,
-			0, 0, drawWidth, drawHeight,
-			0, 0, ratio_w, ratio_h,
-			drawmng.interp);
-
-		scrnmng_update(drawarea->window, front);
+		drawWithDimensions(drawWidth, drawHeight);
 	}
-	else {
+	else if(drawmng.scaleMode == SCALEMODE_STRETCH){
 		GdkDrawable *d = drawarea->window;
 
 		unsigned int drawableWidth =  (unsigned int)gdk_window_get_width (d);
 		unsigned int drawableHeight = (unsigned int)gdk_window_get_height (d);
 
-		GdkPixbuf *front = getPixmapWithDimensions(drawableWidth, drawableHeight);
+		drawWithDimensions(drawableWidth, drawableHeight);
+	}
+	else {
+		//Stretch, keep aspect
+		GdkDrawable *d = drawarea->window;
 
-		double ratio_w = (double)drawableWidth / pc98Width;
-		double ratio_h = (double)drawableHeight / pc98Height;
+		unsigned int drawableWidth =  (unsigned int)gdk_window_get_width (d);
+		unsigned int drawableHeight = (unsigned int)gdk_window_get_height (d);
 
-		gdk_pixbuf_scale(drawmng.backsurf, front,
-			0, 0, drawableWidth, drawableHeight,
-			0, 0, ratio_w, ratio_h,
-			drawmng.interp);
+		Dimensions2D scissor = getScissorExtent(((double)pc98Width / pc98Height), drawableWidth, drawableHeight);
+		drawWithDimensions(scissor.width, scissor.height);
 
-		scrnmng_update(drawarea->window, front);
 	}
 
 }
