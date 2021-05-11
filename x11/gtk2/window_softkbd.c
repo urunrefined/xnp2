@@ -10,7 +10,6 @@
 #include "gtk2/gtk_drawmng.h"
 #include "gtk2/gtk_keyboard.h"
 
-
 /*
  * software keyboard
  */
@@ -30,25 +29,15 @@ skpalcnv(CMNPAL *dst, const RGB32 *src, UINT pals, UINT bpp)
 	UINT i;
 
 	switch (bpp) {
-#if defined(SUPPORT_16BPP)
-	case 16:
-		for (i = 0; i < pals; i++) {
-			dst[i].pal16 = drawmng_makepal16(&skwin.hdl->pal16mask, src[i]);
-		}
-		break;
-#endif
-#if defined(SUPPORT_24BPP)
 	case 24:
-#endif
-#if defined(SUPPORT_32BPP)
 	case 32:
-#endif
-#if defined(SUPPORT_24BPP) || defined(SUPPORT_32BPP)
 		for (i = 0; i < pals; i++) {
 			dst[i].pal32.d = src[i].d;
 		}
 		break;
-#endif
+	default:
+		//TODO: ???
+		break;
 	}
 }
 

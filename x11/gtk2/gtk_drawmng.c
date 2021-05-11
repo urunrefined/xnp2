@@ -68,26 +68,10 @@ drawmng_create(void *parent, int width, int height)
 		goto destroy;
 
 	switch (fmt.bits_per_pixel) {
-#if defined(SUPPORT_32BPP)
 	case 32:
 		break;
-#endif
-#if defined(SUPPORT_24BPP)
 	case 24:
 		break;
-#endif
-#if defined(SUPPORT_16BPP)
-	case 16:
-	case 15:
-		drawmng_make16mask(&hdl->d.pal16mask, visual->blue_mask,
-		    visual->red_mask, visual->green_mask);
-		break;
-#endif
-#if defined(SUPPORT_8BPP)
-	case 8:
-		break;
-#endif
-
 	default:
 		goto destroy;
 	}

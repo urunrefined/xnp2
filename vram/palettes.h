@@ -57,9 +57,6 @@ extern "C" {
 #endif
 
 extern	RGB32		np2_pal32[NP2PAL_MAX];
-#if defined(SUPPORT_16BPP)
-extern	RGB16		np2_pal16[NP2PAL_MAX];
-#endif
 extern	PALEVENT	palevent;
 extern	UINT8		pal_monotable[16];
 

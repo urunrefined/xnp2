@@ -6,23 +6,6 @@
 
 #if !defined(SIZE_QVGA) || defined(SIZE_VGATEST)
 
-#if defined(SUPPORT_8BPP)
-#define	SDSYM(sym)				sdraw8##sym
-#define	SDSETPIXEL(ptr, pal)	*(ptr) = (pal) + START_PAL
-#include	"sdraw.mcr"
-#undef	SDSYM
-#undef	SDSETPIXEL
-#endif
-
-#if defined(SUPPORT_16BPP)
-#define	SDSYM(sym)				sdraw16##sym
-#define	SDSETPIXEL(ptr, pal)	*(UINT16 *)(ptr) = np2_pal16[(pal)]
-#include	"sdraw.mcr"
-#include	"sdrawex.mcr"
-#undef	SDSYM
-#undef	SDSETPIXEL
-#endif
-
 #if defined(SUPPORT_24BPP)
 #define	SDSYM(sym)				sdraw24##sym
 #define	SDSETPIXEL(ptr, pal)	(ptr)[RGB24_R] = np2_pal32[(pal)].p.r;	\
@@ -47,16 +30,8 @@
 // ----
 
 static const SDRAWFN *tbl[] = {
-#if defined(SUPPORT_8BPP)
-			sdraw8p,
-#else
 			NULL,
-#endif
-#if defined(SUPPORT_16BPP)
-			sdraw16p,
-#else
 			NULL,
-#endif
 #if defined(SUPPORT_24BPP)
 			sdraw24p,
 #else
@@ -69,16 +44,8 @@ static const SDRAWFN *tbl[] = {
 #endif
 
 #if defined(SUPPORT_NORMALDISP)
-#if defined(SUPPORT_8BPP)
-			sdraw8n,
-#else
 			NULL,
-#endif
-#if defined(SUPPORT_16BPP)
-			sdraw16n,
-#else
 			NULL,
-#endif
 #if defined(SUPPORT_24BPP)
 			sdraw24n,
 #else
@@ -107,11 +74,7 @@ const SDRAWFN *sdraw_getproctbl(const SCRNSURF *surf) {
 
 static const SDRAWFN *tblex[] = {
 			NULL,
-#if defined(SUPPORT_16BPP)
-			sdraw16pex,
-#else
 			NULL,
-#endif
 #if defined(SUPPORT_24BPP)
 			sdraw24pex,
 #else
@@ -125,11 +88,7 @@ static const SDRAWFN *tblex[] = {
 
 #if defined(SUPPORT_NORMALDISP)
 			NULL,
-#if defined(SUPPORT_16BPP)
-			sdraw16nex,
-#else
 			NULL,
-#endif
 #if defined(SUPPORT_24BPP)
 			sdraw24nex,
 #else

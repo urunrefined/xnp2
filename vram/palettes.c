@@ -6,9 +6,6 @@
 #include	"palettes.h"
 
 		RGB32		np2_pal32[NP2PAL_MAX];
-#if defined(SUPPORT_16BPP)
-		RGB16		np2_pal16[NP2PAL_MAX];
-#endif
 
 		PALEVENT	palevent;
 static	RGB32		degpal1[8];
@@ -130,18 +127,6 @@ void pal_makeanalog(RGB32 *pal, UINT16 bit) {
 			}
 		}
 	}
-#if defined(SUPPORT_16BPP)
-	if (scrnmng_getbpp() == 16) {
-		for (i=0; i<NP2PALS_GRPH; i++) {
-			if (bit & (1 << i)) {
-				np2_pal16[i+NP2PAL_GRPH] =
-								scrnmng_makepal16(np2_pal32[i+NP2PAL_GRPH]);
-				np2_pal16[i+NP2PAL_SKIP] =
-								scrnmng_makepal16(np2_pal32[i+NP2PAL_SKIP]);
-			}
-		}
-	}
-#endif
 }
 
 static void pal_makedegital(const UINT8 *paltbl) {
@@ -164,28 +149,6 @@ static void pal_makedegital(const UINT8 *paltbl) {
 									degpal2[paltbl[i] & 7].d;
 		}
 	}
-#if defined(SUPPORT_16BPP)
-	if (scrnmng_getbpp() == 16) {
-		for (i=0; i<4; i++) {
-			np2_pal16[i+NP2PAL_GRPH+ 0] =
-			np2_pal16[i+NP2PAL_GRPH+ 8] =
-								scrnmng_makepal16(np2_pal32[i+NP2PAL_GRPH+0]);
-			np2_pal16[i+NP2PAL_GRPH+ 4] =
-			np2_pal16[i+NP2PAL_GRPH+12] =
-								scrnmng_makepal16(np2_pal32[i+NP2PAL_GRPH+4]);
-		}
-		if (np2cfg.skipline) {
-			for (i=0; i<4; i++) {
-				np2_pal16[i+NP2PAL_SKIP+ 0] =
-				np2_pal16[i+NP2PAL_SKIP+ 8] =
-								scrnmng_makepal16(np2_pal32[i+NP2PAL_SKIP+0]);
-				np2_pal16[i+NP2PAL_SKIP+ 4] =
-				np2_pal16[i+NP2PAL_SKIP+12] =
-								scrnmng_makepal16(np2_pal32[i+NP2PAL_SKIP+4]);
-			}
-		}
-	}
-#endif
 }
 
 void pal_makeanalog_lcd(RGB32 *pal, UINT16 bit) {
@@ -202,26 +165,12 @@ void pal_makeanalog_lcd(RGB32 *pal, UINT16 bit) {
 			np2_pal32[i+NP2PAL_GRPH].d = lcdpal[lcdtbl[j]].d;
 		}
 	}
-#if defined(SUPPORT_16BPP)
-	if (scrnmng_getbpp() == 16) {
-		for (i=0; i<NP2PALS_GRPH; i++) {
-			if (bit & (1 << i)) {
-				np2_pal16[i+NP2PAL_GRPH] =
-				np2_pal16[i+NP2PAL_SKIP] =
-								scrnmng_makepal16(np2_pal32[i+NP2PAL_GRPH]);
-			}
-		}
-	}
-#endif
 }
 
 static void pal_makedegital_lcd(const UINT8 *paltbl) {
 
 	UINT	i;
 	UINT32	pal32;
-#if defined(SUPPORT_16BPP)
-	RGB16	pal16;
-#endif
 
 	for (i=0; i<4; i++) {
 		pal32 = lcdpal[(paltbl[i] >> 3) & 14].d;
@@ -239,28 +188,6 @@ static void pal_makedegital_lcd(const UINT8 *paltbl) {
 			np2_pal32[i+NP2PAL_SKIP+12].d = pal32;
 		}
 	}
-#if defined(SUPPORT_16BPP)
-	if (scrnmng_getbpp() == 16) {
-		for (i=0; i<4; i++) {
-			pal16 = scrnmng_makepal16(np2_pal32[i+NP2PAL_GRPH+0]);
-			np2_pal16[i+NP2PAL_GRPH+ 0] = pal16;
-			np2_pal16[i+NP2PAL_GRPH+ 8] = pal16;
-			pal16 = scrnmng_makepal16(np2_pal32[i+NP2PAL_GRPH+4]);
-			np2_pal16[i+NP2PAL_GRPH+ 4] = pal16;
-			np2_pal16[i+NP2PAL_GRPH+12] = pal16;
-		}
-		if (np2cfg.skipline) {
-			for (i=0; i<4; i++) {
-				pal16 = np2_pal16[i+NP2PAL_GRPH+ 0];
-				np2_pal16[i+NP2PAL_SKIP+ 0] = pal16;
-				np2_pal16[i+NP2PAL_SKIP+ 8] = pal16;
-				pal16 = np2_pal16[i+NP2PAL_GRPH+ 4];
-				np2_pal16[i+NP2PAL_SKIP+ 4] = pal16;
-				np2_pal16[i+NP2PAL_SKIP+12] = pal16;
-			}
-		}
-	}
-#endif
 }
 
 static void pal_maketext(void) {
@@ -268,9 +195,6 @@ static void pal_maketext(void) {
 	UINT	i;
 	UINT	j;
 	UINT	k;
-#if defined(SUPPORT_16BPP)
-	RGB16	pal16;
-#endif
 
 	k = NP2PAL_TEXT2;
 	for (i=0; i<8; i++) {
@@ -281,20 +205,7 @@ static void pal_maketext(void) {
 		}
 	}
 	np2_pal32[NP2PAL_TEXT3] = np2_pal32[NP2PAL_TEXT3 + 1];
-#if defined(SUPPORT_16BPP)
-	if (scrnmng_getbpp() == 16) {
-		k = NP2PAL_TEXT2;
-		for (i=0; i<8; i++) {
-			pal16 = scrnmng_makepal16(degpal1[i]);
-			np2_pal16[i+1+NP2PAL_TEXT] = pal16;
-			np2_pal16[i+1+NP2PAL_TEXT3] = pal16;
-			for (j=0; j<NP2PALS_GRPH; j++, k++) {
-				np2_pal16[k] = pal16;
-			}
-		}
-		np2_pal16[NP2PAL_TEXT3] = np2_pal16[NP2PAL_TEXT3 + 1];
-	}
-#endif
+
 }
 
 static void pal_maketext_lcd(void) {
@@ -302,9 +213,6 @@ static void pal_maketext_lcd(void) {
 	UINT	i;
 	UINT	j;
 	UINT	k;
-#if defined(SUPPORT_16BPP)
-	RGB16	pal16;
-#endif
 
 	k = NP2PAL_TEXT2;
 	for (i=0; i<8; i++) {
@@ -315,43 +223,17 @@ static void pal_maketext_lcd(void) {
 		}
 	}
 	np2_pal32[NP2PAL_TEXT3] = np2_pal32[NP2PAL_TEXT3 + 1];
-#if defined(SUPPORT_16BPP)
-	if (scrnmng_getbpp() == 16) {
-		k = NP2PAL_TEXT2;
-		for (i=0; i<8; i++) {
-			pal16 = scrnmng_makepal16(lcdpal[i*2]);
-			np2_pal16[i+1+NP2PAL_TEXT] = pal16;
-			np2_pal16[i+1+NP2PAL_TEXT3] = pal16;
-			for (j=0; j<NP2PALS_GRPH; j++, k++) {
-				np2_pal16[k] = pal16;
-			}
-		}
-		np2_pal16[NP2PAL_TEXT3] = np2_pal16[NP2PAL_TEXT3 + 1];
-	}
-#endif
 }
 
 #if defined(SUPPORT_PC9821)
 static void pal_maketext256(void) {
 
 	UINT	i;
-#if defined(SUPPORT_16BPP)
-	RGB16	pal16;
-#endif
 
 	for (i=0; i<8; i++) {
 		np2_pal32[i+1+NP2PAL_TEXTEX].d = degpal1[i].d;
 		np2_pal32[i+1+NP2PAL_TEXTEX3].d = degpal1[i].d;
 	}
-#if defined(SUPPORT_16BPP)
-	if (scrnmng_getbpp() == 16) {
-		for (i=0; i<8; i++) {
-			pal16 = scrnmng_makepal16(degpal1[i]);
-			np2_pal16[i+1+NP2PAL_TEXTEX] = pal16;
-			np2_pal16[i+1+NP2PAL_TEXTEX3] = pal16;
-		}
-	}
-#endif
 }
 #endif
 
@@ -388,15 +270,6 @@ static void pal_make9821(const UINT8 *pal) {
 		p[i].p.b = pal[i*4+2];
 	}
 	np2_pal32[NP2PAL_TEXTEX3].d = np2_pal32[NP2PAL_GRPHEX].d;
-#if defined(SUPPORT_16BPP)
-	if (scrnmng_getbpp() == 16) {
-		for (i=0; i<256; i++) {
-			np2_pal16[i + NP2PAL_GRPHEX] =
-							scrnmng_makepal16(np2_pal32[i + NP2PAL_GRPHEX]);
-		}
-		np2_pal16[NP2PAL_TEXTEX3] = np2_pal16[NP2PAL_GRPHEX];
-	}
-#endif
 }
 #endif
 
@@ -410,9 +283,6 @@ void pal_change(UINT8 textpalset) {
 			pal_maketext_lcd();
 		}
 		np2_pal32[NP2PAL_TEXT].d = np2_pal32[NP2PAL_TEXT2].d;
-#if defined(SUPPORT_16BPP)
-		np2_pal16[NP2PAL_TEXT] = np2_pal16[NP2PAL_TEXT2];
-#endif
 #if defined(SUPPORT_PC9821)
 		pal_maketext256();
 #endif
@@ -454,9 +324,6 @@ void pal_change(UINT8 textpalset) {
 	}
 	if (np2cfg.skipline) {
 		np2_pal32[NP2PAL_TEXT].d = np2_pal32[NP2PAL_SKIP].d;
-#if defined(SUPPORT_16BPP)
-		np2_pal16[NP2PAL_TEXT] = np2_pal16[NP2PAL_SKIP];
-#endif
 	}
 	scrndraw_changepalette();
 }

@@ -63,13 +63,7 @@
 #include "trace.h"
 
 
-static const char appname[] =
-#if defined(CPUCORE_IA32) && defined(X11_BUILD_ALL)
-    "np21"
-#else
-    "np2"
-#endif
-;
+static const char appname[] = "np2";
 
 /*
  * failure signale handler
@@ -329,7 +323,6 @@ main(int argc, char *argv[])
 	setup_signal(SIGTERM, sighandler);
 
 	toolkit_widget_mainloop();
-	rv = 0;
 
 	kdispwin_destroy();
 	toolwin_destroy();
@@ -377,5 +370,5 @@ fontmng_failure:
 	viewer_term();
 	toolkit_terminate();
 
-	return rv;
+	return 0;
 }

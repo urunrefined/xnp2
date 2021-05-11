@@ -979,16 +979,6 @@ static void clearrect(CMNVRAM *vram, int x, int y, int cx, int cy)
 
 	switch (vram->bpp)
 	{
-#if defined(SUPPORT_8BPP)
-		case 8:
-			col.pal8 = s_constData.pal8[KEYDISP_PALBG];
-			break;
-#endif
-#if defined(SUPPORT_16BPP)
-		case 16:
-			col.pal16 = s_constData.pal16[1][0];
-			break;
-#endif
 #if defined(SUPPORT_24BPP) || defined(SUPPORT_32BPP)
 		case 24:
 		case 32:
@@ -1009,18 +999,6 @@ static void drawkeybg(CMNVRAM *vram)
 
 	switch (vram->bpp)
 	{
-#if defined(SUPPORT_8BPP)
-		case 8:
-			bg.pal8 = s_constData.pal8[KEYDISP_PALBG];
-			fg.pal8 = s_constData.pal8[KEYDISP_PALFG];
-			break;
-#endif
-#if defined(SUPPORT_16BPP)
-		case 16:
-			bg.pal16 = s_constData.pal16[1][0];
-			fg.pal16 = s_constData.pal16[0][0];
-			break;
-#endif
 #if defined(SUPPORT_24BPP) || defined(SUPPORT_32BPP)
 		case 24:
 		case 32:
@@ -1048,23 +1026,6 @@ static BOOL draw1key(CMNVRAM *vram, KDCHANNEL *kdch, UINT n)
 	pal = kdch->r[n];
 	switch (vram->bpp)
 	{
-#if defined(SUPPORT_8BPP)
-		case 8:
-			if (pal != KEYDISP_LEVEL_MAX)
-			{
-				fg.pal8 = s_constData.pal8[(pPattern->nType) ? KEYDISP_PALBG : KEYDISP_PALFG];
-				cmndraw_setfg(vram, pPattern->lpImage, pPattern->nPosX, 0, fg);
-				kdch->r[n] = 0;
-				return TRUE;
-			}
-			fg.pal8 = s_constData.pal8[KEYDISP_PALHIT];
-			break;
-#endif
-#if defined(SUPPORT_16BPP)
-		case 16:
-			fg.pal16 = s_constData.pal16[pPattern->nType][pal];
-			break;
-#endif
 #if defined(SUPPORT_24BPP) || defined(SUPPORT_32BPP)
 		case 24:
 		case 32:
