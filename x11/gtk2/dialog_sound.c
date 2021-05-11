@@ -1351,7 +1351,6 @@ create_driver_note(void)
 		g_signal_connect(G_OBJECT(driver_radiobutton[i]), "clicked",
 		    G_CALLBACK(driver_radiobutton_clicked), GINT_TO_POINTER(i));
 	}
-	gtk_widget_set_sensitive(driver_radiobutton[SNDDRV_SDL], FALSE);
 
 	switch (np2oscfg.snddrv) {
 	case SNDDRV_NODRV:
