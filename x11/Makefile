@@ -12,7 +12,6 @@ SRC_C = \
 		./../x11/np2.c                                          \
 		./../x11/dosio.c                                        \
 		./../x11/ini.c                                          \
-		./../x11/oemtext.c                                      \
 		./../x11/trace.c                                        \
 		./../x11/kdispwin.c                                     \
 		./../x11/skbdwin.c                                      \
