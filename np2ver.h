@@ -3,7 +3,7 @@
  * @brief	The version
  */
 
-#define	NP2VER_CORE			"0.3"
+#define	NP2VER_CORE			"0.4"
 
 // #define	NP2VER_WIN9X
 // #define	NP2VER_MACOSX
