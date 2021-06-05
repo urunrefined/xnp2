@@ -53,8 +53,8 @@ void scrnmng_destroy(void);
 void scrnmng_setmultiple(int multiple);
 void scrnmng_setScaleMode(enum ScaleMode scale_mode);
 
-const SCRNSURF* scrnmng_surflock(void);
-void scrnmng_surfunlock(const SCRNSURF *surf);
+const SCRNSURF* scrnmng_surflock(void *ptr);
+void scrnmng_surfunlock(void *ptr, const SCRNSURF *surf);
 
 void scrnmng_renewal();
 

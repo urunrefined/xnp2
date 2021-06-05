@@ -3,6 +3,8 @@
 #define	SCRNCALL
 #endif
 
+#include "compiler.h"
+
 enum {
 	SURFACE_WIDTH		= 640,
 	SURFACE_HEIGHT		= 480,
@@ -23,8 +25,8 @@ extern	UINT8	np2_vram[2][SURFACE_SIZE];
 
 void scrndraw_initialize(void);
 void scrndraw_changepalette(void);
-UINT8 scrndraw_draw(UINT8 update);
-void scrndraw_redraw(void);
+UINT8 scrndraw_draw(void *graphics, UINT8 update);
+void scrndraw_redraw(void *graphics);
 
 #ifdef __cplusplus
 }

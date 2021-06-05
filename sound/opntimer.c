@@ -126,8 +126,8 @@ void opna_timer(POPNA opna, UINT nIrq, NEVENTID nTimerA, NEVENTID nTimerB)
 		opna->s.irq = s_irqtable[nIrq >> 6];
 	}
 
-	g_nevent.item[nTimerA].userData = (INTPTR)opna;
-	g_nevent.item[nTimerB].userData = (INTPTR)opna;
+	g_nevent.item[nTimerA].userData = opna;
+	g_nevent.item[nTimerB].userData = opna;
 
 //	pic_registext(opna->s.irq);
 }

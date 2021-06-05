@@ -452,7 +452,7 @@ void pccore_reset(void) {
 	SNDCSEC_LEAVE;
 }
 
-static void drawscreen(void) {
+static void drawscreen(void *graphics) {
 
 	UINT8	timing;
 	void	(VRAMCALL * grphfn)(int page, int alldraw);
@@ -578,7 +578,7 @@ static void drawscreen(void) {
 		}
 	}
 	if (pcstat.screenupdate) {
-		pcstat.screenupdate = scrndraw_draw((UINT8)(pcstat.screenupdate & 2));
+		pcstat.screenupdate = scrndraw_draw(graphics, (UINT8)(pcstat.screenupdate & 2));
 		drawcount++;
 	}
 }
@@ -591,7 +591,7 @@ void screendisp(NEVENTITEM item) {
 	gdc.vsync = 0;
 	pcstat.screendispflag = 0;
 	if (!np2cfg.DISPSYNC) {
-		drawscreen();
+		drawscreen(item->userData);
 	}
 	pi = &pic.pi[0];
 	if (pi->irr & PIC_CRTV) {
@@ -616,7 +616,7 @@ void screenvsync(NEVENTITEM item) {
 
 	// drawscreenで pccore.vsyncclockが変更される可能性があります
 	if (np2cfg.DISPSYNC) {
-		drawscreen();
+		drawscreen(0);
 	}
 	(void)item;
 }
@@ -638,7 +638,7 @@ void pccore_postevent(UINT32 event) {	// yet!
 	(void)event;
 }
 
-void pccore_exec(BOOL draw) {
+void pccore_exec(void *graphics, BOOL draw) {
 
 	pcstat.drawframe = (UINT8)draw;
 //	keystat_sync();
@@ -653,7 +653,7 @@ void pccore_exec(BOOL draw) {
 	MEMWAIT_TRAM = np2cfg.wait[0];
 	MEMWAIT_VRAM = np2cfg.wait[2];
 	MEMWAIT_GRCG = np2cfg.wait[4];
-	nevent_set(NEVENT_FLAMES, gdc.dispclock, screenvsync, NEVENT_RELATIVE);
+	nevent_setUser(NEVENT_FLAMES, gdc.dispclock, graphics, screenvsync, NEVENT_RELATIVE);
 
 //	nevent_get1stevent();
 

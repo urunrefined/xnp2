@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "compiler.h"
+
 enum
 {
 	NEVENT_MAXCLOCK		= 0x400000,
@@ -67,7 +69,7 @@ struct _neventitem
 {
 	SINT32		clock;
 	NEVENTCB	proc;
-	INTPTR		userData;
+	void 		*userData;
 };
 
 typedef struct {
@@ -97,7 +99,9 @@ void nevent_execule(void);
 
 // イベントの追加
 void nevent_set(NEVENTID id, SINT32 eventclock, NEVENTCB proc, NEVENTPOSITION absolute);
+void nevent_setUser(NEVENTID id, SINT32 eventclock, void *userData, NEVENTCB proc, NEVENTPOSITION absolute);
 void nevent_setbyms(NEVENTID id, SINT32 ms, NEVENTCB proc, NEVENTPOSITION absolute);
+
 
 // イベントの削除
 void nevent_reset(NEVENTID id);

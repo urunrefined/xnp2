@@ -122,7 +122,6 @@ int flagload(const char* ext, const char* title, BOOL force);
 int flagsave(const char* ext);
 void flagdelete(const char* ext);
 
-void changescreen(UINT8 newmode);
 void framereset(UINT cnt);
 void processwait(UINT cnt);
 int mainloop(void *);

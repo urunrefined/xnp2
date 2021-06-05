@@ -29,6 +29,7 @@
 #include <getopt.h>
 #include <locale.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include <SDL.h>
 
@@ -61,6 +62,8 @@
 #include "sysmng.h"
 #include "taskmng.h"
 #include "trace.h"
+
+#include "loop.h"
 
 
 static const char appname[] = "np2";
@@ -114,7 +117,6 @@ usage(void)
 	g_printerr("\t--timidity-config [-C] <file> : specify timidity config file\n");
 	exit(1);
 }
-
 
 /*
  * main
@@ -223,7 +225,7 @@ main(int argc, char *argv[])
 		    sizeof(timidity_cfgfile_path));
 		file_cutname(timidity_cfgfile_path);
 		file_catname(timidity_cfgfile_path, "timidity.cfg",
-		    sizeof(timidity_cfgfile_path));
+			sizeof(timidity_cfgfile_path));
 	}
 
 	dosio_init();
@@ -290,7 +292,7 @@ main(int argc, char *argv[])
 	S98_init();
 
 	toolkit_widget_show();
-	scrndraw_redraw();
+	//scrndraw_redraw();
 
 	pccore_reset();
 
@@ -319,7 +321,11 @@ main(int argc, char *argv[])
 	setup_signal(SIGINT, sighandler);
 	setup_signal(SIGTERM, sighandler);
 
-	toolkit_widget_mainloop();
+
+	//toolkit_widget_mainloop();
+	BR::loop();
+
+	printf("Normal exit\n");
 
 	kdispwin_destroy();
 	toolwin_destroy();

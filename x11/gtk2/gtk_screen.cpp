@@ -151,6 +151,8 @@ scrnmng_create(UINT8 mode)
 {
 	(void) mode;
 
+	printf("scrnmng_create\n");
+
 	while (drawmng.drawing)
 		gtk_main_iteration_do(FALSE);
 	drawmng.drawing = TRUE;
@@ -195,7 +197,7 @@ scrnmng_destroy(void)
 void
 scrnmng_renewal()
 {
-	scrnmng_surfunlock(0);
+	//scrnmng_surfunlock(0);
 }
 
 void
@@ -210,8 +212,9 @@ void scrnmng_setScaleMode(ScaleMode scaleMode){
 }
 
 const SCRNSURF *
-scrnmng_surflock(void)
+scrnmng_surflock2(void)
 {
+	printf("surflock\n");
 
 	scrnsurf.ptr = (UINT8 *)gdk_pixbuf_get_pixels(drawmng.backsurf);
 	scrnsurf.xalign = BYTES_PER_PIXEL;
@@ -362,7 +365,7 @@ static Dimensions2D getScissorExtent(double ideal, unsigned int width, unsigned 
 
 
 void
-scrnmng_surfunlock(const SCRNSURF *surf)
+scrnmng_surfunlock2(const SCRNSURF *surf)
 {
 	(void) surf;
 

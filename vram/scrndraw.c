@@ -111,7 +111,7 @@ static UINT8 rasterdraw(SDRAWFN sdrawfn, SDRAW sdraw, int maxy) {
 	}
 }
 
-UINT8 scrndraw_draw(UINT8 redraw) {
+UINT8 scrndraw_draw(void *graphics, UINT8 redraw) {
 
 	UINT8		ret;
 const SCRNSURF	*surf;
@@ -126,7 +126,7 @@ const SDRAWFN	*sdrawfn;
 	}
 
 	ret = 0;
-	surf = scrnmng_surflock();
+	surf = scrnmng_surflock(graphics);
 	if (surf == NULL) {
 		goto sddr_exit1;
 	}
@@ -229,15 +229,15 @@ const SDRAWFN	*sdrawfn;
 	}
 
 sddr_exit2:
-	scrnmng_surfunlock(surf);
+	scrnmng_surfunlock(graphics, surf);
 
 sddr_exit1:
 	return(ret);
 }
 
-void scrndraw_redraw(void) {
+void scrndraw_redraw(void *graphics) {
 	pal_change(1);
 	dispsync_renewalmode();
-	scrndraw_draw(1);
+	scrndraw_draw(graphics, 1);
 }
 

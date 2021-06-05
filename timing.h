@@ -14,4 +14,3 @@ UINT timing_getcount(void);
 #ifdef __cplusplus
 }
 #endif
-

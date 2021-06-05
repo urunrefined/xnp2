@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nevent.h"
+#include "compiler.h"
 
 enum {
 	PCBASECLOCK25		= 2457600,
@@ -194,13 +195,12 @@ void getbiospath(OEMCHAR *path, const OEMCHAR *fname, UINT maxlen);
 void screendisp(NEVENTITEM item);
 void screenvsync(NEVENTITEM item);
 
-
 void pccore_cfgupdate(void);
 
 void pccore_init(void);
 void pccore_term(void);
 void pccore_reset(void);
-void pccore_exec(BOOL draw);
+void pccore_exec(void *graphics, BOOL draw);
 
 void pccore_postevent(UINT32 event);
 

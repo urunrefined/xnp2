@@ -96,7 +96,7 @@ expose_evhandler(GtkWidget *w, GdkEventExpose *ev, gpointer p)
 {
 
 	if (ev->count == 0) {
-		scrndraw_redraw();
+		//scrndraw_redraw();
 	}
 	return TRUE;
 }

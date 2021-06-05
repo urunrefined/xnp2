@@ -232,7 +232,7 @@ flagload(const char* ext, const char* title, BOOL force)
 }
 
 void
-changescreen(UINT8 newmode)
+changescreen(void *graphics, UINT8 newmode)
 {
 	soundmng_stop();
 	mouse_running(MOUSE_STOP);
@@ -245,7 +245,7 @@ changescreen(UINT8 newmode)
 			return;
 		}
 	}
-	scrndraw_redraw();
+	scrndraw_redraw(graphics);
 	mouse_running(MOUSE_CONT);
 	soundmng_play();
 }
@@ -281,13 +281,12 @@ processwait(UINT cnt)
 }
 
 int
-mainloop(void *p)
+mainloop(void *graphics)
 {
-
 	if (np2oscfg.NOWAIT) {
 		joymng_sync();
 		mousemng_callback();
-		pccore_exec(framecnt == 0);
+		pccore_exec(graphics, framecnt == 0);
 		if (np2oscfg.DRAW_SKIP) {
 			/* nowait frame skip */
 			framecnt++;
@@ -306,7 +305,7 @@ mainloop(void *p)
 		if (framecnt < np2oscfg.DRAW_SKIP) {
 			joymng_sync();
 			mousemng_callback();
-			pccore_exec(framecnt == 0);
+			pccore_exec(graphics, framecnt == 0);
 			framecnt++;
 		} else {
 			processwait(np2oscfg.DRAW_SKIP);
@@ -317,7 +316,7 @@ mainloop(void *p)
 			UINT cnt;
 			joymng_sync();
 			mousemng_callback();
-			pccore_exec(framecnt == 0);
+			pccore_exec(graphics, framecnt == 0);
 			framecnt++;
 			cnt = timing_getcount();
 			if (framecnt > cnt) {

@@ -32,3 +32,4 @@ xnp2.files
 xnp2.includes
 
 *.d
+*.spv

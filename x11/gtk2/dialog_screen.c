@@ -119,7 +119,7 @@ ok_button_clicked(GtkButton *b, gpointer d)
 
 	if (renewal) {
 		sysmng_update(SYS_UPDATECFG);
-		scrndraw_redraw();
+		//scrndraw_redraw();
 	}
 
 	/* Chip tab */
