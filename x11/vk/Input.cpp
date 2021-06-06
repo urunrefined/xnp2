@@ -7,11 +7,15 @@ Input::Input() :  mouse_x(0), mouse_y(0), rel_mouse_x(0.0f), rel_mouse_y(0.0f) {
 
 void Input::pressKey(KeyButtons key){
 	keyButtons[(size_t)key].push();
+
+	keyEvents.push_back(KeyEvent(key, PRESSED));
 };
 
 //rename to releaseKey
 void Input::letgoKey(KeyButtons key) {
 	keyButtons[(size_t)key].release();
+
+	keyEvents.push_back(KeyEvent(key, RELEASED));
 };
 
 /*One-time key-press (gets reset each frame)*/
@@ -56,6 +60,8 @@ void Input::resetFrame(){
 	for(HIDInput<MouseButtons>& button : mouseButtons){
 		button.resetTriggered();
 	}
+
+	keyEvents.clear();
 }
 
 void Input::reset(){
@@ -74,6 +80,8 @@ void Input::reset(){
 		button.resetTriggered();
 		button.release();
 	}
+
+	keyEvents.clear();
 	
 }
 

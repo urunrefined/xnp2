@@ -4,6 +4,7 @@
 
 #include "np2.h"
 #include "scrnmng.h"
+#include "keystat.h"
 
 namespace BR {
 
@@ -23,6 +24,60 @@ static VulkanPhysicalDevice glPhysicalDeviceSelection(VulkanContext& engine){
 
 	printf("No graphics device suitable\n");
 	throw -2;
+}
+
+class KeyMapping {
+public:
+	KeyButtons key;
+	uint8_t res;
+};
+
+static KeyMapping keyTable [] {
+	{KeyButtons::KEY_ESC,         0x00},
+	{KeyButtons::KEY_1,           0x01},
+	{KeyButtons::KEY_2,           0x02},
+	{KeyButtons::KEY_3,           0x03},
+	{KeyButtons::KEY_4,           0x04},
+	{KeyButtons::KEY_5,           0x05},
+	{KeyButtons::KEY_6,           0x06},
+	{KeyButtons::KEY_7,           0x07},
+	{KeyButtons::KEY_8,           0x08},
+	{KeyButtons::KEY_9,           0x09},
+	{KeyButtons::KEY_0,           0x0A},
+	{KeyButtons::KEY_ENTER,       0x1C},
+	{KeyButtons::KEY_ARROW_UP,    0x3A},
+	{KeyButtons::KEY_ARROW_LEFT,  0x3B},
+	{KeyButtons::KEY_ARROW_RIGHT, 0x3C},
+	{KeyButtons::KEY_ARROW_DOWN,  0x3D},
+};
+
+//static void kbdTest(GLFWInput& input){
+//	for(auto& keyEvent : input.keyEvents){
+//		static int i = 1;
+//
+//		if(keyEvent.key == KeyButtons::KEY_ENTER && keyEvent.state == PRESSED){
+//			keystat_keydown(i);
+//		}
+//		else if(keyEvent.key == KeyButtons::KEY_ENTER && keyEvent.state == RELEASED){
+//			keystat_keyup(i);
+//		}
+//
+//		i++;
+//	}
+//}
+
+static void mapAndSendKey(KeyEvent& keyEvent){
+	for(KeyMapping& mapping : keyTable){
+		if(mapping.key == keyEvent.key){
+			if(keyEvent.state== PRESSED){
+				keystat_keydown(mapping.res);
+			}
+			else {
+				keystat_keyup(mapping.res);
+			}
+			break;
+		}
+	}
 }
 
 static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
@@ -47,6 +102,16 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 				scaler.recreateSwapChain();
 			}
 		}
+
+		GLFWInput& input = engine.glfwCtx.getInput();
+
+		for(auto& keyEvent : input.keyEvents){
+			mapAndSendKey(keyEvent);
+			//kbdTest();
+		}
+
+		input.reset();
+		input.resetFrame();
 	}
 
 	while(!scaler.renderingComplete()){

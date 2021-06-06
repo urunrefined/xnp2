@@ -38,6 +38,11 @@ enum class MouseButtons {
 	BUTTON_LEFT = 0, BUTTON_RIGHT, BUTTON_MIDDLE, SCROLL_UP, SCROLL_DOWN, BUTTON_SIZE
 };
 
+enum HIDAction {
+	RELEASED = 0,
+	PRESSED
+};
+
 template <class T1>
 struct HIDInput{
 	bool pressed;
@@ -61,6 +66,16 @@ struct HIDInput{
 	}
 };
 
+class KeyEvent {
+public:
+	KeyButtons key;
+	HIDAction state;
+
+	KeyEvent(KeyButtons key_,
+	HIDAction state_) : key(key_), state(state_)
+	{}
+};
+
 //TODO: Split into input and devices (Keyboard / Mouse / Ctrl etc)
 
 class Input {
@@ -73,6 +88,8 @@ private:
 	Input(const Input& input) = delete;
 	
 public:
+	std::vector<KeyEvent> keyEvents;
+
 	unsigned int mouse_x;
 	unsigned int mouse_y;
 

@@ -24,7 +24,6 @@ static void onWindowResized(GLFWwindow* window, int width, int height) {
 	onWindowResized(window, (unsigned int)width, (unsigned int)height);
 }
 
-
 struct KeyMapping {
 	int glfwKey;
 	KeyButtons inputKey;
@@ -62,7 +61,8 @@ static KeyMapping keymap[] {
 	{GLFW_KEY_KP_ADD, KeyButtons::KEY_NUMPAD_PLUS}, {GLFW_KEY_KP_SUBTRACT, KeyButtons::KEY_NUMPAD_MINUS},
 	{GLFW_KEY_LEFT, KeyButtons::KEY_ARROW_LEFT},    {GLFW_KEY_UP, KeyButtons::KEY_ARROW_UP},
 	{GLFW_KEY_RIGHT, KeyButtons::KEY_ARROW_RIGHT},  {GLFW_KEY_DOWN, KeyButtons::KEY_ARROW_DOWN},
-	{GLFW_KEY_EQUAL, KeyButtons::KEY_EQUAL}, {GLFW_KEY_MINUS, KeyButtons::KEY_MINUS}, {GLFW_KEY_PERIOD, KeyButtons::KEY_PERIOD}
+	{GLFW_KEY_EQUAL, KeyButtons::KEY_EQUAL}, {GLFW_KEY_MINUS, KeyButtons::KEY_MINUS}, {GLFW_KEY_PERIOD, KeyButtons::KEY_PERIOD},
+	{GLFW_KEY_ESCAPE, KeyButtons::KEY_ESC}
 };
 
 static MouseMapping mousemap[] {
@@ -91,7 +91,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 		/*TODO: Move outside of this module into an upper layer*/
 
-		if (key == GLFW_KEY_ESCAPE) {
+		if (key == GLFW_KEY_F12) {
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			isFocused = false;
 		}
