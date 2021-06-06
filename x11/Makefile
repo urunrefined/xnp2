@@ -1,6 +1,6 @@
-INC=-I.  -I./.. -I./../x11/gtk2 -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/atk-1.0 -I/usr/include/SDL2 -I./../i286c
+INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I./../i286c -I/usr/include/SDL2
 
-LDLIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lharfbuzz -lfontconfig -lfreetype -pthread -lSDL2 -lX11 -lm -lglfw -lvulkan
+LDLIBS = -pthread -lSDL2 -lX11 -lm -lglfw -lvulkan
 
 #General flags
 CXXFLAGS = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -Wall -Wextra -std=gnu++17 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
@@ -23,23 +23,6 @@ SRC_C = \
 		./../x11/sysmng.c                                   \
 		./../x11/taskmng.c                                  \
 		./../x11/timemng.c                                  \
-		./../x11/gtk2/dialog_about.c                        \
-		./../x11/gtk2/dialog_calendar.c                     \
-		./../x11/gtk2/dialog_config.c                       \
-		./../x11/gtk2/dialog_midi.c                         \
-		./../x11/gtk2/dialog_newdisk.c                      \
-		./../x11/gtk2/dialog_screen.c                       \
-		./../x11/gtk2/dialog_sound.c                        \
-		./../x11/gtk2/window_keydisp.c                      \
-		./../x11/gtk2/window_softkbd.c                      \
-		./../x11/gtk2/gtk_drawmng.c                         \
-		./../x11/gtk2/gtk_font.c                            \
-		./../x11/gtk2/gtk_keyboard.c                        \
-		./../x11/gtk2/gtk_menu.c                            \
-		./../x11/gtk2/gtk_mouse.c                           \
-		./../x11/gtk2/gtk_main.c                            \
-		./../x11/gtk2/gtk_wrapper.c                         \
-		./../x11/gtk2/gtk_maximize.c                        \
 		./../x11/debug/viewmem.c                            \
 		./../pccore.c                                       \
 		./../nevent.c                                       \
@@ -244,7 +227,6 @@ SRC_CPP = \
 		./../x11/ext/externalopm.cpp                        \
 		./../x11/ext/externalopna.cpp                       \
 		./../x11/ext/externalpsg.cpp                        \
-		./../x11/gtk2/gtk_screen.cpp                        \
 		./../x11/vk/Input.cpp                               \
 		./../x11/vk/VKGLFW.cpp                              \
 		./../x11/vk/VKInstance.cpp                          \

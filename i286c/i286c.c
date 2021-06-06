@@ -8,7 +8,8 @@
 #include	"i286c.mcr"
 #include	"trace.h"
 #include	"_memory.h"
-#include	"_memory.h"
+
+#include <stddef.h>
 
 #if defined(ENABLE_TRAP)
 #include "trap/steptrap.h"

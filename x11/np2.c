@@ -210,12 +210,12 @@ flagload(const char* ext, const char* title, BOOL force)
 	getstatfilename(path, ext, sizeof(path));
 	ret = statsave_check(path, buf, sizeof(buf));
 	if (ret & (~STATFLAG_DISKCHG)) {
-		toolkit_msgbox(title, "Couldn't restart",
-		    TK_MB_OK|TK_MB_ICON_ERROR);
+		//toolkit_msgbox(title, "Couldn't restart",
+		//    TK_MB_OK|TK_MB_ICON_ERROR);
 		rv = 1;
 	} else if ((!force) && (ret & STATFLAG_DISKCHG)) {
-		ret = toolkit_msgbox(title, "Conflict!\nContinue?",
-		    TK_MB_YESNO|TK_MB_ICON_QUESTION);
+		//ret = toolkit_msgbox(title, "Conflict!\nContinue?",
+		//    TK_MB_YESNO|TK_MB_ICON_QUESTION);
 		if (ret != TK_MB_YES) {
 			rv = 1;
 		}
@@ -234,17 +234,10 @@ flagload(const char* ext, const char* title, BOOL force)
 void
 changescreen(void *graphics, UINT8 newmode)
 {
+	(void) newmode;
+
 	soundmng_stop();
 	mouse_running(MOUSE_STOP);
-	scrnmng_destroy();
-	if (scrnmng_create(newmode) == SUCCESS) {
-		scrnmode = newmode;
-	} else {
-		if (scrnmng_create(scrnmode) != SUCCESS) {
-			toolkit_widget_quit();
-			return;
-		}
-	}
 	scrndraw_redraw(graphics);
 	mouse_running(MOUSE_CONT);
 	soundmng_play();
@@ -256,8 +249,8 @@ framereset(UINT cnt)
 
 	framecnt = 0;
 	//scrnmng_dispclock();
-	kdispwin_draw((UINT8)cnt);
-	skbdwin_process();
+	//kdispwin_draw((UINT8)cnt);
+	//skbdwin_process();
 	debugwin_process();
 	toolwin_draw((UINT8)cnt);
 	viewer_allreload(FALSE);

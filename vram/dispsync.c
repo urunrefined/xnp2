@@ -28,9 +28,9 @@ BOOL dispsync_renewalmode(void) {
 
 	UINT	disp;
 
-	if (!scrnmng_haveextend()) {
-		return(FALSE);
-	}
+	//if (!scrnmng_haveextend()) {
+	//	return(FALSE);
+	//}
 	disp = 0;
 	if ((!(np2cfg.LCD_MODE & 1)) && ((gdc.display & 7) < 3)) {
 		disp = 1;

@@ -1,7 +1,7 @@
 #ifndef	NP2_X11_TRACE_H__
 #define	NP2_X11_TRACE_H__
 
-#include <glib.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,7 +11,7 @@ extern int trace_flag;
 
 void trace_init(void);
 void trace_term(void);
-void trace_fmt(const char *str, ...) G_GNUC_PRINTF(1, 2);
+void trace_fmt(const char *str, ...) __attribute__ ((format (printf, 1, 2)));
 
 #ifndef TRACE
 

@@ -8,6 +8,8 @@
 #include	"vram.h"
 #include	"trace.h"
 
+#include <stddef.h>
+
 
 typedef struct {
 	UINT8	mode;

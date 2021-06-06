@@ -40,7 +40,6 @@
 
 #include <sys/stat.h>
 
-#include <glib.h>
 #include <SDL.h>
 
 
@@ -540,7 +539,7 @@ buffer_init(void)
 		}
 		sound_buffer[i].buf = (char *)_MALLOC(opna_frame, "sound buffer");
 		if (sound_buffer[i].buf == NULL) {
-			g_printerr("buffer_init: can't alloc memory\n");
+			printf("buffer_init: can't alloc memory\n");
 			while (--i >= 0) {
 				_MFREE(sound_buffer[i].buf);
 				sound_buffer[i].buf = NULL;
@@ -968,14 +967,14 @@ sdlaudio_init(UINT rate, UINT samples)
 
 	rv = SDL_InitSubSystem(SDL_INIT_AUDIO);
 	if (rv < 0) {
-		g_printerr("sdlaudio_init: SDL_InitSubSystem(): %s\n",
+		printf("sdlaudio_init: SDL_InitSubSystem(): %s\n",
 		    SDL_GetError());
 		return FAILURE;
 	}
 
 	audio_fd = SDL_OpenAudio(&fmt, NULL);
 	if (audio_fd < 0) {
-		g_printerr("sdlaudio_init: SDL_OpenAudio(): %s\n",
+		printf("sdlaudio_init: SDL_OpenAudio(): %s\n",
 		    SDL_GetError());
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		return FAILURE;

@@ -12,8 +12,6 @@
 #include "toolkit.h"
 #include "milstr.h"
 
-#include <glib.h>
-
 UINT	sys_updates;
 
 static char titlestr[512];
@@ -80,14 +78,14 @@ sysmng_updatecaption(UINT8 flag)
 		clockstr[0] = '\0';
 		if (np2oscfg.DISPCLK & 2) {
 			if (workclock.fps) {
-				g_snprintf(clockstr, sizeof(clockstr), " - %u.%1uFPS", workclock.fps / 10, workclock.fps % 10);
+				snprintf(clockstr, sizeof(clockstr), " - %u.%1uFPS", workclock.fps / 10, workclock.fps % 10);
 			}
 			else {
 				milstr_ncpy(clockstr, " - 0FPS", sizeof(clockstr));
 			}
 		}
 		if (np2oscfg.DISPCLK & 1) {
-			g_snprintf(work, sizeof(work), " %2u.%03uMHz", workclock.khz / 1000, workclock.khz % 1000);
+			snprintf(work, sizeof(work), " %2u.%03uMHz", workclock.khz / 1000, workclock.khz % 1000);
 			if (clockstr[0] == '\0') {
 				milstr_ncpy(clockstr, " -", sizeof(clockstr));
 			}
@@ -97,5 +95,5 @@ sysmng_updatecaption(UINT8 flag)
 	milstr_ncpy(work, np2oscfg.titles, sizeof(work));
 	milstr_ncat(work, titlestr, sizeof(work));
 	milstr_ncat(work, clockstr, sizeof(work));
-	toolkit_set_window_title(work);
+	//toolkit_set_window_title(work);
 }

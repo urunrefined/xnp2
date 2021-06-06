@@ -369,7 +369,7 @@ file_catname(OEMCHAR *path, const OEMCHAR *filename, int maxlen)
 			} else if (((*path - 0x41) & 0xff) < 26) {
 				*path |= 0x20;
 			} else if (*path == '\\') {
-				*path = G_DIR_SEPARATOR;
+				*path = '/';
 			}
 		}
 	}
@@ -393,7 +393,7 @@ file_getname(const OEMCHAR *path)
 			if (*path == '\0') {
 				break;
 			}
-		} else if (*path == G_DIR_SEPARATOR) {
+		} else if (*path == '/') {
 			ret = path + 1;
 		}
 	}
@@ -446,7 +446,7 @@ file_cutseparator(OEMCHAR *path)
 	int pos;
 
 	pos = strlen(path) - 1;
-	if ((pos > 0) && (path[pos] == G_DIR_SEPARATOR)) {
+	if ((pos > 0) && (path[pos] == '/')) {
 		path[pos] = '\0';
 	}
 }
@@ -457,8 +457,8 @@ file_setseparator(OEMCHAR *path, int maxlen)
 	int pos;
 
 	pos = strlen(path);
-	if ((pos) && (path[pos-1] != G_DIR_SEPARATOR) && ((pos + 2) < maxlen)) {
-		path[pos++] = G_DIR_SEPARATOR;
+	if ((pos) && (path[pos-1] != '/') && ((pos + 2) < maxlen)) {
+		path[pos++] = '/';
 		path[pos] = '\0';
 	}
 }

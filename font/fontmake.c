@@ -216,7 +216,7 @@ const UINT8	*p;
 				work[0] = (UINT8)(sjis >> 8);
 				work[1] = (UINT8)sjis;
 				oemtext_sjistooem(oemwork, NELEMENTS(oemwork), work, -1);
-				dat = fontmng_get(fnt, oemwork);
+				dat = 0;//fontmng_get(fnt, oemwork);
 
 				if (dat) {
 					width = min(dat->width, 16);
@@ -280,11 +280,8 @@ void makepc98bmp(const OEMCHAR *filename) {
 	FILEH	fh;
 	BOOL	r;
 
-#if defined(FDAT_SHIFTJIS)
-	fnt = fontmng_create(16, FDAT_SHIFTJIS, NULL);
-#else
-	fnt = fontmng_create(16, 0, NULL);
-#endif
+	fnt = 0; //fontmng_create(16, 0, NULL);
+
 	if (fnt == NULL) {
 		goto mfnt_err1;
 	}

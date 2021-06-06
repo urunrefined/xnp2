@@ -8,6 +8,8 @@
 #include	"font/font.h"
 #include	"trace.h"
 
+#include <stddef.h>
+
 
 typedef struct {
 	UINT8	GBON_PTN;

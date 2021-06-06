@@ -13,9 +13,6 @@
 #include "soundmng.h"
 #include "milstr.h"
 
-#include <glib.h>
-
-
 typedef struct {
 	const char	*title;
 	INITBL		*tbl;
@@ -130,11 +127,11 @@ iniwrsetargh8(char *work, int size, INITBL *ini)
 	ptr = (UINT8 *)(ini->value);
 	arg = ini->arg;
 	if (arg > 0) {
-		g_snprintf(tmp, sizeof(tmp), "%.2x ", ptr[0]);
+		snprintf(tmp, sizeof(tmp), "%.2x ", ptr[0]);
 		milstr_ncpy(work, tmp, size);
 	}
 	for (i = 1; i < arg; i++) {
-		g_snprintf(tmp, sizeof(tmp), "%.2x ", ptr[i]);
+		snprintf(tmp, sizeof(tmp), "%.2x ", ptr[i]);
 		milstr_ncat(work, tmp, size);
 	}
 }
@@ -428,39 +425,39 @@ ini_write(const char *path, const char *title, INITBL *tbl, UINT count, BOOL cre
 				break;
 
 			case INITYPE_SINT8:
-				g_snprintf(work, sizeof(work), "%d", *((char *)p->value));
+				snprintf(work, sizeof(work), "%d", *((char *)p->value));
 				break;
 
 			case INITYPE_SINT16:
-				g_snprintf(work, sizeof(work), "%d", *((SINT16 *)p->value));
+				snprintf(work, sizeof(work), "%d", *((SINT16 *)p->value));
 				break;
 
 			case INITYPE_SINT32:
-				g_snprintf(work, sizeof(work), "%d", *((SINT32 *)p->value));
+				snprintf(work, sizeof(work), "%d", *((SINT32 *)p->value));
 				break;
 
 			case INITYPE_UINT8:
-				g_snprintf(work, sizeof(work), "%u", *((UINT8 *)p->value));
+				snprintf(work, sizeof(work), "%u", *((UINT8 *)p->value));
 				break;
 
 			case INITYPE_UINT16:
-				g_snprintf(work, sizeof(work), "%u", *((UINT16 *)p->value));
+				snprintf(work, sizeof(work), "%u", *((UINT16 *)p->value));
 				break;
 
 			case INITYPE_UINT32:
-				g_snprintf(work, sizeof(work), "%u", *((UINT32 *)p->value));
+				snprintf(work, sizeof(work), "%u", *((UINT32 *)p->value));
 				break;
 
 			case INITYPE_HEX8:
-				g_snprintf(work, sizeof(work), "%x", *((UINT8 *)p->value));
+				snprintf(work, sizeof(work), "%x", *((UINT8 *)p->value));
 				break;
 
 			case INITYPE_HEX16:
-				g_snprintf(work, sizeof(work), "%x", *((UINT16 *)p->value));
+				snprintf(work, sizeof(work), "%x", *((UINT16 *)p->value));
 				break;
 
 			case INITYPE_HEX32:
-				g_snprintf(work, sizeof(work), "%x", *((UINT32 *)p->value));
+				snprintf(work, sizeof(work), "%x", *((UINT32 *)p->value));
 				break;
 
 			case INITYPE_KB:
@@ -471,11 +468,11 @@ ini_write(const char *path, const char *title, INITBL *tbl, UINT count, BOOL cre
 				break;
 
 			case INITYPE_SNDDRV:
-				g_snprintf(work, sizeof(work), "%s", snddrv_num2drv(*(UINT8 *)p->value));
+				snprintf(work, sizeof(work), "%s", snddrv_num2drv(*(UINT8 *)p->value));
 				break;
 
 			case INITYPE_INTERP:
-				g_snprintf(work, sizeof(work), "%s", iniwrinterp(*(UINT8 *)p->value));
+				snprintf(work, sizeof(work), "%s", iniwrinterp(*(UINT8 *)p->value));
 				break;
 
 			default:

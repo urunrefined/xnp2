@@ -129,6 +129,32 @@ void loop(){
 
 }
 
+//compat to gtk version -- Remove eventually
+extern "C" void mouse_running (UINT8 flg){
+	(void) flg;
+}
+
+extern "C" UINT8 mousemng_getstat(short *x, short *y, int clear){
+	*x = 0;
+	*y = 0;
+
+	(void) clear;
+
+	return 0;
+}
+
+extern "C" void mousemng_callback(void){
+
+}
+
+//TODO: Remove
+static SCRNMNG scrnmng {
+	0,32,0
+};
+
+extern "C" SCRNMNG *scrnmngp = &scrnmng;
+
+//TODO: Remove
 static SCRNSURF scrnsurf;
 
 const SCRNSURF *

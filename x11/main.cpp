@@ -89,8 +89,7 @@ setup_signal(int signo, sigfunc *func)
 static void
 sighandler(int signo)
 {
-
-	toolkit_widget_quit();
+	(void) signo;
 }
 
 
@@ -110,11 +109,11 @@ static void
 usage(void)
 {
 
-	g_printerr("Usage: %s [options] [[FD1 image] [[FD2 image] [[FD3 image] [FD4 image]]]]\n\n", progname);
-	g_printerr("options:\n");
-	g_printerr("\t--help            [-h]        : print this message\n");
-	g_printerr("\t--config          [-c] <file> : specify config file\n");
-	g_printerr("\t--timidity-config [-C] <file> : specify timidity config file\n");
+	printf("Usage: %s [options] [[FD1 image] [[FD2 image] [[FD3 image] [FD4 image]]]]\n\n", progname);
+	printf("options:\n");
+	printf("\t--help            [-h]        : print this message\n");
+	printf("\t--config          [-c] <file> : specify config file\n");
+	printf("\t--timidity-config [-C] <file> : specify timidity config file\n");
 	exit(1);
 }
 
@@ -132,14 +131,11 @@ main(int argc, char *argv[])
 
 	progname = argv[0];
 
-	toolkit_initialize();
-	toolkit_arginit(&argc, &argv);
-
 	while ((ch = getopt_long(argc, argv, "c:C:t:vh", longopts, NULL)) != -1) {
 		switch (ch) {
 		case 'c':
 			if (stat(optarg, &sb) < 0 || !S_ISREG(sb.st_mode)) {
-				g_printerr("Can't access %s.\n", optarg);
+				printf("Can't access %s.\n", optarg);
 				exit(1);
 			}
 			milstr_ncpy(modulefile, optarg, sizeof(modulefile));
@@ -147,7 +143,7 @@ main(int argc, char *argv[])
 
 		case 'C':
 			if (stat(optarg, &sb) < 0 || !S_ISREG(sb.st_mode)) {
-				g_printerr("Can't access %s.\n", optarg);
+				printf("Can't access %s.\n", optarg);
 				exit(1);
 			}
 			milstr_ncpy(timidity_cfgfile_path, optarg,
@@ -172,7 +168,7 @@ main(int argc, char *argv[])
 		char *env = getenv("HOME");
 		if (env) {
 			/* base dir */
-			g_snprintf(modulefile, sizeof(modulefile),
+			snprintf(modulefile, sizeof(modulefile),
 			    "%s/.np2/", env);
 			if (stat(modulefile, &sb) < 0) {
 				if (mkdir(modulefile, 0700) < 0) {
@@ -180,7 +176,7 @@ main(int argc, char *argv[])
 					exit(1);
 				}
 			} else if (!S_ISDIR(sb.st_mode)) {
-				g_printerr("%s isn't directory.\n",
+				printf("%s isn't directory.\n",
 				    modulefile);
 				exit(1);
 			}
@@ -190,7 +186,7 @@ main(int argc, char *argv[])
 			milstr_ncat(modulefile, "rc", sizeof(modulefile));
 			if ((stat(modulefile, &sb) >= 0)
 			 && !S_ISREG(sb.st_mode)) {
-				g_printerr("%s isn't regular file.\n",
+				printf("%s isn't regular file.\n",
 				    modulefile);
 			}
 		}
@@ -214,7 +210,7 @@ main(int argc, char *argv[])
 				exit(1);
 			}
 		} else if (!S_ISDIR(sb.st_mode)) {
-			g_printerr("%s isn't directory.\n",
+			printf("%s isn't directory.\n",
 			    statpath);
 			exit(1);
 		}
@@ -244,24 +240,21 @@ main(int argc, char *argv[])
 
 	SDL_Init(0);
 
-	if (fontmng_init() != SUCCESS)
-		goto fontmng_failure;
+	//if (fontmng_init() != SUCCESS)
+	//	goto fontmng_failure;
 
 	kdispwin_initialize();
 	viewer_init();
 	skbdwin_initialize();
 
-	toolkit_widget_create();
-	scrnmng_initialize();
-	kbdmng_init();
+	//scrnmng_initialize();
+	//kbdmng_init();
 	keystat_initialize();
 
 	scrnmode = 0;
 	if (np2cfg.RASTER) {
 		scrnmode |= SCRNMODE_HIGHCOLOR;
 	}
-	if (scrnmng_create(scrnmode) != SUCCESS)
-		goto scrnmng_failure;
 
 	if (soundmng_initialize() == SUCCESS) {
 		result = soundmng_pcmload(SOUND_PCMSEEK, file_getcd("fddseek.wav"));
@@ -282,7 +275,6 @@ main(int argc, char *argv[])
 	}
 
 	joymng_initialize();
-	mousemng_initialize();
 
 	commng_initialize();
 	sysmng_initialize();
@@ -291,20 +283,7 @@ main(int argc, char *argv[])
 	pccore_init();
 	S98_init();
 
-	toolkit_widget_show();
-	//scrndraw_redraw();
-
 	pccore_reset();
-
-	if (np2oscfg.toolwin) {
-	        toolwin_create();
-	}
-	if (np2oscfg.keydisp) {
-	        kdispwin_create();
-	}
-	if (np2oscfg.softkbd) {
-	        skbdwin_create();
-	}
 
 #if defined(SUPPORT_RESUME)
 	if (np2oscfg.resume) {
@@ -321,15 +300,9 @@ main(int argc, char *argv[])
 	setup_signal(SIGINT, sighandler);
 	setup_signal(SIGTERM, sighandler);
 
-
-	//toolkit_widget_mainloop();
 	BR::loop();
 
 	printf("Normal exit\n");
-
-	kdispwin_destroy();
-	toolwin_destroy();
-	skbdwin_destroy();
 
 	pccore_cfgupdate();
 
@@ -349,12 +322,7 @@ main(int argc, char *argv[])
 	debugwin_destroy();
 
 	soundmng_deinitialize();
-	scrnmng_destroy();
 
-scrnmng_failure:
-	fontmng_terminate();
-
-fontmng_failure:
 	if (!np2oscfg.cfgreadonly
 	 && (sys_updates & (SYS_UPDATECFG|SYS_UPDATEOSCFG))) {
 		initsave();
@@ -371,7 +339,6 @@ fontmng_failure:
 	dosio_term();
 
 	viewer_term();
-	toolkit_terminate();
 
 	return 0;
 }

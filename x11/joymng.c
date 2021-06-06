@@ -32,8 +32,9 @@
 
 #include <SDL.h>
 #include <SDL_joystick.h>
-#include <glib.h>
 #include <string.h>
+#include <errno.h>
+#include <limits.h>
 
 static struct {
 	void *hdl;
@@ -196,7 +197,7 @@ joydrv_initialize(void)
 	memset(devlist, 0, allocsize);
 
 	for (n = 0, i = 0; i < ndrv; ++i) {
-		g_snprintf(str, sizeof(str), "%d", i);
+		snprintf(str, sizeof(str), "%d", i);
 		devlist[n] = joydrv_open(str);
 		if (devlist[n] == NULL) {
 			continue;
