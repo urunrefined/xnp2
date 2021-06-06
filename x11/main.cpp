@@ -258,17 +258,13 @@ main(int argc, char *argv[])
 
 	if (soundmng_initialize() == SUCCESS) {
 		result = soundmng_pcmload(SOUND_PCMSEEK, file_getcd("fddseek.wav"));
-		if (result != SUCCESS) {
-			result = soundmng_pcmload(SOUND_PCMSEEK, SYSRESPATH "/fddseek.wav");
-		}
+
 		if (result == SUCCESS) {
 			soundmng_pcmvolume(SOUND_PCMSEEK, np2cfg.MOTORVOL);
 		}
 
 		result = soundmng_pcmload(SOUND_PCMSEEK1, file_getcd("fddseek1.wav"));
-		if (result != SUCCESS) {
-			result = soundmng_pcmload(SOUND_PCMSEEK1, SYSRESPATH "/fddseek1.wav");
-		}
+
 		if (result == SUCCESS) {
 			soundmng_pcmvolume(SOUND_PCMSEEK1, np2cfg.MOTORVOL);
 		}

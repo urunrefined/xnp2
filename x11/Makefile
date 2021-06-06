@@ -3,8 +3,8 @@ INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../
 LDLIBS = -pthread -lSDL2 -lX11 -lm -lglfw -lvulkan
 
 #General flags
-CXXFLAGS = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -Wall -Wextra -std=gnu++17 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
-CFLAGS   = -DHAVE_CONFIG_H -DSYSRESPATH=\""/usr/local/share/xnp2"\" -Wall -Wextra -std=gnu99   -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
+CXXFLAGS = -Wall -Wextra -std=gnu++17 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
+CFLAGS   = -Wall -Wextra -std=gnu99   -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
 
 SRC_C = \
 		./../x11/np2.c                                      \
