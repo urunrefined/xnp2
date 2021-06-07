@@ -62,6 +62,7 @@ static KeyMapping keymap[] {
 	{GLFW_KEY_LEFT, KeyButtons::KEY_ARROW_LEFT},    {GLFW_KEY_UP, KeyButtons::KEY_ARROW_UP},
 	{GLFW_KEY_RIGHT, KeyButtons::KEY_ARROW_RIGHT},  {GLFW_KEY_DOWN, KeyButtons::KEY_ARROW_DOWN},
 	{GLFW_KEY_EQUAL, KeyButtons::KEY_EQUAL}, {GLFW_KEY_MINUS, KeyButtons::KEY_MINUS}, {GLFW_KEY_PERIOD, KeyButtons::KEY_PERIOD},
+	{GLFW_KEY_LEFT_SUPER, KeyButtons::KEY_SUPER},
 	{GLFW_KEY_ESCAPE, KeyButtons::KEY_ESC}
 };
 

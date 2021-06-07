@@ -29,7 +29,7 @@ enum class KeyButtons {
 	
 	KEY_NUMPAD_PLUS, KEY_NUMPAD_MINUS,
 	KEY_ARROW_LEFT, KEY_ARROW_UP, KEY_ARROW_RIGHT, KEY_ARROW_DOWN,
-	KEY_EQUAL, KEY_MINUS, KEY_PERIOD,
+	KEY_EQUAL, KEY_MINUS, KEY_PERIOD, KEY_SUPER,
 
 	KEY_SIZE,
 };
@@ -43,29 +43,6 @@ enum HIDAction {
 	PRESSED
 };
 
-template <class T1>
-struct HIDInput{
-	bool pressed;
-	bool triggered;
-	
-	HIDInput() : pressed(false), triggered(false){
-	}
-	
-	void push(){
-		pressed = true;
-		triggered = true;
-	}
-	
-	void release(){
-		pressed = false;
-		triggered = false;
-	}
-	
-	void resetTriggered(){
-		triggered = false;
-	}
-};
-
 class KeyEvent {
 public:
 	KeyButtons key;
@@ -76,16 +53,36 @@ public:
 	{}
 };
 
+template <class T1>
+struct HIDInput{
+	bool pressed;
+	bool triggered;
+
+	HIDInput() : pressed(false), triggered(false){
+	}
+
+	void push(){
+		pressed = true;
+		triggered = true;
+	}
+
+	void release(){
+		pressed = false;
+		triggered = false;
+	}
+
+	void resetTriggered(){
+		triggered = false;
+	}
+};
+
 //TODO: Split into input and devices (Keyboard / Mouse / Ctrl etc)
 
 class Input {
 
 private:	
-	//std::array <HIDInput<KeyButtons>, (size_t)KeyButtons::KEY_SIZE> keyButtons;
-	std::array <HIDInput<KeyButtons>, (size_t)KeyButtons::KEY_SIZE> keyButtons;
-	std::array <HIDInput<MouseButtons>, (size_t)MouseButtons::BUTTON_SIZE> mouseButtons;
-	
 	Input(const Input& input) = delete;
+	std::array <HIDInput<MouseButtons>, (size_t)MouseButtons::BUTTON_SIZE> mouseButtons;
 	
 public:
 	std::vector<KeyEvent> keyEvents;
@@ -103,12 +100,6 @@ public:
 	
 	//rename to releaseKey
 	void letgoKey(KeyButtons key);
-
-	/*One-time key-press (gets reset each frame)*/
-	bool getTriggeredKey(KeyButtons key) const;
-	
-	/*Current status of the key*/
-	bool getKey(KeyButtons key) const;
 	
 	/*************************MOUSE***********************************/
 

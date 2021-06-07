@@ -18,7 +18,8 @@ public:
 
 uint32_t findMemoryType(const VkPhysicalDevice& physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties);
 VkFormat findDepthFormat(const VkPhysicalDevice& physicalDevice);
-VkRect2D getScissor(double ideal, unsigned int width, unsigned int height);
+VkRect2D getIntegerScissor(unsigned int multipleX, unsigned int multipleY, unsigned int width, unsigned int height);
+VkRect2D getAspectScissor(double ideal, unsigned int width, unsigned int height);
 
 bool hasGraphicsQueue(
 	VkPhysicalDevice physicalDevice,

@@ -30,7 +30,9 @@ public:
 	VulkanRenderPass renderPass;
 
 	std::unique_ptr<PipelineV>    pipelineV;
-	std::unique_ptr<PipelineTex>  pipelineTex;
+	std::unique_ptr<PipelineTex>  pipelineAspect;
+	std::unique_ptr<PipelineTex>  pipelineStretch;
+	std::unique_ptr<PipelineTex>  pipelineInteger;
 
 	VkImage& texture;
 	uint32_t graphicsFamily;
@@ -54,14 +56,37 @@ public:
 	);
 
 	void reCreatePipeline(VkExtent2D swapChainExtent){
-		VkRect2D scissor = getScissor((double)pc98Width / (double) pc98Height, swapChainExtent.width, swapChainExtent.height);
 
-		printf("Recreate color pipelines with offset [%u, %u], extent [%u, %u]\n",
-			   scissor.offset.x, scissor.offset.y,
-			   scissor.extent.width, scissor.extent.height);
+		{
+			VkRect2D scissor = getAspectScissor((double)pc98Width / (double) pc98Height, swapChainExtent.width, swapChainExtent.height);
 
-		pipelineV    = std::unique_ptr<PipelineV>   (new PipelineV   (device, shaderStore, scissor, renderPass));
-		pipelineTex  = std::unique_ptr<PipelineTex> (new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
+			printf("Recreate apect pipeline with offset [%u, %u], extent [%u, %u]\n",
+				   scissor.offset.x, scissor.offset.y,
+				   scissor.extent.width, scissor.extent.height);
+
+			pipelineV        = std::unique_ptr<PipelineV>   (new PipelineV   (device, shaderStore, scissor, renderPass));
+			pipelineAspect   = std::unique_ptr<PipelineTex> (new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
+		}
+		{
+			VkRect2D scissor = getIntegerScissor(pc98Width, pc98Height, swapChainExtent.width, swapChainExtent.height);
+
+			printf("Recreate integer pipeline with offset [%u, %u], extent [%u, %u]\n",
+				   scissor.offset.x, scissor.offset.y,
+				   scissor.extent.width, scissor.extent.height);
+
+			pipelineInteger  = std::unique_ptr<PipelineTex> (new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
+		}
+		{
+
+			VkRect2D scissor {{0,0}, {swapChainExtent.width, swapChainExtent.height}};
+
+			printf("Recreate stretch pipeline with offset [%u, %u], extent [%u, %u]\n",
+				   scissor.offset.x, scissor.offset.y,
+				   scissor.extent.width, scissor.extent.height);
+
+			pipelineStretch  = std::unique_ptr<PipelineTex> (
+					new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
+		}
 	}
 	
 	void updateImage();

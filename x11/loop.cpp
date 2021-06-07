@@ -84,6 +84,16 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 	BR::VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<BR::VulkanRenderBuffer> renderBuffer;
 
+
+	enum class ViewPortMode : uint8_t {
+		ASPECT = 0,
+		STRETCH,
+		INTEGER,
+		END
+	};
+
+	ViewPortMode mode = ViewPortMode::ASPECT;
+
 	while(scaler.getWindowState() != WindowState::SHOULDCLOSE){
 		mainloop(&scaler);
 
@@ -95,7 +105,17 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 
 			renderBuffer->begin(scaler.getRenderPass(), scaler.swapchain);
 			//scaler.renderer.pipelineV->record(*renderBuffer, 6);
-			scaler.renderer.pipelineTex->record(*renderBuffer, scaler.renderer.descriptorSet, 6);
+
+			if(mode == ViewPortMode::ASPECT){
+				scaler.renderer.pipelineAspect->record(*renderBuffer, scaler.renderer.descriptorSet, 6);
+			}
+			else if(mode == ViewPortMode::STRETCH){
+				scaler.renderer.pipelineStretch->record(*renderBuffer, scaler.renderer.descriptorSet, 6);
+			}
+			else {
+				scaler.renderer.pipelineInteger->record(*renderBuffer, scaler.renderer.descriptorSet, 6);
+			}
+
 			renderBuffer->end();
 
 			if(scaler.drawAndPresent(*renderBuffer) == RenderState::NEEDSSWAPCHAINUPDATE){
@@ -107,6 +127,17 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 
 		for(auto& keyEvent : input.keyEvents){
 			mapAndSendKey(keyEvent);
+
+			if(keyEvent.key == KeyButtons::KEY_SUPER && keyEvent.state == PRESSED){
+				if(mode == ViewPortMode::ASPECT){
+					mode = ViewPortMode::STRETCH;
+				}else if(mode == ViewPortMode::STRETCH){
+					mode = ViewPortMode::INTEGER;
+				}else if(mode == ViewPortMode::INTEGER){
+					mode = ViewPortMode::ASPECT;
+				}
+			}
+
 			//kbdTest();
 		}
 

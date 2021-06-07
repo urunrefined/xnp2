@@ -6,26 +6,12 @@ namespace BR
 Input::Input() :  mouse_x(0), mouse_y(0), rel_mouse_x(0.0f), rel_mouse_y(0.0f) {}
 
 void Input::pressKey(KeyButtons key){
-	keyButtons[(size_t)key].push();
-
 	keyEvents.push_back(KeyEvent(key, PRESSED));
 };
 
 //rename to releaseKey
 void Input::letgoKey(KeyButtons key) {
-	keyButtons[(size_t)key].release();
-
 	keyEvents.push_back(KeyEvent(key, RELEASED));
-};
-
-/*One-time key-press (gets reset each frame)*/
-bool Input::getTriggeredKey(KeyButtons key) const {
-	return keyButtons[(size_t)key].triggered;
-};
-
-/*Current status of the key*/
-bool Input::getKey(KeyButtons key) const {
-	return keyButtons[(size_t)key].pressed;
 };
 
 /*************************MOUSE***********************************/
@@ -53,10 +39,6 @@ void Input::resetFrame(){
 	rel_mouse_x = 0;
 	rel_mouse_y = 0;
 	
-	for(HIDInput<KeyButtons>& key : keyButtons){
-		key.resetTriggered();
-	}
-	
 	for(HIDInput<MouseButtons>& button : mouseButtons){
 		button.resetTriggered();
 	}
@@ -70,11 +52,6 @@ void Input::reset(){
 	
 	rel_mouse_x = 0;
 	rel_mouse_y = 0;
-	
-	for(HIDInput<KeyButtons>& key : keyButtons){
-		key.resetTriggered();
-		key.release();
-	}
 	
 	for(HIDInput<MouseButtons>& button : mouseButtons){
 		button.resetTriggered();

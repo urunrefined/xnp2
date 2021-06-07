@@ -25,7 +25,24 @@ uint32_t findMemoryType(const VkPhysicalDevice& physicalDevice, uint32_t typeFil
 	throw std::runtime_error("failed to find suitable memory type!");
 }
 
-VkRect2D getScissor(double ideal, unsigned int width, unsigned int height){
+VkRect2D getIntegerScissor(unsigned int multipleX, unsigned int multipleY, unsigned int width, unsigned int height){
+	unsigned int divX = width / multipleX;
+	unsigned int divY = height / multipleY;
+
+	if(divX == 0 || divY == 0) return {{0,0}, {width, height}};
+
+	unsigned int leastCommonDenominator = std::min(divX, divY);
+
+	uint32_t extentX = leastCommonDenominator * multipleX;
+	uint32_t extentY = leastCommonDenominator * multipleY;
+
+	int32_t offsetX = (width - extentX)  / 2;
+	int32_t offsetY = (height - extentY) / 2;
+
+	return {{offsetX, offsetY}, {extentX, extentY}};
+}
+
+VkRect2D getAspectScissor(double ideal, unsigned int width, unsigned int height){
 	unsigned int xOffset = 0;
 	unsigned int yOffset = 0;
 
