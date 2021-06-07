@@ -159,7 +159,7 @@ BRESULT sxsi_prepare(SXSIDEV sxsi) {
 			return(FAILURE);
 		}
 	}
-	sysmng_hddaccess(sxsi->drv);
+
 	return(SUCCESS);
 }
 

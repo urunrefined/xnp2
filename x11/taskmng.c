@@ -1,7 +1,6 @@
 #include "compiler.h"
 
 #include "np2.h"
-#include "toolkit.h"
 
 #include "taskmng.h"
 

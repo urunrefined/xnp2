@@ -1,7 +1,7 @@
 #ifndef	NP2_X11_SYSMNG_H__
 #define	NP2_X11_SYSMNG_H__
 
-#include "toolwin.h"
+#include "compiler.h"
 
 // どーでもいい通知系
 
@@ -42,9 +42,6 @@ do { \
 	sys_updates &= (SYS_UPDATECFG | SYS_UPDATEOSCFG); \
 	sysmng_workclockreset(); \
 } while (/*CONSTCOND*/ 0)
-
-#define	sysmng_fddaccess(a)	toolwin_fddaccess((a))
-#define	sysmng_hddaccess(a)	toolwin_hddaccess((a))
 
 void sysmng_workclockreset(void);
 BOOL sysmng_workclockrenewal(void);

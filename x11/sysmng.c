@@ -9,7 +9,6 @@
 #include "ideio.h"
 #include "fdd/sxsi.h"
 #include "sysmng.h"
-#include "toolkit.h"
 #include "milstr.h"
 
 UINT	sys_updates;

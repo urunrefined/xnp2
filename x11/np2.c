@@ -31,10 +31,8 @@
 #include "dosio.h"
 #include "scrndraw.h"
 #include "timing.h"
-#include "toolkit.h"
 
 #include "kdispwin.h"
-#include "toolwin.h"
 #include "viewer.h"
 #include "debugwin.h"
 #include "skbdwin.h"
@@ -216,14 +214,11 @@ flagload(const char* ext, const char* title, BOOL force)
 	} else if ((!force) && (ret & STATFLAG_DISKCHG)) {
 		//ret = toolkit_msgbox(title, "Conflict!\nContinue?",
 		//    TK_MB_YESNO|TK_MB_ICON_QUESTION);
-		if (ret != TK_MB_YES) {
-			rv = 1;
-		}
+
+		rv = 1;
 	}
 	if (rv == 0) {
 		statsave_load(path);
-		toolwin_setfdd(0, fdd_diskname(0));
-		toolwin_setfdd(1, fdd_diskname(1));
 	}
 	sysmng_workclockreset();
 	sysmng_updatecaption(1);
@@ -252,7 +247,6 @@ framereset(UINT cnt)
 	//kdispwin_draw((UINT8)cnt);
 	//skbdwin_process();
 	debugwin_process();
-	toolwin_draw((UINT8)cnt);
 	viewer_allreload(FALSE);
 	if (np2oscfg.DISPCLK & 3) {
 		if (sysmng_workclockrenewal()) {

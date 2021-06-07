@@ -203,7 +203,6 @@ BRESULT fdd_read(void) {
 
 	FDDFILE		fdd;
 
-	sysmng_fddaccess(fdc.us);
 	fdd = fddfile + fdc.us;
 	switch(fdd->type) {
 		case DISKTYPE_BETA:
@@ -219,7 +218,6 @@ BRESULT fdd_write(void) {
 
 	FDDFILE		fdd;
 
-	sysmng_fddaccess(fdc.us);
 	fdd = fddfile + fdc.us;
 	switch(fdd->type) {
 		case DISKTYPE_BETA:
@@ -235,7 +233,6 @@ BRESULT fdd_readid(void) {
 
 	FDDFILE		fdd;
 
-	sysmng_fddaccess(fdc.us);
 	fdd = fddfile + fdc.us;
 	switch(fdd->type) {
 		case DISKTYPE_BETA:
@@ -257,7 +254,6 @@ BRESULT fdd_formatinit(void) {
 
 BRESULT fdd_formating(const UINT8 *ID) {
 
-	sysmng_fddaccess(fdc.us);
 	if (fddfile[fdc.us].type == DISKTYPE_D88) {
 		return(fdd_formating_d88(ID));
 	}

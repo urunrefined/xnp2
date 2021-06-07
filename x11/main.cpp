@@ -43,11 +43,9 @@
 #include "scrndraw.h"
 #include "serial.h"
 #include "timing.h"
-#include "toolkit.h"
 #include "milstr.h"
 
 #include "kdispwin.h"
-#include "toolwin.h"
 #include "viewer.h"
 #include "debugwin.h"
 #include "skbdwin.h"
@@ -227,7 +225,6 @@ main(int argc, char *argv[])
 	dosio_init();
 	file_setcd(modulefile);
 	initload();
-	toolwin_readini();
 	kdispwin_readini();
 	skbdwin_readini();
 
@@ -322,7 +319,6 @@ main(int argc, char *argv[])
 	if (!np2oscfg.cfgreadonly
 	 && (sys_updates & (SYS_UPDATECFG|SYS_UPDATEOSCFG))) {
 		initsave();
-		toolwin_writeini();
 		kdispwin_writeini();
 		skbdwin_writeini();
 	}
