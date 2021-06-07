@@ -137,6 +137,7 @@ static void mouse_move_callback(GLFWwindow* window, double x, double y){
 	Input& input = ctx->getInput();
 
 	input.updateMouse((unsigned int)x,(unsigned int)y);
+	//input.setMouseAbsolute((unsigned int)x,(unsigned int)y);
 }
 
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){

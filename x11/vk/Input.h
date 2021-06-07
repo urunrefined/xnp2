@@ -83,6 +83,7 @@ class Input {
 private:	
 	Input(const Input& input) = delete;
 	std::array <HIDInput<MouseButtons>, (size_t)MouseButtons::BUTTON_SIZE> mouseButtons;
+	std::array <HIDInput<KeyButtons>, (size_t)KeyButtons::KEY_SIZE> keyButtons;
 	
 public:
 	std::vector<KeyEvent> keyEvents;
@@ -90,16 +91,15 @@ public:
 	unsigned int mouse_x;
 	unsigned int mouse_y;
 
-	/*Relative*/
-	int rel_mouse_x;
-	int rel_mouse_y;
-
 	Input();
 	
 	void pressKey(KeyButtons key);
 	
 	//rename to releaseKey
 	void letgoKey(KeyButtons key);
+
+	/*Current status of the key*/
+	bool getButton(KeyButtons key) const;
 	
 	/*************************MOUSE***********************************/
 
@@ -114,12 +114,8 @@ public:
 	/*Current status of the key*/
 	bool getButton(MouseButtons key) const;
 	
-	void resetFrame();
 	void reset();
 	void updateMouse(unsigned int x, unsigned int y);
-	
-	int getMouseRelX();
-	int getMouseRelY();
 	
 	bool mouseHasMoved();
 };

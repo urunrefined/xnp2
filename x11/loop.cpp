@@ -92,7 +92,7 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 		END
 	};
 
-	ViewPortMode mode = ViewPortMode::ASPECT;
+	ViewPortMode mode = ViewPortMode::INTEGER;
 
 	while(scaler.getWindowState() != WindowState::SHOULDCLOSE){
 		mainloop(&scaler);
@@ -128,7 +128,8 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 		for(auto& keyEvent : input.keyEvents){
 			mapAndSendKey(keyEvent);
 
-			if(keyEvent.key == KeyButtons::KEY_SUPER && keyEvent.state == PRESSED){
+			if(keyEvent.key == KeyButtons::KEY_E && keyEvent.state == PRESSED &&
+					input.getButton(KeyButtons::KEY_SUPER)){
 				if(mode == ViewPortMode::ASPECT){
 					mode = ViewPortMode::STRETCH;
 				}else if(mode == ViewPortMode::STRETCH){
@@ -142,7 +143,7 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 		}
 
 		input.reset();
-		input.resetFrame();
+		//input.resetFrame();
 	}
 
 	while(!scaler.renderingComplete()){
@@ -162,10 +163,14 @@ void loop(){
 
 //compat to gtk version -- Remove eventually
 extern "C" void mouse_running (UINT8 flg){
+	//printf("mouse_running\n");
+
 	(void) flg;
 }
 
 extern "C" UINT8 mousemng_getstat(short *x, short *y, int clear){
+	//printf("mouse_getstat\n");
+
 	*x = 0;
 	*y = 0;
 
