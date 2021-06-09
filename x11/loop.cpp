@@ -163,24 +163,38 @@ void loop(){
 
 //compat to gtk version -- Remove eventually
 extern "C" void mouse_running (UINT8 flg){
-	//printf("mouse_running\n");
-
-	(void) flg;
+	printf("mouse_running %d\n", flg);
 }
 
-extern "C" UINT8 mousemng_getstat(short *x, short *y, int clear){
-	//printf("mouse_getstat\n");
+extern "C" UINT8 mousemng_getstat(void *graphics, short *x, short *y){
 
-	*x = 0;
-	*y = 0;
+	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
 
-	(void) clear;
+	auto& input = scaler->context.glfwCtx.getInput();
 
-	return 0;
-}
+	input.getMouseMove(*x, *y);
+	input.mouse_move_x = 0;
+	input.mouse_move_y = 0;
 
-extern "C" void mousemng_callback(void){
+	UINT8 mouseButtonState = 0;
 
+	//The entire logic here seems very strange....
+	//Needs to be revisited
+	if(input.getButton(BR::MouseButtons::BUTTON_LEFT)){
+		mouseButtonState &= 0x7f;
+	}
+	else {
+		mouseButtonState |= 0x80;
+	}
+
+	if(input.getButton(BR::MouseButtons::BUTTON_RIGHT)){
+		mouseButtonState &= 0xdf;
+	}
+	else {
+		mouseButtonState |= 0x20;
+	}
+
+	return mouseButtonState;
 }
 
 //TODO: Remove

@@ -30,8 +30,7 @@ extern "C" {
 #define	MOUSE_RIGHTUP	3
 
 
-UINT8 mousemng_getstat(short *x, short *y, int clear);
-void mousemng_callback(void);
+UINT8 mousemng_getstat(void *graphics, short *x, short *y);
 
 UINT8 mouse_flag(void);
 void mouse_running(UINT8 flg);

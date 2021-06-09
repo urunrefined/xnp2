@@ -272,7 +272,6 @@ mainloop(void *graphics)
 {
 	if (np2oscfg.NOWAIT) {
 		joymng_sync();
-		mousemng_callback();
 		pccore_exec(graphics, framecnt == 0);
 		if (np2oscfg.DRAW_SKIP) {
 			/* nowait frame skip */
@@ -291,7 +290,6 @@ mainloop(void *graphics)
 		/* frame skip */
 		if (framecnt < np2oscfg.DRAW_SKIP) {
 			joymng_sync();
-			mousemng_callback();
 			pccore_exec(graphics, framecnt == 0);
 			framecnt++;
 		} else {
@@ -302,7 +300,6 @@ mainloop(void *graphics)
 		if (waitcnt == 0) {
 			UINT cnt;
 			joymng_sync();
-			mousemng_callback();
 			pccore_exec(graphics, framecnt == 0);
 			framecnt++;
 			cnt = timing_getcount();

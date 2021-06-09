@@ -88,8 +88,13 @@ private:
 public:
 	std::vector<KeyEvent> keyEvents;
 
-	unsigned int mouse_x;
-	unsigned int mouse_y;
+	float mouse_x = 0;
+	float mouse_y = 0;
+
+	float mouse_move_x = 0;
+	float mouse_move_y = 0;
+
+
 
 	Input();
 	
@@ -115,7 +120,10 @@ public:
 	bool getButton(MouseButtons key) const;
 	
 	void reset();
-	void updateMouse(unsigned int x, unsigned int y);
+	void moveMouse(float x, float y);
+
+	void getMouseCoords(unsigned int& x, unsigned int& y) const;
+	void getMouseMove(short& x, short& y) const;
 	
 	bool mouseHasMoved();
 };

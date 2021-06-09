@@ -136,8 +136,11 @@ static void mouse_move_callback(GLFWwindow* window, double x, double y){
 	GLFWContext *ctx = (GLFWContext *)glfwGetWindowUserPointer(window);
 	Input& input = ctx->getInput();
 
-	input.updateMouse((unsigned int)x,(unsigned int)y);
-	//input.setMouseAbsolute((unsigned int)x,(unsigned int)y);
+	input.moveMouse(x, y);
+
+	//printf("update mouse raw %u %u\n", ix, iy);
+
+	glfwSetCursorPos(window, 0, 0);
 }
 
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){

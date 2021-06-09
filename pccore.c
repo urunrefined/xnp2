@@ -643,7 +643,7 @@ void pccore_exec(void *graphics, BOOL draw) {
 	pcstat.drawframe = (UINT8)draw;
 //	keystat_sync();
 	soundmng_sync();
-	mouseif_sync();
+	mouseif_sync(graphics);
 	pal_eventclear();
 
 	SNDCSEC_ENTER;

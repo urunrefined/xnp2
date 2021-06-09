@@ -11,14 +11,14 @@
 // それを救う為に 均等に移動データが伝わるようにしなければならない
 
 
-void mouseif_sync(void) {
+void mouseif_sync(void *graphics) {
 
 	// 前回の分を補正
 	mouseif.x += mouseif.rx;
 	mouseif.y += mouseif.ry;
 
 	// 今回の移動量を取得
-	mouseif.b = mousemng_getstat(&mouseif.sx, &mouseif.sy, 1);
+	mouseif.b = mousemng_getstat(graphics, &mouseif.sx, &mouseif.sy);
 	if (np2cfg.KEY_MODE == 3) {
 		mouseif.b &= keystat_getmouse(&mouseif.sx, &mouseif.sy);
 	}
