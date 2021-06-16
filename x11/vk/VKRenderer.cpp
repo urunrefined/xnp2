@@ -102,7 +102,7 @@ VulkanRenderer::VulkanRenderer(
 
 		commandPool(device, graphicsFamily),
 
-		textureView(device, texture, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT),
+		textureView(device, texture, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT),
 		sampler(physicalDevice, device),
 
 		descriptorLayout(device),

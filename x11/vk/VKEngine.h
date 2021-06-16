@@ -88,7 +88,7 @@ public:
 			device.presentQueue, renderpass, swapchainImages.swapChainImages,
 			swapchainImages.swapChainImageFormat, swapchainImages.swapChainExtent),
 		shaderStore(device),
-		texture(device, 640, 400, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT),
+		texture(device, 640, 400, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT),
 		textureMemory(physicalDevice, device, texture, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT),
 		renderer(physicalDevice, device, device.graphicsFamily, device.graphicsQueue, shaderStore, swapchainImages.swapChainImageFormat, swapchainImages.swapChainExtent, texture),
 

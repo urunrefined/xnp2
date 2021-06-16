@@ -21,8 +21,6 @@ To run simply start ./xnp2 inside the x11 directory
 
 
 TODO:
-* The brightness/contrast is completely off in comparison against the GTK
-version, which is much brighter. Not sure why this is the case...
 * Create a new config file. The old one has a thousand options - most should
 be discarded. Valid options IMHO are: viewport-mode, cpu type, memory,
 attached FDDs/HDDs, MIDI modules / attached sound modules.
