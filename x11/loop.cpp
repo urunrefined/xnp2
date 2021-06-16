@@ -26,11 +26,33 @@ static VulkanPhysicalDevice glPhysicalDeviceSelection(VulkanContext& engine){
 	throw -2;
 }
 
+//PC-9801 keyboard layout (more or less)
+// STOP  COPY    F1  F2  F3  F4  F5  F6  F7  F8  F9  F10  (RU  RD)*
+//
+// ESC       1  2  3  4  5  6  7  8  9  0  -  ^  ¥  BS     INS  DEL    HOME HELP   -    /
+//    TAB      Q  W  E  R  T  Y  U  I  O  P  @  [  ||||||| (       )*    7    8    9    *
+// CTRL CAPS     A  S  D  F  G  H  J  K  L  ;  : ] |ENTER|     UP        4    5    6    +
+//  --SHIFT--      Z  X  C  V  B  N  M  <  >  ? --  SHIFT   LT    RT     1    2    3    =
+//        KANA  GRPH (**) ----------SPACE---------- XFER       DN        0    ,    .   RET
+//
+//
+// * On some layouts Roll Up Down are replaced with vf1 vf2 vf3 vf4 vf5 and is instead
+// placed under INS and DEL
+// ** On some layouts there was also an NFER Key here.
+// -- left of shift is actually the long '-'
+
+
 class KeyMapping {
 public:
 	KeyButtons key;
 	uint8_t res;
 };
+
+//NKEY_KANA			= 0x72,
+//NKEY_GRPH			= 0x73,
+
+// we are using keycodes here, not scancodes as we want to replicate
+// the original keyboard (not completely possible)
 
 static KeyMapping keyTable [] {
 	{KeyButtons::KEY_ESC,         0x00},
@@ -45,10 +67,35 @@ static KeyMapping keyTable [] {
 	{KeyButtons::KEY_9,           0x09},
 	{KeyButtons::KEY_0,           0x0A},
 	{KeyButtons::KEY_ENTER,       0x1C},
+
+	{KeyButtons::KEY_SPACE,	      0x34},
+	{KeyButtons::KEY_RIGHT_ALT,   0x35},
+
 	{KeyButtons::KEY_ARROW_UP,    0x3A},
 	{KeyButtons::KEY_ARROW_LEFT,  0x3B},
 	{KeyButtons::KEY_ARROW_RIGHT, 0x3C},
 	{KeyButtons::KEY_ARROW_DOWN,  0x3D},
+
+	{KeyButtons::KEY_NUMPAD_NUM,   0x3e},
+	{KeyButtons::KEY_NUMPAD_MINUS, 0x40},
+	{KeyButtons::KEY_NUMPAD_DIV,   0x41},
+	{KeyButtons::KEY_NUM_7,        0x42},
+	{KeyButtons::KEY_NUM_8,        0x43},
+	{KeyButtons::KEY_NUM_9,        0x44},
+	{KeyButtons::KEY_NUMPAD_MULT,  0x45},
+	{KeyButtons::KEY_NUM_4,        0x46},
+	{KeyButtons::KEY_NUM_5,        0x47},
+	{KeyButtons::KEY_NUM_6,        0x48},
+	{KeyButtons::KEY_NUMPAD_PLUS,  0x49},
+	{KeyButtons::KEY_NUM_1,        0x4a},
+	{KeyButtons::KEY_NUM_2,        0x4b},
+	{KeyButtons::KEY_NUM_3,        0x4c},
+	{KeyButtons::KEY_NUMPAD_ENTER, 0x4d},
+	{KeyButtons::KEY_NUM_0,        0x4e},
+	{KeyButtons::KEY_NUMPAD_COMMA, 0x4f},
+
+	{KeyButtons::KEY_LEFT_SHIFT,   0x70},
+	{KeyButtons::KEY_LEFT_CTRL,    0x74},
 };
 
 //static void kbdTest(GLFWInput& input){
@@ -70,9 +117,11 @@ static void mapAndSendKey(KeyEvent& keyEvent){
 	for(KeyMapping& mapping : keyTable){
 		if(mapping.key == keyEvent.key){
 			if(keyEvent.state== PRESSED){
+				printf("res %d\n", mapping.res);
 				keystat_keydown(mapping.res);
 			}
 			else {
+				printf("res %d\n", mapping.res);
 				keystat_keyup(mapping.res);
 			}
 			break;
