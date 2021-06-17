@@ -38,6 +38,7 @@ static KeyMapping keymap[] {
 	{GLFW_KEY_LEFT_SHIFT, KeyButtons::KEY_LEFT_SHIFT},
 	{GLFW_KEY_LEFT_CONTROL, KeyButtons::KEY_LEFT_CTRL},
 	{GLFW_KEY_LEFT_ALT, KeyButtons::KEY_LEFT_ALT},
+	{GLFW_KEY_RIGHT_ALT, KeyButtons::KEY_RIGHT_ALT},
 	{GLFW_KEY_TAB, KeyButtons::KEY_TAB}, {GLFW_KEY_ENTER, KeyButtons::KEY_ENTER},
 
 	{GLFW_KEY_A, KeyButtons::KEY_A}, {GLFW_KEY_B, KeyButtons::KEY_B}, {GLFW_KEY_C, KeyButtons::KEY_C}, {GLFW_KEY_D, KeyButtons::KEY_D}, {GLFW_KEY_E, KeyButtons::KEY_E},
