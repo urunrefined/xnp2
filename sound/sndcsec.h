@@ -12,16 +12,7 @@ extern "C"
 
 #if defined(SOUND_CRITICAL)
 
-#if defined(WIN32) || defined(_WIN32_WCE)
-
-extern CRITICAL_SECTION g_sndcsec;
-
-#define	SNDCSEC_INIT	InitializeCriticalSection(&g_sndcsec)
-#define	SNDCSEC_TERM	DeleteCriticalSection(&g_sndcsec)
-#define	SNDCSEC_ENTER	EnterCriticalSection(&g_sndcsec)
-#define	SNDCSEC_LEAVE	LeaveCriticalSection(&g_sndcsec)
-
-#elif defined(MACOS)
+#if defined(MACOS)
 
 extern MPCriticalRegionID g_sndcsec;
 

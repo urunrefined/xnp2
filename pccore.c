@@ -54,11 +54,7 @@
 
 const OEMCHAR np2version[] = OEMTEXT(NP2VER_CORE);
 
-#if defined(_WIN32_WCE)
-#define	PCBASEMULTIPLE	2
-#else
 #define	PCBASEMULTIPLE	4
-#endif
 
 
 	NP2CFG	np2cfg = {

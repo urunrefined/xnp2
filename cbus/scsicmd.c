@@ -12,14 +12,7 @@
 #include	"scsicmd.h"
 #include	"fdd/sxsi.h"
 
-#if defined(_WIN32) && defined(TRACE)
-extern void iptrace_out(void);
-#define	SCSICMD_ERR		MessageBox(NULL, "SCSI error", "?", MB_OK);	\
-						exit(1);
-#else
 #define	SCSICMD_ERR
-#endif
-
 
 static const UINT8 hdd_inquiry[0x20] = {
 			0x00,0x00,0x02,0x02,0x1c,0x00,0x00,0x18,

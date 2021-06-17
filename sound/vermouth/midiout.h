@@ -1,5 +1,5 @@
 
-#if !defined(_WIN32_WCE) && !defined(SLZAURUS)
+#if !defined(SLZAURUS)
 #define	ENABLE_TREMOLO
 #define	ENABLE_VIRLATE
 #else
