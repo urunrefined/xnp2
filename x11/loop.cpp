@@ -284,12 +284,11 @@ static SCRNMNG scrnmng {
 
 extern "C" SCRNMNG *scrnmngp = &scrnmng;
 
-//TODO: Remove
-static SCRNSURF scrnsurf;
-
-const SCRNSURF *
+const SCRNSURF
 scrnmng_surflock(void *graphics){
 	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
+
+	SCRNSURF scrnsurf;
 
 	scrnsurf.ptr = (UINT8 *) scaler->renderer.image.data;
 	scrnsurf.bpp = 4 * 8;
@@ -298,13 +297,11 @@ scrnmng_surflock(void *graphics){
 	scrnsurf.xalign = 4;
 	scrnsurf.yalign = 640 * 4;
 
-	return &scrnsurf;
+	return scrnsurf;
 }
 
 void
-scrnmng_surfunlock(void *graphics, const SCRNSURF *surf){
-	(void) surf;
-
+scrnmng_surfunlock(void *graphics){
 	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
 	scaler->renderer.updateImage();
 }

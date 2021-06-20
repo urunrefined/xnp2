@@ -114,7 +114,6 @@ static UINT8 rasterdraw(SDRAWFN sdrawfn, SDRAW sdraw, int maxy) {
 UINT8 scrndraw_draw(void *graphics, UINT8 redraw) {
 
 	UINT8		ret;
-const SCRNSURF	*surf;
 const SDRAWFN	*sdrawfn;
 	_SDRAW		sdraw;
 	UINT8		bit;
@@ -126,19 +125,17 @@ const SDRAWFN	*sdrawfn;
 	}
 
 	ret = 0;
-	surf = scrnmng_surflock(graphics);
-	if (surf == NULL) {
-		goto sddr_exit1;
-	}
+	SCRNSURF surf = scrnmng_surflock(graphics);
+
 #if defined(SUPPORT_PC9821)
 	if (gdc.analog & 2) {
-		sdrawfn = sdraw_getproctblex(surf);
+		sdrawfn = sdraw_getproctblex(&surf);
 	}
 	else
 #endif
-	sdrawfn = sdraw_getproctbl(surf);
+	sdrawfn = sdraw_getproctbl(&surf);
 	if (sdrawfn == NULL) {
-		goto sddr_exit2;
+		goto sddr_exit;
 	}
 
 	bit = 0;
@@ -166,7 +163,7 @@ const SDRAWFN	*sdrawfn;
 			renewal_line[i] &= ~bit;
 		}
 	}
-	height = surf->height;
+	height = surf.height;
 	do {
 #if defined(SUPPORT_PC9821)
 		if (gdc.analog & 2) {
@@ -215,12 +212,12 @@ const SDRAWFN	*sdrawfn;
 			sdraw.src2 = np2_tram;
 			break;
 	}
-	sdraw.dst = surf->ptr;
-	sdraw.width = surf->width;
-	sdraw.xbytes = surf->xalign * surf->width;
+	sdraw.dst = surf.ptr;
+	sdraw.width = surf.width;
+	sdraw.xbytes = surf.xalign * surf.width;
 	sdraw.y = 0;
-	sdraw.xalign = surf->xalign;
-	sdraw.yalign = surf->yalign;
+	sdraw.xalign = surf.xalign;
+	sdraw.yalign = surf.yalign;
 	if (((gdc.analog & 3) != 1) || (palevent.events >= PALEVENTMAX)) {
 		(*(*sdrawfn))(&sdraw, height);
 	}
@@ -228,10 +225,8 @@ const SDRAWFN	*sdrawfn;
 		ret = rasterdraw(*sdrawfn, &sdraw, height);
 	}
 
-sddr_exit2:
-	scrnmng_surfunlock(graphics, surf);
-
-sddr_exit1:
+sddr_exit:
+	scrnmng_surfunlock(graphics);
 	return(ret);
 }
 
