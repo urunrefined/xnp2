@@ -33,7 +33,6 @@ extern "C" {
 UINT8 mousemng_getstat(void *graphics, short *x, short *y);
 
 UINT8 mouse_flag(void);
-void mouse_running(UINT8 flg);
 UINT8 mouse_btn(UINT8 btn);
 
 /* for X11 */

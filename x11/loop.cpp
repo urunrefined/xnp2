@@ -241,11 +241,6 @@ void loop(){
 
 }
 
-//compat to gtk version -- Remove eventually
-extern "C" void mouse_running (UINT8 flg){
-	printf("mouse_running %d\n", flg);
-}
-
 extern "C" UINT8 mousemng_getstat(void *graphics, short *x, short *y){
 
 	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
@@ -284,8 +279,7 @@ static SCRNMNG scrnmng {
 
 extern "C" SCRNMNG *scrnmngp = &scrnmng;
 
-const SCRNSURF
-scrnmng_surflock(void *graphics){
+SCRNSURF scrnmng_surflock(void *graphics){
 	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
 
 	SCRNSURF scrnsurf;
@@ -300,8 +294,7 @@ scrnmng_surflock(void *graphics){
 	return scrnsurf;
 }
 
-void
-scrnmng_surfunlock(void *graphics){
+void scrnmng_surfunlock(void *graphics){
 	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
 	scaler->renderer.updateImage();
 }

@@ -23,20 +23,9 @@ typedef struct {
 } SCRNSURF;
 
 enum {
-	SCRNMODE_HIGHCOLOR	= 0x02
-};
-
-enum {
 	SCRNFLAG_FULLSCREEN	= 0x01,
 	SCRNFLAG_HAVEEXTEND	= 0x02,
 };
-
-enum ScaleMode {
-	SCALEMODE_INTEGER        = 0x01,
-	SCALEMODE_STRETCH        = 0x02,
-	SCALEMODE_STRETCH_ASPECT = 0x03
-};
-
 
 typedef struct {
 	UINT8	flag;
@@ -46,14 +35,8 @@ typedef struct {
 
 extern SCRNMNG *scrnmngp;
 
-void scrnmng_initialize(void);
 BRESULT scrnmng_create(UINT8 scrnmode);
-void scrnmng_destroy(void);
-
-void scrnmng_setmultiple(int multiple);
-void scrnmng_setScaleMode(enum ScaleMode scale_mode);
-
-const SCRNSURF scrnmng_surflock(void *ptr);
+SCRNSURF scrnmng_surflock(void *ptr);
 void scrnmng_surfunlock(void *ptr);
 
 void scrnmng_renewal();

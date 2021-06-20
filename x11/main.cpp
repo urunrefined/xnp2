@@ -248,11 +248,6 @@ main(int argc, char *argv[])
 	//kbdmng_init();
 	keystat_initialize();
 
-	scrnmode = 0;
-	if (np2cfg.RASTER) {
-		scrnmode |= SCRNMODE_HIGHCOLOR;
-	}
-
 	if (soundmng_initialize() == SUCCESS) {
 		result = soundmng_pcmload(SOUND_PCMSEEK, file_getcd("fddseek.wav"));
 
@@ -298,8 +293,6 @@ main(int argc, char *argv[])
 	printf("Normal exit\n");
 
 	pccore_cfgupdate();
-
-	mouse_running(MOUSE_OFF);
 	joymng_deinitialize();
 	S98_trash();
 

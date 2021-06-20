@@ -114,7 +114,6 @@ NP2OSCFG np2oscfg = {
 };
 
 volatile sig_atomic_t np2running = 0;
-UINT8 scrnmode = 0;
 int ignore_fullscreen_mode = 0;
 
 UINT framecnt = 0;
@@ -232,9 +231,7 @@ changescreen(void *graphics, UINT8 newmode)
 	(void) newmode;
 
 	soundmng_stop();
-	mouse_running(MOUSE_STOP);
 	scrndraw_redraw(graphics);
-	mouse_running(MOUSE_CONT);
 	soundmng_play();
 }
 
