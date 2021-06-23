@@ -1,6 +1,6 @@
 INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I./../i286c -I/usr/include/SDL2
 
-LDLIBS = -pthread -lSDL2 -lX11 -lm -lglfw -lvulkan
+LDLIBS = -pthread -lSDL2 -lm -lglfw -lvulkan
 
 #General flags
 CXXFLAGS = -Wall -Wextra -std=gnu++17 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
