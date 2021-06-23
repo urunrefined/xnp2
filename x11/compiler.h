@@ -193,7 +193,6 @@ typedef signed long nxp2ptr;
 
 #define	SUPPORT_S98
 #define	SUPPORT_KEYDISP
-#define	SUPPORT_SOFTKBD	0
 
 /*
  * You could specify a complete path, e.g. "/etc/timidity.cfg", and

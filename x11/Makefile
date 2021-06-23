@@ -12,7 +12,6 @@ SRC_C = \
 		./../x11/ini.c                                      \
 		./../x11/trace.c                                    \
 		./../x11/kdispwin.c                                 \
-		./../x11/skbdwin.c                                  \
 		./../x11/cmmidi.c                                   \
 		./../x11/cmserial.c                                 \
 		./../x11/drawmng.c                                  \
@@ -105,7 +104,6 @@ SRC_C = \
 		./../generic/unasm.c                                \
 		./../generic/np2info.c                              \
 		./../generic/memdbg32.c                             \
-		./../generic/softkbd.c                              \
 		./../io/iocore.c                                    \
 		./../io/artic.c                                     \
 		./../io/cgrom.c                                     \

@@ -48,7 +48,6 @@
 #include "kdispwin.h"
 #include "viewer.h"
 #include "debugwin.h"
-#include "skbdwin.h"
 
 #include "commng.h"
 #include "fontmng.h"
@@ -225,7 +224,6 @@ main(int argc, char *argv[])
 	file_setcd(modulefile);
 	initload();
 	kdispwin_readini();
-	skbdwin_readini();
 
 	rand_setseed((SINT32)time(NULL));
 
@@ -241,7 +239,6 @@ main(int argc, char *argv[])
 
 	kdispwin_initialize();
 	viewer_init();
-	skbdwin_initialize();
 
 	//scrnmng_initialize();
 	//kbdmng_init();
@@ -308,9 +305,6 @@ main(int argc, char *argv[])
 
 	initsave();
 	kdispwin_writeini();
-	skbdwin_writeini();
-
-	skbdwin_deinitialize();
 
 	SDL_Quit();
 

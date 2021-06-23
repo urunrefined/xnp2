@@ -35,7 +35,6 @@
 #include "kdispwin.h"
 #include "viewer.h"
 #include "debugwin.h"
-#include "skbdwin.h"
 
 #include "commng.h"
 #include "joymng.h"
