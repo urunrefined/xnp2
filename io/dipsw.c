@@ -1,5 +1,4 @@
 #include	"compiler.h"
-#include	"sysmng.h"
 #include	"cpucore.h"
 #include	"pccore.h"
 #include	"iocore.h"
@@ -52,7 +51,6 @@ void IOOUTCALL dipsw_w8(UINT port, REG8 value) {
 				if (np2cfg.BEEP_VOL != set) {
 					np2cfg.BEEP_VOL = set;
 					beep_setvol(set);
-					sysmng_update(SYS_UPDATECFG);
 				}
 			}
 			break;

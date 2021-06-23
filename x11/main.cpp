@@ -57,7 +57,6 @@
 #include "mousemng.h"
 #include "scrnmng.h"
 #include "soundmng.h"
-#include "sysmng.h"
 #include "taskmng.h"
 #include "trace.h"
 
@@ -265,7 +264,6 @@ main(int argc, char *argv[])
 	joymng_initialize();
 
 	commng_initialize();
-	sysmng_initialize();
 	taskmng_initialize();
 
 	pccore_init();
@@ -278,7 +276,6 @@ main(int argc, char *argv[])
 		flagload(np2resumeext, FALSE);
 	}
 #endif
-	sysmng_workclockreset();
 
 	drvmax = (argc < 4) ? argc : 4;
 	for (i = 0; i < drvmax; i++) {
@@ -309,12 +306,9 @@ main(int argc, char *argv[])
 
 	soundmng_deinitialize();
 
-	if (!np2oscfg.cfgreadonly
-	 && (sys_updates & (SYS_UPDATECFG|SYS_UPDATEOSCFG))) {
-		initsave();
-		kdispwin_writeini();
-		skbdwin_writeini();
-	}
+	initsave();
+	kdispwin_writeini();
+	skbdwin_writeini();
 
 	skbdwin_deinitialize();
 

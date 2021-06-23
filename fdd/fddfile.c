@@ -1,7 +1,6 @@
 #include	"compiler.h"
 #include	"strres.h"
 #include	"dosio.h"
-#include	"sysmng.h"
 #include	"pccore.h"
 #include	"iocore.h"
 #include	"fddfile.h"

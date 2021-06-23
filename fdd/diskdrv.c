@@ -6,7 +6,6 @@
 #include "compiler.h"
 #include "diskdrv.h"
 #include "dosio.h"
-#include "sysmng.h"
 #include "pccore.h"
 #include "iocore.h"
 #include "fddfile.h"
@@ -63,7 +62,7 @@ void diskdrv_setsxsi(REG8 drv, const OEMCHAR *fname)
 		{
 			p[0] = '\0';
 		}
-		sysmng_update(SYS_UPDATEHDD | SYS_UPDATECFG);
+
 	}
 	else
 	{
@@ -156,7 +155,6 @@ void diskdrv_readyfddex(REG8 drv, const OEMCHAR *fname, UINT ftype, int readonly
 			fdd_set(drv, fname, ftype, readonly);
 			fdc.stat[drv] = FDCRLT_AI | drv;
 			fdc_interrupt();
-			sysmng_update(SYS_UPDATEFDD);
 		}
 	}
 }
@@ -185,7 +183,6 @@ void diskdrv_setfddex(REG8 drv, const OEMCHAR *fname, UINT ftype, int readonly)
 			diskdrv_ro[drv] = readonly;
 			file_cpyname(diskdrv_fname[drv], fname, NELEMENTS(diskdrv_fname[drv]));
 		}
-		sysmng_update(SYS_UPDATEFDD);
 	}
 }
 

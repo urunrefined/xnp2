@@ -43,7 +43,6 @@
 #include "mousemng.h"
 #include "scrnmng.h"
 #include "soundmng.h"
-#include "sysmng.h"
 #include "taskmng.h"
 
 #include <sys/time.h>
@@ -205,8 +204,6 @@ flagload(const char* ext, BOOL force)
 	if (rv == 0) {
 		statsave_load(path);
 	}
-	sysmng_workclockreset();
-	sysmng_updatecaption(1);
 
 	return rv;
 }
@@ -231,11 +228,6 @@ framereset(UINT cnt)
 	//skbdwin_process();
 	debugwin_process();
 	viewer_allreload(FALSE);
-	if (np2oscfg.DISPCLK & 3) {
-		if (sysmng_workclockrenewal()) {
-			sysmng_updatecaption(3);
-		}
-	}
 }
 
 void

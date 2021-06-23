@@ -34,7 +34,6 @@
 #include "dosio.h"
 #include "parts.h"
 
-#include "sysmng.h"
 #include "sound.h"
 #include "_memory.h"
 
@@ -208,7 +207,6 @@ snddrv_setup(void)
 	} else {
 		if (sdlaudio_setup() == SUCCESS) {
 			np2oscfg.snddrv = SNDDRV_SDL;
-			sysmng_update(SYS_UPDATEOSCFG);
 			return;
 		}
 	}
@@ -216,7 +214,6 @@ snddrv_setup(void)
 	/* no match */
 	nosound_setup();
 	np2oscfg.snddrv = SNDDRV_NODRV;
-	sysmng_update(SYS_UPDATEOSCFG);
 }
 
 static void
@@ -268,7 +265,6 @@ soundmng_create(UINT rate, UINT bufmsec)
 		audio_fd = -1;
 		nosound_setup();
 		np2oscfg.snddrv = SNDDRV_NODRV;
-		sysmng_update(SYS_UPDATEOSCFG);
 		return 0;
 	}
 

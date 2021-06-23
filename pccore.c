@@ -10,7 +10,6 @@
 #include	"strres.h"
 #include	"dosio.h"
 #include	"soundmng.h"
-#include	"sysmng.h"
 #include	"timemng.h"
 #include	"cpucore.h"
 #include	"pccore.h"
@@ -336,9 +335,6 @@ void pccore_cfgupdate(void) {
 			renewal = TRUE;
 		}
 	}
-	if (renewal) {
-		sysmng_update(SYS_UPDATECFG);
-	}
 }
 
 /**
@@ -436,7 +432,6 @@ void pccore_reset(void) {
 	CPU_IP = 0xfff0;
 
 	CPU_CLEARPREFETCH();
-	sysmng_cpureset();
 
 #if defined(SUPPORT_HOSTDRV)
 	hostdrv_reset();

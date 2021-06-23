@@ -2,7 +2,6 @@
 #include	"strres.h"
 #include	"textfile.h"
 #include	"dosio.h"
-#include	"sysmng.h"
 #include	"cpucore.h"
 #include	"pccore.h"
 #include	"sxsi.h"
