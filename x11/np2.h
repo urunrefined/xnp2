@@ -24,11 +24,6 @@ typedef struct {
 } COMCFG;
 
 typedef struct {
-	char	titles[256];
-
-	UINT	paddingx;
-	UINT	paddingy;
-
 	UINT8	NOWAIT;
 	UINT8	DRAW_SKIP;
 
@@ -118,7 +113,7 @@ extern char fontname[1024];
 extern const char np2flagext[];
 extern const char np2resumeext[];
 
-int flagload(const char* ext, const char* title, BOOL force);
+int flagload(const char* ext, BOOL force);
 int flagsave(const char* ext);
 void flagdelete(const char* ext);
 

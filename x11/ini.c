@@ -513,10 +513,6 @@ enum {
 };
 
 static INITBL iniitem[] = {
-	{"np2title", INIRO_STR,		np2oscfg.titles,	sizeof(np2oscfg.titles)},
-	{"paddingx", INIROMAX_SINT32,	&np2oscfg.paddingx,	32},
-	{"paddingy", INIROMAX_SINT32,	&np2oscfg.paddingy,	32},
-
 	{"FDfolder", INITYPE_STR,	fddfolder,		MAX_PATH},
 	{"HDfolder", INITYPE_STR,	hddfolder,		MAX_PATH},
 	{"bmap_Dir", INITYPE_STR,	bmpfilefolder,		MAX_PATH},

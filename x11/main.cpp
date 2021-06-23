@@ -275,7 +275,7 @@ main(int argc, char *argv[])
 
 #if defined(SUPPORT_RESUME)
 	if (np2oscfg.resume) {
-		flagload(np2resumeext, "Resume", FALSE);
+		flagload(np2resumeext, FALSE);
 	}
 #endif
 	sysmng_workclockreset();

@@ -50,15 +50,6 @@
 
 
 NP2OSCFG np2oscfg = {
-#if !defined(CPUCORE_IA32)		/* titles */
-	"Neko Project II Katze",
-#else
-	"Neko Project II + IA32 Katze",
-#endif
-
-	0, 			/* paddingx */
-	0,			/* paddingy */
-
 	0,			/* NOWAIT */
 	0,			/* DRAW_SKIP */
 
@@ -100,8 +91,8 @@ NP2OSCFG np2oscfg = {
 	0,			/* I286SAVE */
 
 	SNDDRV_SDL,		/* snddrv */
-	{ "", "" }, 		/* MIDIDEV */
-	0,			/* MIDIWAIT */
+	{ "", "" }, 	/* MIDIDEV */
+	0,				/* MIDIWAIT */
 
 	MOUSE_RATIO_100,	/* mouse_move_ratio */
 
@@ -197,7 +188,7 @@ flagdelete(const char* ext)
 }
 
 int
-flagload(const char* ext, const char* title, BOOL force)
+flagload(const char* ext, BOOL force)
 {
 	char path[MAX_PATH];
 	char buf[1024];
@@ -207,13 +198,8 @@ flagload(const char* ext, const char* title, BOOL force)
 	getstatfilename(path, ext, sizeof(path));
 	ret = statsave_check(path, buf, sizeof(buf));
 	if (ret & (~STATFLAG_DISKCHG)) {
-		//toolkit_msgbox(title, "Couldn't restart",
-		//    TK_MB_OK|TK_MB_ICON_ERROR);
 		rv = 1;
 	} else if ((!force) && (ret & STATFLAG_DISKCHG)) {
-		//ret = toolkit_msgbox(title, "Conflict!\nContinue?",
-		//    TK_MB_YESNO|TK_MB_ICON_QUESTION);
-
 		rv = 1;
 	}
 	if (rv == 0) {

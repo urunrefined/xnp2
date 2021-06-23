@@ -91,8 +91,4 @@ sysmng_updatecaption(UINT8 flag)
 			milstr_ncat(clockstr, work, sizeof(clockstr));
 		}
 	}
-	milstr_ncpy(work, np2oscfg.titles, sizeof(work));
-	milstr_ncat(work, titlestr, sizeof(work));
-	milstr_ncat(work, clockstr, sizeof(work));
-	//toolkit_set_window_title(work);
 }
