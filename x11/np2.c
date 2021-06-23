@@ -32,7 +32,6 @@
 #include "scrndraw.h"
 #include "timing.h"
 
-#include "kdispwin.h"
 #include "viewer.h"
 #include "debugwin.h"
 

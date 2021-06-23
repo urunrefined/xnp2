@@ -8,7 +8,6 @@
 #include "pccore.h"
 #include "iocore.h"
 #include "sound/fmboard.h"
-#include "generic/keydisp.h"
 #include "externalchipmanager.h"
 #include "externalopl3.h"
 
@@ -144,7 +143,6 @@ void opl3_bind(POPL3 opl3)
 		sound_streamregist(&opl3->oplgen, (SOUNDCB)oplgen_getpcm);
 	}
 
-	keydisp_bindopl3(opl3->s.reg, (cCaps & OPL3_HAS_OPL3) ? 18 : 9, nBaseClock);
 }
 
 /**
@@ -200,10 +198,7 @@ static void writeRegister(POPL3 opl3, UINT nAddress, REG8 cData)
 			{
 				return;
 			}
-			if (nAddress & 0x10)
-			{
-				keydisp_opl3keyon(opl3->s.reg, nAddress & 0x0f, cData);
-			}
+
 			break;
 
 		case 0xc0:
@@ -289,10 +284,7 @@ static void writeExtendedRegister(POPL3 opl3, UINT nAddress, REG8 cData)
 			{
 				return;
 			}
-			if (nAddress & 0x10)
-			{
-				keydisp_opl3keyon(opl3->s.reg, (nAddress & 0x0f) + 9, cData);
-			}
+
 			break;
 
 		case 0xc0:

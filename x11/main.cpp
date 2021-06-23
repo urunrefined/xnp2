@@ -45,7 +45,6 @@
 #include "timing.h"
 #include "milstr.h"
 
-#include "kdispwin.h"
 #include "viewer.h"
 #include "debugwin.h"
 
@@ -223,7 +222,6 @@ main(int argc, char *argv[])
 	dosio_init();
 	file_setcd(modulefile);
 	initload();
-	kdispwin_readini();
 
 	rand_setseed((SINT32)time(NULL));
 
@@ -237,7 +235,6 @@ main(int argc, char *argv[])
 	//if (fontmng_init() != SUCCESS)
 	//	goto fontmng_failure;
 
-	kdispwin_initialize();
 	viewer_init();
 
 	//scrnmng_initialize();
@@ -304,7 +301,6 @@ main(int argc, char *argv[])
 	soundmng_deinitialize();
 
 	initsave();
-	kdispwin_writeini();
 
 	SDL_Quit();
 

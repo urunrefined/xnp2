@@ -10,7 +10,6 @@
 #include "sound/fmboard.h"
 #include "sound/sound.h"
 #include "sound/s98.h"
-#include "generic/keydisp.h"
 #include "externalchipmanager.h"
 #include "externalopna.h"
 
@@ -148,12 +147,6 @@ void opna_bind(POPNA opna)
 {
 	UINT8 cCaps = opna->s.cCaps;
 	UINT nClock = 3993600;
-
-	keydisp_bindopna(opna->s.reg, (cCaps & OPNA_HAS_EXTENDEDFM) ? 6 : 3, nClock);
-	if (cCaps & OPNA_HAS_PSG)
-	{
-		keydisp_bindpsg(opna->s.reg, nClock);
-	}
 
 	CExternalOpna* pExt = reinterpret_cast<CExternalOpna*>(opna->userdata);
 	if (pExt == NULL)
@@ -303,7 +296,6 @@ static void writeRegister(POPNA opna, UINT nAddress, REG8 cData)
 	{
 		if (cCaps & OPNA_HAS_PSG)
 		{
-			keydisp_psg(opna->s.reg, nAddress);
 			if ((!pExt) || (!pExt->HasPsg()))
 			{
 				psggen_setreg(&opna->psg, nAddress, cData);
@@ -367,7 +359,6 @@ static void writeRegister(POPNA opna, UINT nAddress, REG8 cData)
 			{
 				pExt->WriteRegister(nAddress, cData);
 			}
-			keydisp_opnakeyon(opna->s.reg, cData);
 		}
 		else if (nAddress == 0x27)
 		{

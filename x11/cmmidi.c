@@ -2,7 +2,6 @@
 
 #include "np2.h"
 #include "commng.h"
-#include "kdispwin.h"
 #include "mimpidef.h"
 #include "sound.h"
 #include "_memory.h"
@@ -360,7 +359,6 @@ midireset(CMMIDI midi)
 	work[1] = 0x7b;
 	work[2] = 0x00;
 	for (work[0] = 0xb0; work[0] < 0xc0; work[0]++) {
-		keydisp_midi(work);
 		(*midi->outfn)(midi, MIDIOUTS3(work), 3);
 	}
 }
@@ -506,7 +504,7 @@ midiwrite(COMMNG self, UINT8 data)
 				mch->prog = midi->buffer[1];
 				break;
 			}
-			keydisp_midi(midi->buffer);
+
 			(*midi->outfn)(midi, MIDIOUTS2(midi->buffer), 2);
 			midi->midictrl = MIDICTRL_READY;
 			return 2;
@@ -538,7 +536,6 @@ midiwrite(COMMNG self, UINT8 data)
 				mch->bend = LOADINTELWORD(midi->buffer + 1);
 				break;
 			}
-			keydisp_midi(midi->buffer);
 			(*midi->outfn)(midi, MIDIOUTS3(midi->buffer), 3);
 			midi->midictrl = MIDICTRL_READY;
 			return 3;

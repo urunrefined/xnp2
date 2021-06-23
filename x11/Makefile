@@ -11,7 +11,6 @@ SRC_C = \
 		./../x11/dosio.c                                    \
 		./../x11/ini.c                                      \
 		./../x11/trace.c                                    \
-		./../x11/kdispwin.c                                 \
 		./../x11/cmmidi.c                                   \
 		./../x11/cmserial.c                                 \
 		./../x11/drawmng.c                                  \
@@ -97,7 +96,6 @@ SRC_C = \
 		./../font/fontx1.c                                  \
 		./../font/fontx68k.c                                \
 		./../generic/cmndraw.c                              \
-		./../generic/keydisp.c                              \
 		./../generic/cmjasts.c                              \
 		./../generic/hostdrv.c                              \
 		./../generic/hostdrvs.c                             \

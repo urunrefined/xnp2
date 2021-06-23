@@ -192,7 +192,6 @@ typedef signed long nxp2ptr;
 #undef	SUPPORT_SCSI
 
 #define	SUPPORT_S98
-#define	SUPPORT_KEYDISP
 
 /*
  * You could specify a complete path, e.g. "/etc/timidity.cfg", and

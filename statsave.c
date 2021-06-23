@@ -35,7 +35,6 @@
 #include "fdd/fdd_mtr.h"
 #include "fdd/sxsi.h"
 #include "font/font.h"
-#include "keydisp.h"
 #include "hostdrv.h"
 #include "calendar.h"
 #include "keystat.h"

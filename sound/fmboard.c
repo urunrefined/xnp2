@@ -20,8 +20,7 @@
 #include	"sound.h"
 #include	"fmboard.h"
 #include	"beep.h"
-#include "soundrom.h"
-#include	"keydisp.h"
+#include	"soundrom.h"
 #include	"keystat.h"
 
 
@@ -239,7 +238,6 @@ void fmboard_reset(const NP2CFG *pConfig, SOUNDID nSoundID)
 
 void fmboard_bind(void) {
 
-	keydisp_reset();
 	switch (g_nSoundID)
 	{
 		case SOUNDID_PC_9801_14:
