@@ -4,7 +4,7 @@
 #define	STRCALL
 #endif
 
-#include "oemtext.h"
+#include "codecnv/codecnv.h"
 #include "compiler.h"
 
 #ifdef __cplusplus

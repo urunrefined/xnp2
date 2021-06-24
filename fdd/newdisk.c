@@ -1,5 +1,5 @@
 #include	"compiler.h"
-#include	"oemtext.h"
+#include	"codecnv/codecnv.h"
 #include	"dosio.h"
 #include	"newdisk.h"
 #include	"fddfile.h"

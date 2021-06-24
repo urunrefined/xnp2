@@ -20,7 +20,7 @@ namespace scci
 class CSpfmLight : public CSoundInterface, protected CThreadBase
 {
 public:
-	CSpfmLight(CSoundInterfaceManager* pManager, const std::oemstring& deviceName, UINT nDelay);
+	CSpfmLight(CSoundInterfaceManager* pManager, const std::string& deviceName, UINT nDelay);
 	virtual ~CSpfmLight();
 
 	virtual bool Initialize();

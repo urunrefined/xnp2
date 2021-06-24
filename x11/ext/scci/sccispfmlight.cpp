@@ -18,7 +18,7 @@ namespace scci
  * @param[in] deviceName The name of the device
  * @param[in] nDelay delay time
  */
-CSpfmLight::CSpfmLight(CSoundInterfaceManager* pManager, const std::oemstring& deviceName, UINT nDelay)
+CSpfmLight::CSpfmLight(CSoundInterfaceManager* pManager, const std::string& deviceName, UINT nDelay)
 	: CSoundInterface(pManager, deviceName)
 	, m_nDelay(nDelay)
 	, m_bReseted(false)

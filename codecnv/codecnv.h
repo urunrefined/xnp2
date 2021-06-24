@@ -6,6 +6,9 @@
 #if !defined(NP2_CODECNV_H__)
 #define NP2_CODECNV_H__
 
+#define	oemtext_sjistooem	codecnv_sjistoutf8
+#define	oemtext_oemtosjis	codecnv_utf8tosjis
+
 #ifdef __cplusplus
 extern "C"
 {

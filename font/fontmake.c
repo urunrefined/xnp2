@@ -1,7 +1,7 @@
 #include	"compiler.h"
 #include	"bmpdata.h"
 #include	"parts.h"
-#include	"oemtext.h"
+#include	"codecnv/codecnv.h"
 #include	"dosio.h"
 #include	"fontmng.h"
 #include	"font.h"

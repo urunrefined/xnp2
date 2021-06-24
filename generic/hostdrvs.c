@@ -8,7 +8,7 @@
 
 #if defined(SUPPORT_HOSTDRV)
 
-#include "oemtext.h"
+#include "codecnv/codecnv.h"
 #include "pccore.h"
 #include "trace.h"
 

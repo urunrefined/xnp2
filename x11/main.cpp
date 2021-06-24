@@ -30,6 +30,7 @@
 #include <locale.h>
 #include <signal.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <SDL.h>
 

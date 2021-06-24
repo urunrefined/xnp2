@@ -2,7 +2,7 @@
 #include	"dosio.h"
 #include	"arc.h"
 #include	"arcunzip.h"
-#include	"oemtext.h"
+#include	"codecnv.h"
 
 // ---- normal file (default)
 

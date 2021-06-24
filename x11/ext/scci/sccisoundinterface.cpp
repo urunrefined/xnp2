@@ -19,7 +19,7 @@ namespace scci
  * @param[in] pManager The instance of the manager
  * @param[in] deviceName The information
  */
-CSoundInterface::CSoundInterface(CSoundInterfaceManager* pManager, const std::oemstring& deviceName)
+CSoundInterface::CSoundInterface(CSoundInterfaceManager* pManager, const std::string& deviceName)
 	: m_nRef(0)
 	, m_pManager(pManager)
 {
