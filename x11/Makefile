@@ -37,16 +37,8 @@ SRC_C = \
 		./../common/mimpidef.c                              \
 		./../common/parts.c                                 \
 		./../common/wavefile.c                              \
-		./../codecnv/eucsjis.c                              \
-		./../codecnv/eucucs2.c                              \
-		./../codecnv/sjiseuc.c                              \
 		./../codecnv/sjisucs2.c                             \
-		./../codecnv/tcswap16.c                             \
-		./../codecnv/tcswap32.c                             \
-		./../codecnv/textcnv.c                              \
 		./../codecnv/ucs2sjis.c                             \
-		./../codecnv/ucs2utf8.c                             \
-		./../codecnv/utf8ucs2.c                             \
 		./../bios/bios.c                                    \
 		./../bios/bios09.c                                  \
 		./../bios/bios0c.c                                  \

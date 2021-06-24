@@ -2730,161 +2730,6 @@ static const UINT32 s_level2[] =
 	UDCODE,0x8191,0x8192,0x81ca,0x8150,0xfa55,0x818f
 };
 
-static UINT ucs2len(const UINT16 *lpString);
-static UINT ucs2tosjis(char *lpOutput, UINT cchOutput, const UINT16 *lpInput, UINT cbInput);
-static UINT utf8tosjis(char *lpOutput, UINT cchOutput, const char *lpInput, UINT cbInput);
-
-/**
- * Maps a UTF-16 string to a S-SJIS string
- * @param[out] lpOutput Pointer to a buffer that receives the converted string
- * @param[in] cchOutput Size, in characters, of the buffer indicated by lpOutput
- * @param[in] lpInput Pointer to the character string to convert
- * @param[in] cbInput Size, in characters, of the buffer indicated by lpInput
- * @return The number of characters written to the buffer indicated by lpOutput
- */
-UINT codecnv_ucs2tosjis(char *lpOutput, UINT cchOutput, const UINT16 *lpInput, UINT cbInput)
-{
-	UINT nLength;
-
-	if (lpInput == NULL)
-	{
-		return 0;
-	}
-
-	if (cchOutput == 0)
-	{
-		lpOutput = NULL;
-		cchOutput = (UINT)-1;
-	}
-
-	if (cbInput != (UINT)-1)
-	{
-		// Binary mode
-		return ucs2tosjis(lpOutput, cchOutput, lpInput, cbInput);
-	}
-	else
-	{
-		// String mode
-		nLength = ucs2tosjis(lpOutput, cchOutput - 1, lpInput, ucs2len(lpInput));
-		if (lpOutput)
-		{
-			lpOutput[nLength] = '\0';
-		}
-		return nLength + 1;
-	}
-}
-
-/**
- * Get the length of a string
- * @param[in] lpString Null-terminated string
- * @return the number of characters in lpString
- */
-static UINT ucs2len(const UINT16 *lpString)
-{
-	const UINT16 *p = lpString;
-	while (*p != 0)
-	{
-		p++;
-	}
-	return (UINT)(p - lpString);
-}
-
-/**
- * Maps a UTF-16 string to a S-JIS string (inner)
- * @param[out] lpOutput Pointer to a buffer that receives the converted string
- * @param[in] cchOutput Size, in characters, of the buffer indicated by lpOutput
- * @param[in] lpInput Pointer to the character string to convert
- * @param[in] cbInput Size, in characters, of the buffer indicated by lpInput
- * @return The number of characters written to the buffer indicated by lpOutput
- */
-static UINT ucs2tosjis(char *lpOutput, UINT cchOutput, const UINT16 *lpInput, UINT cbInput)
-{
-	UINT nRemain;
-	UINT c;
-	UINT r;
-
-	nRemain = cchOutput;
-	while ((cbInput > 0) && (nRemain > 0))
-	{
-		c = *lpInput++;
-		cbInput--;
-
-		r = s_level1[c >> 8];
-		c = (c - r) & 0xff;
-		if (c < ((r >> 8) & 0x1ff))
-		{
-			c = s_level2[(r >> 17) + c];
-		}
-		else
-		{
-			c = UDCODE;
-		}
-
-		if (c < 0x100)
-		{
-			nRemain--;
-			if (lpOutput)
-			{
-				*lpOutput++ = (char)c;
-			}
-		}
-		else
-		{
-			if (nRemain < 2)
-			{
-				break;
-			}
-			nRemain -= 2;
-			if (lpOutput)
-			{
-				*lpOutput++ = (char)(c >> 8);
-				*lpOutput++ = (char)(c >> 0);
-			}
-		}
-	}
-	return (UINT)(cchOutput - nRemain);
-}
-
-/**
- * Maps a UTF-8 string to a S-SJIS string
- * @param[out] lpOutput Pointer to a buffer that receives the converted string
- * @param[in] cchOutput Size, in characters, of the buffer indicated by lpOutput
- * @param[in] lpInput Pointer to the character string to convert
- * @param[in] cbInput Size, in characters, of the buffer indicated by lpInput
- * @return The number of characters written to the buffer indicated by lpOutput
- */
-UINT codecnv_utf8tosjis(char *lpOutput, UINT cchOutput, const char *lpInput, UINT cbInput)
-{
-	UINT nLength;
-
-	if (lpInput == NULL)
-	{
-		return 0;
-	}
-
-	if (cchOutput == 0)
-	{
-		lpOutput = NULL;
-		cchOutput = (UINT)-1;
-	}
-
-	if (cbInput != (UINT)-1)
-	{
-		// Binary mode
-		return utf8tosjis(lpOutput, cchOutput, lpInput, cbInput);
-	}
-	else
-	{
-		// String mode
-		nLength = utf8tosjis(lpOutput, cchOutput - 1, lpInput, (UINT)strlen(lpInput));
-		if (lpOutput)
-		{
-			lpOutput[nLength] = '\0';
-		}
-		return nLength + 1;
-	}
-}
-
 /**
  * Maps a UTF-8 string to a S-JIS string (inner)
  * @param[out] lpOutput Pointer to a buffer that receives the converted string
@@ -2963,4 +2808,44 @@ static UINT utf8tosjis(char *lpOutput, UINT cchOutput, const char *lpInput, UINT
 		}
 	}
 	return (UINT)(cchOutput - nRemain);
+}
+
+/**
+ * Maps a UTF-8 string to a S-SJIS string
+ * @param[out] lpOutput Pointer to a buffer that receives the converted string
+ * @param[in] cchOutput Size, in characters, of the buffer indicated by lpOutput
+ * @param[in] lpInput Pointer to the character string to convert
+ * @param[in] cbInput Size, in characters, of the buffer indicated by lpInput
+ * @return The number of characters written to the buffer indicated by lpOutput
+ */
+UINT codecnv_utf8tosjis(char *lpOutput, UINT cchOutput, const char *lpInput, UINT cbInput)
+{
+	UINT nLength;
+
+	if (lpInput == NULL)
+	{
+		return 0;
+	}
+
+	if (cchOutput == 0)
+	{
+		lpOutput = NULL;
+		cchOutput = (UINT)-1;
+	}
+
+	if (cbInput != (UINT)-1)
+	{
+		// Binary mode
+		return utf8tosjis(lpOutput, cchOutput, lpInput, cbInput);
+	}
+	else
+	{
+		// String mode
+		nLength = utf8tosjis(lpOutput, cchOutput - 1, lpInput, (UINT)strlen(lpInput));
+		if (lpOutput)
+		{
+			lpOutput[nLength] = '\0';
+		}
+		return nLength + 1;
+	}
 }
