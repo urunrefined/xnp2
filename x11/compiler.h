@@ -193,11 +193,4 @@ typedef signed long nxp2ptr;
 
 #define	SUPPORT_S98
 
-/*
- * You could specify a complete path, e.g. "/etc/timidity.cfg", and
- * then specify the library directory in the configuration file.
- */
-extern char timidity_cfgfile_path[MAX_PATH];
-#define	TIMIDITY_CFGFILE	timidity_cfgfile_path
-
 #endif	/* NP2_X11_COMPILER_H__ */

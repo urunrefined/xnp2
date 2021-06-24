@@ -16,7 +16,6 @@ sdl2
 vulkan-icd-loader 
 
 Vulkan should already have been installed via your graphics drivers.
-
 To run simply start ./xnp2 inside the x11 directory
 
 
@@ -33,3 +32,5 @@ every one of the available settings via the commandline
 * Proper mouse support (mouse is in but seems to me to be incorrect)
 * Currently only one vk command buffer is being used (there is only
 one texture image). This needs to be done properly.
+* Pass all midi data directly to timidity / fluidsynth without
+parsing the timidity cfg

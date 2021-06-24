@@ -125,10 +125,6 @@ const char np2resumeext[] = "sav";
 #endif
 char fontname[1024] = FONTFACE;
 
-char timidity_cfgfile_path[MAX_PATH];
-
-int verbose = 0;
-
 UINT32
 gettick(void)
 {

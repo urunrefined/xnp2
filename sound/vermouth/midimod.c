@@ -469,11 +469,7 @@ VEXTERN MIDIMOD VEXPORT midimod_create(UINT samprate) {
 	pathadd(ret, file_getcd(str_null));
 	ret->namelist = listarray_new(MAX_NAME, 128);
 	r = cfgfile_load(ret, file_timiditycfg, 0);
-#if defined(TIMIDITY_CFGFILE)
-	if (r != SUCCESS) {
-		r = cfgfile_load(ret, TIMIDITY_CFGFILE, 0);
-	}
-#endif
+
 	if (r != SUCCESS) {
 		goto mmcre_err2;
 	}

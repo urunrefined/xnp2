@@ -25,15 +25,6 @@
 
 #include "compiler.h"
 
-#include <sys/stat.h>
-#include <getopt.h>
-#include <locale.h>
-#include <signal.h>
-#include <unistd.h>
-#include <time.h>
-
-#include <SDL.h>
-
 #include "np2.h"
 #include "fdd/diskdrv.h"
 #include "dosio.h"
@@ -61,6 +52,14 @@
 
 #include "loop.h"
 
+#include <SDL.h>
+
+#include <sys/stat.h>
+#include <getopt.h>
+#include <locale.h>
+#include <signal.h>
+#include <unistd.h>
+#include <time.h>
 
 static const char appname[] = "np2";
 
@@ -121,7 +120,6 @@ main(int argc, char *argv[])
 {
 	struct stat sb;
 	BRESULT result;
-	int rv = 1;
 	int ch;
 	int i, drvmax;
 
@@ -136,20 +134,6 @@ main(int argc, char *argv[])
 			}
 			milstr_ncpy(modulefile, optarg, sizeof(modulefile));
 			break;
-
-		case 'C':
-			if (stat(optarg, &sb) < 0 || !S_ISREG(sb.st_mode)) {
-				printf("Can't access %s.\n", optarg);
-				exit(1);
-			}
-			milstr_ncpy(timidity_cfgfile_path, optarg,
-			    sizeof(timidity_cfgfile_path));
-			break;
-
-		case 'v':
-			verbose = 1;
-			break;
-
 		case 'h':
 		case '?':
 		default:
@@ -211,13 +195,6 @@ main(int argc, char *argv[])
 			exit(1);
 		}
 		file_catname(statpath, appname, sizeof(statpath));
-	}
-	if (timidity_cfgfile_path[0] == '\0') {
-		file_cpyname(timidity_cfgfile_path, modulefile,
-		    sizeof(timidity_cfgfile_path));
-		file_cutname(timidity_cfgfile_path);
-		file_catname(timidity_cfgfile_path, "timidity.cfg",
-			sizeof(timidity_cfgfile_path));
 	}
 
 	dosio_init();
