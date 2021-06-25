@@ -87,7 +87,6 @@ SRC_C = \
 		./../font/fontfm7.c                                 \
 		./../font/fontx1.c                                  \
 		./../font/fontx68k.c                                \
-		./../generic/cmndraw.c                              \
 		./../generic/cmjasts.c                              \
 		./../generic/hostdrv.c                              \
 		./../generic/hostdrvs.c                             \

@@ -27,8 +27,17 @@
 #define	NP2_X11_DRAWMNG_H__
 
 #include "compiler.h"
-#include "cmndraw.h"
+#include "common.h"
 #include "rect.h"
+
+typedef struct {
+	UINT8	*ptr;
+	int		width;
+	int		height;
+	int		xalign;
+	int		yalign;
+	int		bpp;
+} CMNVRAM;
 
 #ifdef __cplusplus
 extern "C" {
