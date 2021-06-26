@@ -98,10 +98,8 @@ static struct option longopts[] = {
 	{ 0,			0,			0,	0   },
 };
 
-static char* progname;
-
 static void
-usage(void)
+usage(const char *progname)
 {
 
 	printf("Usage: %s [options] [[FD1 image] [[FD2 image] [[FD3 image] [FD4 image]]]]\n\n", progname);
@@ -119,11 +117,8 @@ int
 main(int argc, char *argv[])
 {
 	struct stat sb;
-	BRESULT result;
 	int ch;
 	int i, drvmax;
-
-	progname = argv[0];
 
 	while ((ch = getopt_long(argc, argv, "c:C:t:vh", longopts, NULL)) != -1) {
 		switch (ch) {
@@ -137,7 +132,7 @@ main(int argc, char *argv[])
 		case 'h':
 		case '?':
 		default:
-			usage();
+			usage(argv[0]);
 			break;
 		}
 	}
@@ -209,45 +204,16 @@ main(int argc, char *argv[])
 	TRACEINIT();
 
 	SDL_Init(0);
-
-	//if (fontmng_init() != SUCCESS)
-	//	goto fontmng_failure;
-
 	viewer_init();
-
-	//scrnmng_initialize();
-	//kbdmng_init();
 	keystat_initialize();
-
-	if (soundmng_initialize() == SUCCESS) {
-		result = soundmng_pcmload(SOUND_PCMSEEK, file_getcd("fddseek.wav"));
-
-		if (result == SUCCESS) {
-			soundmng_pcmvolume(SOUND_PCMSEEK, np2cfg.MOTORVOL);
-		}
-
-		result = soundmng_pcmload(SOUND_PCMSEEK1, file_getcd("fddseek1.wav"));
-
-		if (result == SUCCESS) {
-			soundmng_pcmvolume(SOUND_PCMSEEK1, np2cfg.MOTORVOL);
-		}
-	}
-
+	soundmng_initialize();
 	joymng_initialize();
-
 	commng_initialize();
 	taskmng_initialize();
 
 	pccore_init();
 	S98_init();
-
 	pccore_reset();
-
-#if defined(SUPPORT_RESUME)
-	if (np2oscfg.resume) {
-		flagload(np2resumeext, FALSE);
-	}
-#endif
 
 	drvmax = (argc < 4) ? argc : 4;
 	for (i = 0; i < drvmax; i++) {
@@ -264,14 +230,6 @@ main(int argc, char *argv[])
 	pccore_cfgupdate();
 	joymng_deinitialize();
 	S98_trash();
-
-#if defined(SUPPORT_RESUME)
-	if (np2oscfg.resume) {
-		flagsave(np2resumeext);
-	} else {
-		flagdelete(np2resumeext);
-	}
-#endif
 
 	pccore_term();
 	debugwin_destroy();

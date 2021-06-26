@@ -185,7 +185,6 @@ typedef signed long nxp2ptr;
 #define	SUPPORT_PC9861K
 #define	SUPPORT_HOSTDRV
 
-#define	SUPPORT_RESUME
 #define	SUPPORT_STATSAVE
 
 #undef	SUPPORT_SASI

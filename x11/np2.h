@@ -44,12 +44,8 @@ typedef struct {
 
 	UINT8	confirm;
 
-	UINT8	resume;						// ver0.30
-
 	UINT8	statsave;
 	UINT8	toolwin;
-	UINT8	keydisp;
-	UINT8	softkbd;
 	UINT8	hostdrv_write;
 	UINT8	jastsnd;
 	UINT8	I286SAVE;
@@ -65,8 +61,6 @@ typedef struct {
 	UINT8	F11KEY;
 
 	UINT8	cfgreadonly;
-
-	UINT8	autohidemenu;
 } NP2OSCFG;
 
 
@@ -91,8 +85,6 @@ enum {
 /* np2.c */
 extern volatile sig_atomic_t np2running;
 extern NP2OSCFG np2oscfg;
-extern UINT8 scrnmode;
-extern int ignore_fullscreen_mode;
 
 extern UINT framecnt;
 extern UINT waitcnt;
@@ -109,13 +101,12 @@ extern char statpath[MAX_PATH];
 extern char fontname[1024];
 
 extern const char np2flagext[];
-extern const char np2resumeext[];
 
 int flagload(const char* ext, BOOL force);
 int flagsave(const char* ext);
 void flagdelete(const char* ext);
 
-void framereset(UINT cnt);
+void framereset();
 void processwait(UINT cnt);
 int mainloop(void *);
 

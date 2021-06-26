@@ -47,16 +47,16 @@
 
 
 NP2OSCFG np2oscfg = {
-	0,			/* NOWAIT */
-	0,			/* DRAW_SKIP */
+	0,					/* NOWAIT */
+	0,					/* DRAW_SKIP */
 
-	0,			/* DISPCLK */
+	0,					/* DISPCLK */
 
-	KEY_KEY106,		/* KEYBOARD */
-	0,			/* F12KEY */
+	KEY_KEY106,			/* KEYBOARD */
+	0,					/* F12KEY */
 
-	0,			/* JOYPAD1 */
-	0,			/* JOYPAD2 */
+	0,					/* JOYPAD1 */
+	0,					/* JOYPAD2 */
 	{ 1, 2, 5, 6 },		/* JOY1BTN */
 	{
 		{ 0, 1 },		/* JOYAXISMAP[0] */
@@ -66,7 +66,7 @@ NP2OSCFG np2oscfg = {
 		{ 0, 1, 0xff, 0xff },	/* JOYBTNMAP[0] */
 		{ 0, 1, 0xff, 0xff },	/* JOYBTNMAP[1] */
 	},
-	{ "", "" },		/* JOYDEV */
+	{ "", "" },					/* JOYDEV */
 
 	{ COMPORT_MIDI, 0, 0x3e, 19200, "", "", "", "" },	/* mpu */
 	{
@@ -75,34 +75,28 @@ NP2OSCFG np2oscfg = {
 		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com3 */
 	},
 
-	0,			/* confirm */
+	0,					/* confirm */
 
-	0,			/* resume */
+	0,					/* statsave */
+	0,					/* toolwin */
+	0,					/* hostdrv_write */
+	0,					/* jastsnd */
+	0,					/* I286SAVE */
 
-	0,			/* statsave */
-	0,			/* toolwin */
-	0,			/* keydisp */
-	0,			/* softkbd */
-	0,			/* hostdrv_write */
-	0,			/* jastsnd */
-	0,			/* I286SAVE */
-
-	SNDDRV_SDL,		/* snddrv */
-	{ "", "" }, 	/* MIDIDEV */
-	0,				/* MIDIWAIT */
+	SNDDRV_SDL,			/* snddrv */
+	{ "", "" },			/* MIDIDEV */
+	0,					/* MIDIWAIT */
 
 	MOUSE_RATIO_100,	/* mouse_move_ratio */
 
 	MMXFLAG_DISABLE,	/* disablemmx */
 	INTERP_NEAREST,		/* drawinterp */
-	0,			/* F11KEY */
+	0,					/* F11KEY */
 
-	FALSE,			/* cfgreadonly */
-	FALSE
+	FALSE				/* cfgreadonly */
 };
 
 volatile sig_atomic_t np2running = 0;
-int ignore_fullscreen_mode = 0;
 
 UINT framecnt = 0;
 UINT waitcnt = 0;
@@ -113,12 +107,10 @@ int s98log_count = 0;
 
 char hddfolder[MAX_PATH];
 char fddfolder[MAX_PATH];
-char bmpfilefolder[MAX_PATH];
 char modulefile[MAX_PATH];
 char statpath[MAX_PATH];
 
 const char np2flagext[] = "s%02d";
-const char np2resumeext[] = "sav";
 
 #ifndef FONTFACE
 #define FONTFACE "-misc-fixed-%s-r-normal--%d-*-*-*-*-*-*-*"
@@ -213,13 +205,9 @@ changescreen(void *graphics, UINT8 newmode)
 }
 
 void
-framereset(UINT cnt)
+framereset()
 {
-
 	framecnt = 0;
-	//scrnmng_dispclock();
-	//kdispwin_draw((UINT8)cnt);
-	//skbdwin_process();
 	debugwin_process();
 	viewer_allreload(FALSE);
 }
@@ -230,7 +218,7 @@ processwait(UINT cnt)
 
 	if (timing_getcount() >= cnt) {
 		timing_setcount(0);
-		framereset(cnt);
+		framereset();
 	} else {
 		taskmng_sleep(1);
 	}
@@ -286,7 +274,7 @@ mainloop(void *graphics)
 				} else {
 					timing_setcount(cnt - framecnt);
 				}
-				framereset(0);
+				framereset();
 			}
 		} else {
 			processwait(waitcnt);

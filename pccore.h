@@ -132,7 +132,6 @@ struct tagNP2Config
 
 	UINT8	fddequip;
 	UINT8	MOTOR;
-	UINT8	MOTORVOL;
 	UINT8	PROTECTMEM;
 	UINT8	hdrvacc;
 

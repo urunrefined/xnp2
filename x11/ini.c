@@ -491,31 +491,25 @@ ini_write(const char *path, const char *title, INITBL *tbl, UINT count, BOOL cre
 	file_close(fh);
 }
 
-static const char ini_title[] =
-#if !defined(CPUCORE_IA32)
-	"NekoProjectII_Katze";
-#else
-	"NekoProjectII_IA32_Katze";
-#endif
+static const char ini_title[] = "NekoProjectII_Katze";
 
 enum {
-	INIRO_STR	= INIFLAG_RO | INITYPE_STR,
-	INIRO_BOOL	= INIFLAG_RO | INITYPE_BOOL,
+	INIRO_STR	    = INIFLAG_RO | INITYPE_STR,
+	INIRO_BOOL	    = INIFLAG_RO | INITYPE_BOOL,
 	INIRO_BITMAP	= INIFLAG_RO | INITYPE_BITMAP,
-	INIRO_UINT8	= INIFLAG_RO | INITYPE_UINT8,
+	INIRO_UINT8	    = INIFLAG_RO | INITYPE_UINT8,
 	INIMAX_UINT8	= INIFLAG_MAX | INITYPE_UINT8,
 	INIAND_UINT8	= INIFLAG_AND | INITYPE_UINT8,
 	INIROMAX_SINT32	= INIFLAG_RO | INIFLAG_MAX | INITYPE_SINT32,
 	INIROAND_HEX32	= INIFLAG_RO | INIFLAG_AND | INITYPE_HEX32,
 
-	INIRO_BYTE3	= INIFLAG_RO | INITYPE_BYTE3,
-	INIRO_KB	= INIFLAG_RO | INITYPE_KB
+	INIRO_BYTE3	    = INIFLAG_RO | INITYPE_BYTE3,
+	INIRO_KB	    = INIFLAG_RO | INITYPE_KB
 };
 
 static INITBL iniitem[] = {
 	{"FDfolder", INITYPE_STR,	fddfolder,		MAX_PATH},
 	{"HDfolder", INITYPE_STR,	hddfolder,		MAX_PATH},
-	{"bmap_Dir", INITYPE_STR,	bmpfilefolder,		MAX_PATH},
 	{"fontfile", INITYPE_STR,	np2cfg.fontfile,	MAX_PATH},
 	{"biospath", INIRO_STR,		np2cfg.biospath,	MAX_PATH},
 	{"hdrvroot", INIRO_STR,		np2cfg.hdrvroot,	MAX_PATH},
@@ -557,7 +551,6 @@ static INITBL iniitem[] = {
 	{"volume_R", INIMAX_UINT8,	&np2cfg.vol_rhythm,	128},
 
 	{"Seek_Snd", INITYPE_BOOL,	&np2cfg.MOTOR,		0},
-	{"Seek_Vol", INIMAX_UINT8,	&np2cfg.MOTORVOL,	100},
 
 	{"btnRAPID", INITYPE_BOOL,	&np2cfg.BTN_RAPID,	0},
 	{"btn_MODE", INITYPE_BOOL,	&np2cfg.BTN_MODE,	0},
@@ -626,9 +619,6 @@ static INITBL iniitem[] = {
 	{"com3mmdl", INITYPE_STR,	np2oscfg.com[2].mdl,	64},
 	{"com3mdef", INITYPE_STR,	np2oscfg.com[2].def,	MAX_PATH},
 
-#if defined(SUPPORT_RESUME)
-	{"e_resume", INITYPE_BOOL,	&np2oscfg.resume,	0},
-#endif
 #if defined(SUPPORT_STATSAVE)
 	{"STATSAVE", INIRO_BOOL,	&np2oscfg.statsave,	0},
 #endif
@@ -636,8 +626,6 @@ static INITBL iniitem[] = {
 	{"nousemmx", INITYPE_BOOL,	&np2oscfg.disablemmx,	0},
 #endif
 	{"toolwind", INITYPE_BOOL,	&np2oscfg.toolwin,	0},
-	{"keydispl", INITYPE_BOOL,	&np2oscfg.keydisp,	0},
-	{"soft_kbd", INITYPE_BOOL,	&np2oscfg.softkbd,	0},
 	{"jast_snd", INITYPE_BOOL,	&np2oscfg.jastsnd,	0},
 
 	{"sounddrv", INITYPE_SNDDRV,	&np2oscfg.snddrv,	0},
@@ -646,10 +634,8 @@ static INITBL iniitem[] = {
 	{"MIDIWAIT", INITYPE_UINT32,	&np2oscfg.MIDIWAIT,	0},
 
 	{"dinterp_", INITYPE_INTERP,	&np2oscfg.drawinterp,	0},
-	{"fullscrn", INITYPE_UINT32,	&ignore_fullscreen_mode,0},
 	{"F11_KEY_", INITYPE_UINT8,	&np2oscfg.F11KEY,	0},
 	{"READONLY", INIRO_BOOL,	&np2oscfg.cfgreadonly,	0},
-	{"AUTOHIME", INITYPE_BOOL,	&np2oscfg.autohidemenu,	0},
 	{"I286SAVE", INIRO_BOOL,	&np2oscfg.I286SAVE,	0},
 };
 #define	INIITEMS	(sizeof(iniitem) / sizeof(iniitem[0]))
@@ -698,16 +684,10 @@ read_iniread_flag(const INITBL *p)
 	return FALSE;
 }
 
-NP2CFG np2cfg_default;
-NP2OSCFG np2oscfg_default;
-
 void
 initload(void)
 {
 	char path[MAX_PATH];
-
-	np2cfg_default = np2cfg;
-	np2oscfg_default = np2oscfg;
 
 	milstr_ncpy(path, modulefile, sizeof(path));
 	ini_read(path, ini_title, iniitem, INIITEMS);
