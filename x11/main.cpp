@@ -44,7 +44,6 @@
 #include "fontmng.h"
 #include "joymng.h"
 #include "kbdmng.h"
-#include "mousemng.h"
 #include "scrnmng.h"
 #include "soundmng.h"
 #include "taskmng.h"

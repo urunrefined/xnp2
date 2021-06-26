@@ -38,7 +38,6 @@
 #include "commng.h"
 #include "joymng.h"
 #include "kbdmng.h"
-#include "mousemng.h"
 #include "scrnmng.h"
 #include "soundmng.h"
 #include "taskmng.h"
@@ -86,8 +85,6 @@ NP2OSCFG np2oscfg = {
 	SNDDRV_SDL,			/* snddrv */
 	{ "", "" },			/* MIDIDEV */
 	0,					/* MIDIWAIT */
-
-	MOUSE_RATIO_100,	/* mouse_move_ratio */
 
 	MMXFLAG_DISABLE,	/* disablemmx */
 	INTERP_NEAREST,		/* drawinterp */

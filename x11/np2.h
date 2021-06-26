@@ -54,8 +54,6 @@ typedef struct {
 	char	MIDIDEV[2][MAX_PATH];
 	UINT32	MIDIWAIT;
 
-	UINT8	mouse_move_ratio;
-
 	UINT8	disablemmx;
 	UINT8	drawinterp;
 	UINT8	F11KEY;

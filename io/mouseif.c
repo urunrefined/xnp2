@@ -1,5 +1,4 @@
 #include	"compiler.h"
-#include	"mousemng.h"
 #include	"cpucore.h"
 #include	"pccore.h"
 #include	"iocore.h"
@@ -10,6 +9,7 @@
 // 一部のゲームでマウスデータを切り捨てるので正常な動かなくなる事がある
 // それを救う為に 均等に移動データが伝わるようにしなければならない
 
+UINT8 mousemng_getstat(void *graphics, short *x, short *y);
 
 void mouseif_sync(void *graphics) {
 
