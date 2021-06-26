@@ -193,6 +193,7 @@ SRC_C = \
 SRC_CPP = \
                 ./../x11/main.cpp                                   \
 		./../x11/loop.cpp                                   \
+		./../x11/exception.cpp                              \
 		./../x11/signalFD.cpp                               \
                 ./../x11/soundmng.cpp                               \
 		./../x11/misc/threadbase.cpp                        \

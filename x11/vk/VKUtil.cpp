@@ -174,7 +174,7 @@ uint32_t getFirstPresentQueue(VkPhysicalDevice physicalDevice, VkSurfaceKHR& sur
 	}
 
 	//we should never get here
-	throw -1;
+	throw std::runtime_error("getFirstPresentQueue called on device without any present queue available");
 }
 
 bool getFirstGraphicsQueue(VkPhysicalDevice physicalDevice, VkSurfaceKHR& surface,
@@ -194,7 +194,7 @@ bool getFirstGraphicsQueue(VkPhysicalDevice physicalDevice, VkSurfaceKHR& surfac
 	}
 
 	//we should never get here
-	throw -1;
+	throw std::runtime_error("getFirstGraphicsQueue called on device without any graphics queue available");
 }
 
 std::vector <VkQueueFamilyProperties> findQueueFamilies(VkPhysicalDevice physicalDevice) {

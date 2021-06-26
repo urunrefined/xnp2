@@ -51,6 +51,7 @@
 #include "signalFD.h"
 
 #include "loop.h"
+#include "exception.h"
 
 #include <SDL.h>
 
@@ -60,6 +61,8 @@
 #include <signal.h>
 #include <unistd.h>
 #include <time.h>
+
+#include <stdexcept>
 
 
 static const char appname[] = "np2";
@@ -86,12 +89,7 @@ usage(const char *progname)
 	exit(1);
 }
 
-/*
- * main
- */
-int
-main(int argc, char *argv[])
-{
+static void go(int argc, char *argv[]){
 	struct stat sb;
 	int ch;
 	int i, drvmax;
@@ -122,7 +120,7 @@ main(int argc, char *argv[])
 		if (env) {
 			/* base dir */
 			snprintf(modulefile, sizeof(modulefile),
-			    "%s/.np2/", env);
+				"%s/.np2/", env);
 			if (stat(modulefile, &sb) < 0) {
 				if (mkdir(modulefile, 0700) < 0) {
 					perror(modulefile);
@@ -130,7 +128,7 @@ main(int argc, char *argv[])
 				}
 			} else if (!S_ISDIR(sb.st_mode)) {
 				printf("%s isn't directory.\n",
-				    modulefile);
+					modulefile);
 				exit(1);
 			}
 
@@ -140,18 +138,18 @@ main(int argc, char *argv[])
 			if ((stat(modulefile, &sb) >= 0)
 			 && !S_ISREG(sb.st_mode)) {
 				printf("%s isn't regular file.\n",
-				    modulefile);
+					modulefile);
 			}
 		}
 	}
 	if (modulefile[0] != '\0') {
 		/* font file */
 		file_cpyname(np2cfg.fontfile, modulefile,
-		    sizeof(np2cfg.fontfile));
+			sizeof(np2cfg.fontfile));
 		file_cutname(np2cfg.fontfile);
 		file_setseparator(np2cfg.fontfile, sizeof(np2cfg.fontfile));
 		file_catname(np2cfg.fontfile, "font.bmp",
-		    sizeof(np2cfg.fontfile));
+			sizeof(np2cfg.fontfile));
 
 		/* statsave dir */
 		file_cpyname(statpath, modulefile, sizeof(statpath));
@@ -164,7 +162,7 @@ main(int argc, char *argv[])
 			}
 		} else if (!S_ISDIR(sb.st_mode)) {
 			printf("%s isn't directory.\n",
-			    statpath);
+				statpath);
 			exit(1);
 		}
 		file_catname(statpath, appname, sizeof(statpath));
@@ -219,6 +217,30 @@ main(int argc, char *argv[])
 	dosio_term();
 
 	viewer_term();
+}
+
+/*
+ * main
+ */
+int
+main(int argc, char *argv[])
+{
+	try {
+		go(argc, argv);
+	}
+	catch(BR::Exception& ex){
+		printf("np2 exception thrown [%s]\n", ex.msg);
+	}
+	catch(BR::CException& ex){
+		printf("np2 C lib exception thrown [%s] errno [%d, %s]\n",
+			ex.msg, ex.osErrno, strerror(ex.osErrno));
+	}
+	catch(std::exception& ex){
+		printf("stdlib exception thrown [%s]\n", ex.what());
+	}
+	catch(...){
+		printf("Unknown exception thrown\n");
+	}
 
 	return 0;
 }

@@ -5,7 +5,9 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdio.h>
+#include <errno.h>
+
+#include "exception.h"
 
 namespace BR {
 
@@ -19,15 +21,12 @@ SignalFD::SignalFD()
 
 	sfd = signalfd(-1, &mask, O_CLOEXEC);
 
-	if(sfd == -1){
-		perror("signalfd failed");
-		throw -128;
+	if (sigprocmask(SIG_BLOCK, &mask, NULL) == -1){
+		throw CException("sigprocmask failed", errno);
 	}
 
-	if (sigprocmask(SIG_BLOCK, &mask, NULL) == -1){
-		perror("sigprocmask failed");
-		close(sfd);
-		throw -127;
+	if(sfd == -1){
+		throw CException("signalfd failed", errno);
 	}
 }
 

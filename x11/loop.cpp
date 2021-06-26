@@ -6,6 +6,7 @@
 #include "scrnmng.h"
 #include "keystat.h"
 #include "loop.h"
+#include "exception.h"
 
 namespace BR {
 
@@ -18,13 +19,9 @@ static VulkanPhysicalDevice glPhysicalDeviceSelection(VulkanContext& engine){
 		if(physicalDevice.isDeviceSuitable(engine.surface)){
 			return physicalDevice;
 		}
-		else {
-			printf("Not suitable\n");
-		}
 	}
 
-	printf("No graphics device suitable\n");
-	throw -2;
+	throw Exception("No graphics device suitable");
 }
 
 //PC-9801 keyboard layout (more or less)
