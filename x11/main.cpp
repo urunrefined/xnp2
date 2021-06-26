@@ -48,6 +48,7 @@
 #include "soundmng.h"
 #include "taskmng.h"
 #include "trace.h"
+#include "signalFD.h"
 
 #include "loop.h"
 
@@ -60,32 +61,8 @@
 #include <unistd.h>
 #include <time.h>
 
+
 static const char appname[] = "np2";
-
-/*
- * failure signale handler
- */
-typedef void sigfunc(int);
-
-static sigfunc *
-setup_signal(int signo, sigfunc *func)
-{
-	struct sigaction act, oact;
-
-	act.sa_handler = func;
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = 0;
-	if (sigaction(signo, &act, &oact) < 0)
-		return SIG_ERR;
-	return oact.sa_handler;
-}
-
-static void
-sighandler(int signo)
-{
-	(void) signo;
-}
-
 
 /*
  * option
@@ -118,6 +95,8 @@ main(int argc, char *argv[])
 	struct stat sb;
 	int ch;
 	int i, drvmax;
+
+	BR::SignalFD sfd;
 
 	while ((ch = getopt_long(argc, argv, "c:C:t:vh", longopts, NULL)) != -1) {
 		switch (ch) {
@@ -174,7 +153,7 @@ main(int argc, char *argv[])
 		file_catname(np2cfg.fontfile, "font.bmp",
 		    sizeof(np2cfg.fontfile));
 
-		/* resume/statsave dir */
+		/* statsave dir */
 		file_cpyname(statpath, modulefile, sizeof(statpath));
 		file_cutname(statpath);
 		file_catname(statpath, "/sav/", sizeof(statpath));
@@ -219,10 +198,7 @@ main(int argc, char *argv[])
 		diskdrv_readyfdd(i, argv[i], 0);
 	}
 
-	setup_signal(SIGINT, sighandler);
-	setup_signal(SIGTERM, sighandler);
-
-	BR::loop();
+	BR::loop(sfd);
 
 	printf("Normal exit\n");
 

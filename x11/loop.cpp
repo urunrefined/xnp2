@@ -5,6 +5,7 @@
 #include "np2.h"
 #include "scrnmng.h"
 #include "keystat.h"
+#include "loop.h"
 
 namespace BR {
 
@@ -160,7 +161,7 @@ static void mapAndSendKey(KeyEvent& keyEvent){
 	}
 }
 
-static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
+static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 	BR::VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<BR::VulkanRenderBuffer> renderBuffer;
 
@@ -174,7 +175,7 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 
 	ViewPortMode mode = ViewPortMode::INTEGER;
 
-	while(scaler.getWindowState() != WindowState::SHOULDCLOSE){
+	while(scaler.getWindowState() != WindowState::SHOULDCLOSE && !sfd.isTriggered()){
 		mainloop(&scaler);
 
 		if(scaler.renderingComplete()){
@@ -231,12 +232,12 @@ static void glLoop(VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 	}
 }
 
-void loop(){
+void loop(SignalFD& sfd){
 	VulkanContext engine;
 
 	VulkanPhysicalDevice physicalDevice = glPhysicalDeviceSelection(engine);
 
-	glLoop(engine, physicalDevice);
+	glLoop(sfd, engine, physicalDevice);
 }
 
 }
