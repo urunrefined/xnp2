@@ -157,11 +157,6 @@ SRC_C = \
 		./../sound/sndcsec.c                                \
 		./../sound/tms3631c.c                               \
 		./../sound/tms3631g.c                               \
-		./../sound/getsnd/getsnd.c                          \
-		./../sound/getsnd/getsmix.c                         \
-		./../sound/getsnd/getmp3.c                          \
-		./../sound/getsnd/getogg.c                          \
-		./../sound/getsnd/getwave.c                         \
 		./../sound/vermouth/midiout.c                       \
 		./../sound/vermouth/midimod.c                       \
 		./../sound/vermouth/midinst.c                       \
