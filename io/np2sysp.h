@@ -1,3 +1,7 @@
+#pragma once
+
+#include "common.h"
+#include "pccore.h"
 
 #define	NP2SYSP_BIT		4
 #define	NP2SYSP_LEN		(1 << NP2SYSP_BIT)

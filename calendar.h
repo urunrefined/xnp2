@@ -1,3 +1,8 @@
+#pragma once
+
+#include "compiler.h"
+#include "timing.h"
+
 
 typedef struct {
 	_SYSTIME	dt;

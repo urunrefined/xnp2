@@ -1,3 +1,6 @@
+#pragma once
+
+#include "compiler.h"
 
 #if !defined(DISABLE_SOUND)
 

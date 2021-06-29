@@ -5,8 +5,10 @@
 
 #pragma once
 
+#include "compiler.h"
+
 /**
- * @brief The interface of thg external modules
+ * @brief The interface of the external modules
  */
 class IExternalChip
 {

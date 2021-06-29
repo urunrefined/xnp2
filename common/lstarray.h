@@ -1,5 +1,7 @@
 #pragma once
 
+#include "compiler.h"
+
 typedef struct _la {
 	UINT	maxitems;
 	size_t	listsize;

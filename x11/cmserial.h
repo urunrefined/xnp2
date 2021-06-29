@@ -1,6 +1,10 @@
 #ifndef	NP2_X11_CMSERIAL_H__
 #define	NP2_X11_CMSERIAL_H__
 
+#include "compiler.h"
+#include "commng.h"
+
+
 // ---- com manager serial for unix
 
 #ifdef __cplusplus

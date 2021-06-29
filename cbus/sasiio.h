@@ -1,5 +1,10 @@
+#pragma once
 
 #if defined(SUPPORT_SASI)
+
+#include "compiler.h"
+#include "common.h"
+#include "pccore.h"
 
 typedef struct {
 	UINT8	phase;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "compiler.h"
+#include "common.h"
+
 enum {
 	ARCSEEK_SET			= 0,
 	ARCSEEK_CUR			= 1,

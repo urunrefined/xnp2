@@ -6,6 +6,7 @@
 #pragma once
 
 #include "scci.h"
+#include "compiler.h"
 
 namespace scci
 {

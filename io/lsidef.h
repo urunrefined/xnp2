@@ -1,3 +1,6 @@
+#pragma once
+
+#include "common.h"
 
 typedef struct {
 	UINT8	porta;

@@ -1,3 +1,6 @@
+#pragma once
+
+#include "compiler.h"
 
 enum {
 	TEXTXMAX		= 80,

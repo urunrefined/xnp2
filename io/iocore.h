@@ -7,6 +7,7 @@
 #endif
 
 #include	"common.h"
+#include	"pccore.h"
 
 typedef void (*FNIORESET)(const NP2CFG *pConfig);
 typedef void (*FNIOBIND)(void);

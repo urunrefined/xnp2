@@ -1,9 +1,9 @@
+#pragma once
+
 /**
  * @file	adpcm.h
  * @brief	Interface of the OPNA ADPCM
  */
-
-#pragma once
 
 #include "sound.h"
 

@@ -1,3 +1,7 @@
+#pragma once
+
+#include "compiler.h"
+#include "pccore.h"
 
 typedef struct {
 	UINT8	port0439;

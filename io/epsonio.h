@@ -1,3 +1,7 @@
+#pragma once
+
+#include "common.h"
+#include "pccore.h"
 
 typedef struct {
 	UINT8	cpumode;

@@ -1,4 +1,8 @@
 
+#pragma once
+
+#include "compiler.h"
+
 enum {
 	FONT_ANK8		= 0x01,
 	FONT_ANK16a		= 0x02,

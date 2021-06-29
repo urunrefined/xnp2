@@ -1,3 +1,7 @@
+#pragma once
+
+#include "common.h"
+#include "pccore.h"
 
 #define UPD4990_REGLEN	8
 

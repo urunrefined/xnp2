@@ -7,6 +7,7 @@
 
 #include <termios.h>
 #include <sys/types.h>
+#include <stddef.h>
 
 /**
  * @brief シリアル通信

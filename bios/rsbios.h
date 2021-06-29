@@ -1,3 +1,7 @@
+#pragma once
+
+#include "compiler.h"
+
 // BIOS0C.CPP, BIOS19.CPP
 
 enum {

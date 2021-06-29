@@ -1,3 +1,5 @@
+#pragma once
+
 /**
  * @file	font.h
  * @brief	CGROM and font loader
@@ -5,6 +7,8 @@
  * @author	$Author: yui $
  * @date	$Date: 2011/02/23 10:11:44 $
  */
+
+#include "compiler.h"
 
 #define	FONTMEMORYBIND				// 520KBくらいメモリ削除(ぉぃ
 

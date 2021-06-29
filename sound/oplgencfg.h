@@ -1,9 +1,11 @@
+#pragma once
+
 /**
  * @file	oplgencfg.h
  * @brief	Interface of the OPL generator
  */
 
-#pragma once
+#include "compiler.h"
 
 // #define OPLGEN_ENVSHIFT
 // #define OPLGENX86

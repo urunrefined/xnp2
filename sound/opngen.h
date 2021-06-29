@@ -1,9 +1,9 @@
+#pragma once
+
 /**
  * @file	opngen.h
  * @brief	Interface of the OPN generator
  */
-
-#pragma once
 
 #include "sound.h"
 

@@ -1,3 +1,8 @@
+#pragma once
+
+#include "common.h"
+#include "fddfile.h"
+#include "nevent.h"
 
 typedef struct {
 	int		busy;

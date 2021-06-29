@@ -1,9 +1,9 @@
+#pragma once
+
 /**
  * @file	opna.h
  * @brief	Interface of OPNA
  */
-
-#pragma once
 
 #include "adpcm.h"
 #include "opngen.h"

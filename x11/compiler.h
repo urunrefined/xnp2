@@ -1,3 +1,6 @@
+#ifndef	NP2_X11_COMPILER_H__
+#define	NP2_X11_COMPILER_H__
+
 /*-
  * Copyright (C) 2003, 2004 NONAKA Kimihiro <nonakap@gmail.com>
  * All rights reserved.
@@ -22,9 +25,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-#ifndef	NP2_X11_COMPILER_H__
-#define	NP2_X11_COMPILER_H__
 
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #define	BYTESEX_BIG

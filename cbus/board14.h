@@ -5,8 +5,12 @@
 
 #pragma once
 
+#include "common.h"
+#include "nevent.h"
+#include "pccore.h"
+
 /**
- * @breif The sturecture of PC-9801-14
+ * @brief The structure of PC-9801-14
  */
 struct musicgen_t
 {

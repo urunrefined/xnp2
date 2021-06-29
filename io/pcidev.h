@@ -1,7 +1,11 @@
+#pragma once
 
 // PC-9821 PCIブリッジ
 
 #if defined(SUPPORT_PC9821)
+
+#include "common.h"
+#include "pccore.h"
 
 typedef struct {
 	UINT32	base;

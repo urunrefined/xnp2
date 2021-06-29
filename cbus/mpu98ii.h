@@ -1,5 +1,9 @@
-
+#pragma once
 // ねこ専用ヘッダ
+
+#include "compiler.h"
+#include "common.h"
+#include "pccore.h"
 
 enum {
 	MPU98_EXCVBUFS		= 512,

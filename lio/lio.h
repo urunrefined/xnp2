@@ -1,11 +1,11 @@
+#pragma once
+
+#include "common.h"
+
 /**
  * @file	lio.h
  * @brief	Interface of LIO
  */
-
-#pragma once
-
-#include "common.h"
 
 enum {
 	LIO_SEGMENT		= 0xf990,

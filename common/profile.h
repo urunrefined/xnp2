@@ -1,10 +1,12 @@
+#if !defined(NP2_PROFILE_H__)
+#define	NP2_PROFILE_H__
+
 /**
  * @file	profile.h
  * @brief	Interface of the profiler
  */
 
-#if !defined(NP2_PROFILE_H__)
-#define	NP2_PROFILE_H__
+
 
 #include "common.h"
 

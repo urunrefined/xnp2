@@ -1,5 +1,7 @@
 #pragma once
 
+#include "compiler.h"
+
 enum {
 	MIMPI_LA		= 0,
 	MIMPI_PCM,

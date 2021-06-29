@@ -1,7 +1,5 @@
 
-#ifndef SCRNCALL
-#define	SCRNCALL
-#endif
+#pragma once
 
 #include "compiler.h"
 

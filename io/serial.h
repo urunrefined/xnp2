@@ -1,3 +1,7 @@
+#pragma once
+
+#include "common.h"
+#include "pccore.h"
 
 enum {
 	KB_CTR			= (1 << 3),

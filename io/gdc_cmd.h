@@ -1,3 +1,4 @@
+#pragma once
 
 enum {
 	CMD_RESET		= 0x00,

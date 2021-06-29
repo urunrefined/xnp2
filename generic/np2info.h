@@ -1,3 +1,6 @@
+#pragma once
+
+#include "compiler.h"
 
 struct _np2infoex;
 typedef struct	_np2infoex	NP2INFOEX;

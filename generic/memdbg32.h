@@ -1,3 +1,4 @@
+#pragma once
 
 #if defined(CPUCORE_IA32) && defined(SUPPORT_MEMDBG32)
 

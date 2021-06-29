@@ -1,5 +1,7 @@
 #pragma once
 
+#include "compiler.h"
+
 #ifndef PARTSCALL
 #define	PARTSCALL
 #endif

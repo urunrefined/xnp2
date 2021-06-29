@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "compiler.h"
+
 typedef struct {
 	OEMCHAR	name[24];
 	UINT32	address;

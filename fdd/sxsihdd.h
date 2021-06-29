@@ -1,3 +1,8 @@
+#pragma once
+
+#include "compiler.h"
+#include "common.h"
+#include "sxsi.h"
 
 enum {
 	SXSIMEDIA_SASITYPE	= 0x07,

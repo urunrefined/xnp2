@@ -1,5 +1,8 @@
 #pragma once
 
+#include "compiler.h"
+#include "arc.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -1,9 +1,10 @@
+#pragma once
+
 /**
  * @file	opl3.h
  * @brief	Interface of OPL3
  */
 
-#pragma once
 
 #include "oplgen.h"
 #include "statsave.h"

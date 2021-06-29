@@ -1,3 +1,6 @@
+#pragma once
+
+#include "compiler.h"
 
 static const UINT8 fdfmt144[] = {									// ver0.31
 //  MFM R/W      MFM FMT      FM R/W      FM FMT

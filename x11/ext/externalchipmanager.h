@@ -9,6 +9,7 @@
 #include "externalchip.h"
 #include "c86ctl/c86ctlif.h"
 #include "scci/scciif.h"
+#include "compiler.h"
 
 /**
  * @brief 外部チップ管理クラス

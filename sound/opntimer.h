@@ -1,9 +1,9 @@
+#pragma once
+
 /**
  * @file	opntimer.h
  * @brief	Interface of OPN timer
  */
-
-#pragma once
 
 #include "nevent.h"
 #include "opna.h"

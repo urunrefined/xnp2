@@ -1,3 +1,8 @@
+#pragma once
+
+#include "compiler.h"
+#include "common.h"
+#include "pccore.h"
 
 #define	GDCCMD_MAX	32
 

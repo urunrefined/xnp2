@@ -5,8 +5,11 @@
 
 #pragma once
 
-#include <vector>
 #include "scci.h"
+#include "compiler.h"
+
+#include <vector>
+#include <stddef.h>
 
 namespace scci
 {

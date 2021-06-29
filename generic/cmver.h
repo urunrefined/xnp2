@@ -1,7 +1,9 @@
+#include "compiler.h"
+
+#include "x11/commng.h"
 
 // vermouthのみ使用のCOMMNG-MIDI
 // あまりに一緒すぎるんで 関数名変えてこっちへ
-
 
 // ---- com manager midi for vermouth
 

@@ -1,3 +1,8 @@
+#pragma once
+
+#include "compiler.h"
+#include "scrndraw.h"
+#include "scrnmng.h"
 
 typedef struct {
 const UINT8	*src;

@@ -1,3 +1,8 @@
+#pragma once
+
+#include "compiler.h"
+#include "common.h"
+#include "sxsi.h"
 
 #ifdef __cplusplus
 extern "C" {

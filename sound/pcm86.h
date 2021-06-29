@@ -1,9 +1,9 @@
+#pragma once
+
 /**
  * @file	pcm86.h
  * @brief	Interface of the 86-PCM
  */
-
-#pragma once
 
 #include "sound.h"
 #include "nevent.h"

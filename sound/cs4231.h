@@ -1,9 +1,9 @@
+#pragma once
+
 /**
  * @file	cs4231.h
  * @brief	Interface of the CS4231
  */
-
-#pragma once
 
 #include "sound.h"
 #include "io/dmac.h"

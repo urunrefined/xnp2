@@ -1,8 +1,10 @@
+#pragma once
+
+#include "pccore.h"
 
 typedef struct {
 	int		enable;
 } _NMIIO, *NMIIO;
-
 
 #ifdef __cplusplus
 extern "C" {

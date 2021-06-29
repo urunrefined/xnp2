@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "compiler.h"
+
 /**
  * Result code
  */

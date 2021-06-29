@@ -1,9 +1,13 @@
+#pragma once
 
 #if defined(SUPPORT_SCSI)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "common.h"
+#include "compiler.h"
 
 REG8 scsicmd_negate(REG8 id);
 REG8 scsicmd_select(REG8 id);

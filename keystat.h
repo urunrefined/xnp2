@@ -1,4 +1,9 @@
 
+#pragma once
+
+#include "compiler.h"
+#include "common.h"
+
 #if 0
 enum {
 	NKEY_ESC			= 0x00,

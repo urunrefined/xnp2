@@ -6,6 +6,7 @@
 #pragma once
 
 #include "externalchip.h"
+#include "compiler.h"
 
 /**
  * @brief 外部 PSG 演奏クラス

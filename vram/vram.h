@@ -1,4 +1,8 @@
 
+#pragma once
+
+#include "compiler.h"
+
 #ifndef VRAMCALL
 #define	VRAMCALL
 #endif

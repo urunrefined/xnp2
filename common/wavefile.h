@@ -1,9 +1,11 @@
+#pragma once
+
 /**
  * @file	wavefile.h
  * @brief	Interface of wave file
  */
 
-#pragma once
+#include "compiler.h"
 
 typedef struct TagWaveFile	*WAVEFILEH;			/*!< Defines handle */
 

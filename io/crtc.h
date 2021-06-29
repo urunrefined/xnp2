@@ -1,3 +1,7 @@
+#pragma once
+
+#include "compiler.h"
+#include "pccore.h"
 
 typedef union {
 	struct {

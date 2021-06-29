@@ -1,3 +1,8 @@
+#pragma once
+
+#include "compiler.h"
+#include "common.h"
+#include "pccore.h"
 
 typedef struct {
 	SINT32	lastclk2;

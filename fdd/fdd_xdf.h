@@ -1,3 +1,7 @@
+#pragma once
+
+#include "common.h"
+#include "fddfile.h"
 
 #ifdef __cplusplus
 extern "C" {

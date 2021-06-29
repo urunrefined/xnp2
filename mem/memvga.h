@@ -1,5 +1,9 @@
+#pragma once
 
 #if defined(SUPPORT_PC9821)
+
+#include "compiler.h"
+#include "common.h"
 
 #ifdef __cplusplus
 extern "C" {

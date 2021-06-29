@@ -1,3 +1,8 @@
+#pragma once
+
+#include "compiler.h"
+#include "pccore.h"
+#include "common.h"
 
 typedef union {
 	UINT8	_b[2];

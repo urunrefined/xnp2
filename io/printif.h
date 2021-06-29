@@ -1,3 +1,6 @@
+#pragma once
+
+#include "pccore.h"
 
 #ifdef __cplusplus
 extern "C" {

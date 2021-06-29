@@ -1,9 +1,11 @@
+#pragma once
+
 /**
  * @file	opngencfg.h
  * @brief	Interface of the OPN generator
  */
 
-#pragma once
+#include "compiler.h"
 
 enum
 {

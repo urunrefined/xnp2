@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "c86ctl.h"
+#include <stddef.h>
 
 namespace c86ctl
 {

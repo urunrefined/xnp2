@@ -1,3 +1,7 @@
+#include "compiler.h"
+#include "common.h"
+#include "pccore.h"
+#include "iocore.h"
 
 #ifdef __cplusplus
 extern "C" {

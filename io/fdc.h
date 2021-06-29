@@ -1,3 +1,8 @@
+#pragma once
+
+#include "common.h"
+#include "nevent.h"
+#include "pccore.h"
 
 enum {
 	FDCEVENT_NEUTRAL,

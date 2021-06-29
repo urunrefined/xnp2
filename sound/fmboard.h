@@ -1,9 +1,9 @@
+#pragma once
+
 /**
  * @file	fmboard.h
  * @brief	Interface of The board manager
  */
-
-#pragma once
 
 #if !defined(DISABLE_SOUND)
 

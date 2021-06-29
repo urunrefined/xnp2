@@ -1,3 +1,4 @@
+#pragma once
 
 #if defined(SUPPORT_IDEIO)
 

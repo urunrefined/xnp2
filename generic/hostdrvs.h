@@ -1,9 +1,9 @@
+#pragma once
+
 /**
  * @file	hostdrvs.h
  * @brief	Interface of host-drive
  */
-
-#pragma once
 
 #if defined(SUPPORT_HOSTDRV)
 

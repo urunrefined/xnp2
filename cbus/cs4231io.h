@@ -1,4 +1,7 @@
+#pragma once
 
+#include "compiler.h"
+#include "common.h"
 
 #ifdef __cplusplus
 extern "C" {

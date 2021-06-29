@@ -1,3 +1,9 @@
+#pragma once
+
+#include "compiler.h"
+#include "pccore.h"
+#include "lsidef.h"
+#include "nevent.h"
 
 typedef struct {
 	uPD8255	upd8255;

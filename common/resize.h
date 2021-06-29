@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "compiler.h"
+
 #define RESIZE_AREAAVG
 #define RESIZE_FASTCOPY
 

@@ -1,3 +1,7 @@
+#pragma once
+
+#include "compiler.h"
+#include "common.h"
 
 #define	MAX_FDDFILE		4							// ver0.31
 

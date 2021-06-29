@@ -1,3 +1,5 @@
+#pragma once
+
 // palette
 //	 00		text palette				(NP2PAL_TEXT: pal0s + text)
 //	+0A		skipline palette			(NP2PAL_SKIP: skiplines)

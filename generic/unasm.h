@@ -1,3 +1,6 @@
+#pragma once
+
+#include "compiler.h"
 
 typedef struct {
 const char	*mnemonic;
