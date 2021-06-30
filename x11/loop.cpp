@@ -146,11 +146,11 @@ static void mapAndSendKey(KeyEvent& keyEvent){
 	for(KeyMapping& mapping : keyTable){
 		if(mapping.key == keyEvent.key){
 			if(keyEvent.state== PRESSED){
-				printf("res %d\n", mapping.res);
+				//printf("res %d\n", mapping.res);
 				keystat_keydown(mapping.res);
 			}
 			else {
-				printf("res %d\n", mapping.res);
+				//printf("res %d\n", mapping.res);
 				keystat_keyup(mapping.res);
 			}
 			break;
@@ -161,7 +161,6 @@ static void mapAndSendKey(KeyEvent& keyEvent){
 static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 	BR::VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<BR::VulkanRenderBuffer> renderBuffer;
-
 
 	enum class ViewPortMode : uint8_t {
 		ASPECT = 0,
@@ -203,25 +202,27 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 
 		GLFWInput& input = engine.glfwCtx.getInput();
 
-		for(auto& keyEvent : input.keyEvents){
-			mapAndSendKey(keyEvent);
-
-			if(keyEvent.key == KeyButtons::KEY_E && keyEvent.state == PRESSED &&
-					input.getButton(KeyButtons::KEY_SUPER)){
-				if(mode == ViewPortMode::ASPECT){
-					mode = ViewPortMode::STRETCH;
-				}else if(mode == ViewPortMode::STRETCH){
-					mode = ViewPortMode::INTEGER;
-				}else if(mode == ViewPortMode::INTEGER){
-					mode = ViewPortMode::ASPECT;
+		if(input.getButton(KeyButtons::KEY_SUPER)){
+			for(auto& keyEvent : input.keyEvents){
+				if(keyEvent.key == KeyButtons::KEY_E && keyEvent.state == PRESSED){
+					if(mode == ViewPortMode::ASPECT){
+						mode = ViewPortMode::STRETCH;
+					}else if(mode == ViewPortMode::STRETCH){
+						mode = ViewPortMode::INTEGER;
+					}else if(mode == ViewPortMode::INTEGER){
+						mode = ViewPortMode::ASPECT;
+					}
 				}
 			}
-
-			//kbdTest();
+		}
+		else {
+			for(auto& keyEvent : input.keyEvents){
+				mapAndSendKey(keyEvent);
+				//kbdTest();
+			}
 		}
 
 		input.reset();
-		//input.resetFrame();
 	}
 
 	while(!scaler.renderingComplete()){
