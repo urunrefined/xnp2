@@ -14,11 +14,7 @@
 #include "trace.h"
 #include "_memory.h"
 
-#if defined(SUPPORT_WAVEREC)
-#include "common/wavefile.h"
-#endif	/* defined(SUPPORT_WAVEREC) */
-
-	SOUNDCFG	soundcfg;
+SOUNDCFG	soundcfg;
 
 #define	STREAM_CBMAX	16
 
@@ -42,9 +38,6 @@ struct tagSndStream
 	UINT	samples;
 	UINT	reserve;
 	UINT	remain;
-#if defined(SUPPORT_WAVEREC)
-	WAVEFILEH rec;
-#endif	/* defined(SUPPORT_WAVEREC) */
 	CBTBL	*cbreg;
 	CBTBL	cb[STREAM_CBMAX];
 };
@@ -86,144 +79,6 @@ static void streamprepare(PSNDSTREAM sndstream, UINT samples)
 		sndstream->remain -= count;
 	}
 }
-
-
-#if defined(SUPPORT_WAVEREC)
-// ---- wave rec
-
-/**
- * Starts recording
- * @param[in] lpFilename The filename
- * @retval SUCCESS If succeeded
- * @retval FAILURE If failed
- */
-BRESULT sound_recstart(const OEMCHAR *lpFilename)
-{
-	WAVEFILEH rec;
-
-	sound_recstop();
-	if (s_sndstream.buffer == NULL)
-	{
-		return FAILURE;
-	}
-	rec = wavefile_create(lpFilename, soundcfg.rate, 16, 2);
-	s_sndstream.rec = rec;
-	if (rec)
-	{
-		return SUCCESS;
-	}
-	return FAILURE;
-}
-
-/**
- * Stops recording
- */
-void sound_recstop(void)
-{
-	WAVEFILEH rec;
-
-	rec = s_sndstream.rec;
-	s_sndstream.rec = NULL;
-	wavefile_close(rec);
-}
-
-/**
- * is recording?
- * @retval TRUE Yes
- */
-BOOL sound_isrecording(void)
-{
-	return (s_sndstream.rec != NULL) ? TRUE : FALSE;
-}
-
-/**
- * write
- * @param[in] sndstream The instance
- * @param[in] samples The count of samples
- */
-static void streamfilewrite(PSNDSTREAM sndstream, UINT nSamples)
-{
-	UINT nCount;
-	SINT32 buf32[2 * 512];
-	CBTBL *cb;
-	UINT8 buf[2 * 512][2];
-	UINT r;
-	UINT i;
-	SINT32 nSample;
-
-	while (nSamples)
-	{
-		nCount = min(nSamples, 512);
-		memset(buf32, 0, nCount * 2 * sizeof(buf32[0]));
-		for (cb = sndstream->cb; cb < sndstream->cbreg; cb++)
-		{
-			cb->cbfn(cb->hdl, buf32, nCount);
-		}
-		r = min(sndstream->remain, nCount);
-		if (r)
-		{
-			memcpy(sndstream->ptr, buf32, r * 2 * sizeof(buf32[0]));
-			sndstream->ptr += r * 2;
-			sndstream->remain -= r;
-		}
-		for (i = 0; i < nCount * 2; i++)
-		{
-			nSample = buf32[i];
-			if (nSample > 32767)
-			{
-				nSample = 32767;
-			}
-			else if (nSample < -32768)
-			{
-				nSample = -32768;
-			}
-			/* little endianなので satuation_s16は使えない */
-			buf[i][0] = (UINT8)nSample;
-			buf[i][1] = (UINT8)(nSample >> 8);
-		}
-		wavefile_write(sndstream->rec, buf, nCount * 2 * sizeof(buf[0]));
-		nSamples -= nCount;
-	}
-}
-
-/**
- * fill
- * @param[in] samples The count of samples
- */
-static void filltailsample(PSNDSTREAM sndstream, UINT nCount)
-{
-	SINT32 *ptr;
-	UINT nOrgSize;
-	SINT32 nSampleL;
-	SINT32 nSampleR;
-
-	nCount = min(sndstream->remain, nCount);
-	if (nCount)
-	{
-		ptr = sndstream->ptr;
-		nOrgSize = (UINT)((ptr - sndstream->buffer) / 2);
-		if (nOrgSize == 0)
-		{
-			nSampleL = 0;
-			nSampleR = 0;
-		}
-		else
-		{
-			nSampleL = *(ptr - 2);
-			nSampleR = *(ptr - 1);
-		}
-		sndstream->ptr += nCount * 2;
-		sndstream->remain -= nCount;
-		do
-		{
-			ptr[0] = nSampleL;
-			ptr[1] = nSampleR;
-			ptr += 2;
-		} while (--nCount);
-	}
-}
-#endif	/* defined(SUPPORT_WAVEREC) */
-
 
 /* ---- */
 
@@ -285,9 +140,6 @@ void sound_destroy(void)
 {
 	if (s_sndstream.buffer)
 	{
-#if defined(SUPPORT_WAVEREC)
-		sound_recstop();
-#endif	/* defined(SUPPORT_WAVEREC) */
 		soundmng_stop();
 		streamreset(&s_sndstream);
 		soundmng_destroy();
@@ -373,14 +225,8 @@ void sound_sync(void)
 	{
 		return;
 	}
-#if defined(SUPPORT_WAVEREC)
-	if (s_sndstream.rec)
-	{
-		streamfilewrite(&s_sndstream, length);
-	}
-	else
-#endif	/* defined(SUPPORT_WAVEREC) */
-		streamprepare(&s_sndstream, length);
+
+	streamprepare(&s_sndstream, length);
 	soundcfg.lastclock += length * soundcfg.clockbase / soundcfg.hzbase;
 	beep_eventreset();
 
@@ -416,13 +262,6 @@ const SINT32 *sound_pcmlock(void)
 	if (ret)
 	{
 		if (s_sndstream.remain > s_sndstream.reserve)
-#if defined(SUPPORT_WAVEREC)
-			if (s_sndstream.rec)
-			{
-				filltailsample(&s_sndstream, s_sndstream.remain - s_sndstream.reserve);
-			}
-			else
-#endif	/* defined(SUPPORT_WAVEREC) */
 		{
 			streamprepare(&s_sndstream, s_sndstream.remain - s_sndstream.reserve);
 			soundcfg.lastclock = CPU_CLOCK + CPU_BASECLOCK - CPU_REMCLOCK;

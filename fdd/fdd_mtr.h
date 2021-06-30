@@ -25,16 +25,9 @@ void fddmtr_callback(UINT time);
 void fddmtr_seek(REG8 drv, REG8 c, UINT size);
 void fddmtr_reset(void);
 
-
-#if defined(SUPPORT_SWSEEKSND)
-void fddmtrsnd_initialize(UINT rate);
-void fddmtrsnd_bind(void);
-void fddmtrsnd_deinitialize(void);
-#else
 #define	fddmtrsnd_initialize(r)
 #define	fddmtrsnd_bind()
 #define	fddmtrsnd_deinitialize()
-#endif
 
 #ifdef __cplusplus
 }

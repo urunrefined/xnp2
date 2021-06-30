@@ -4,82 +4,6 @@
 #include	"fdd_mtr.h"
 #include	"np2.h"
 
-#if defined(SUPPORT_SWSEEKSND)
-#include	"sound/pcmmix.h"
-#include	"fdd_mtr.res"
-#endif
-
-
-#if defined(SUPPORT_SWSEEKSND)
-
-static struct {
-	UINT	enable;
-	struct {
-		PMIXHDR	hdr;
-		PMIXTRK	trk[2];
-	}		snd;
-} mtrsnd;
-
-void fddmtrsnd_initialize(UINT rate) {
-
-	ZeroMemory(&mtrsnd, sizeof(mtrsnd));
-	if (np2cfg.MOTORVOL) {
-		mtrsnd.enable = 1;
-		mtrsnd.snd.hdr.enable = 3;
-		pcmmix_regist(&mtrsnd.snd.trk[0].data,
-								(void *)fddseek, sizeof(fddseek), rate);
-		mtrsnd.snd.trk[0].flag = PMIXFLAG_L | PMIXFLAG_R | PMIXFLAG_LOOP;
-		mtrsnd.snd.trk[0].volume = (np2cfg.MOTORVOL << 12) / 100;
-		pcmmix_regist(&mtrsnd.snd.trk[1].data,
-								(void *)fddseek1, sizeof(fddseek1), rate);
-		mtrsnd.snd.trk[1].flag = PMIXFLAG_L | PMIXFLAG_R;
-		mtrsnd.snd.trk[1].volume = (np2cfg.MOTORVOL << 12) / 100;
-	}
-}
-
-void fddmtrsnd_bind(void) {
-
-	if (mtrsnd.enable) {
-		sound_streamregist(&mtrsnd.snd, (SOUNDCB)pcmmix_getpcm);
-	}
-}
-
-void fddmtrsnd_deinitialize(void) {
-
-	int		i;
-	void	*ptr;
-
-	for (i=0; i<2; i++) {
-		ptr = mtrsnd.snd.trk[i].data.sample;
-		mtrsnd.snd.trk[i].data.sample = NULL;
-		if (ptr) {
-			_MFREE(ptr);
-		}
-	}
-}
-
-static void fddmtrsnd_play(UINT num, BOOL play) {
-
-	PMIXTRK	*trk;
-
-	if ((mtrsnd.enable) && (num < 2)) {
-		sound_sync();
-		trk = mtrsnd.snd.trk + num;
-		if (play) {
-			if (trk->data.sample) {
-				trk->pcm = trk->data.sample;
-				trk->remain = trk->data.samples;
-				mtrsnd.snd.hdr.playing |= (1 << num);
-			}
-		}
-		else {
-			mtrsnd.snd.hdr.playing &= ~(1 << num);
-		}
-	}
-}
-#endif
-
-
 // ----
 
 enum {
@@ -94,11 +18,6 @@ static void fddmtr_event(void) {
 
 	switch(fddmtr.curevent) {
 		case 100:
-#if defined(SUPPORT_SWSEEKSND)
-			fddmtrsnd_play(0, FALSE);
-#else
-			soundmng_pcmstop(SOUND_PCMSEEK);
-#endif
 			fddmtr.curevent = 0;
 			break;
 
@@ -109,12 +28,6 @@ static void fddmtr_event(void) {
 }
 
 void fddmtr_initialize(void) {
-
-#if defined(SUPPORT_SWSEEKSND)
-	fddmtrsnd_play(0, FALSE);
-#else
-	soundmng_pcmstop(SOUND_PCMSEEK);
-#endif
 	ZeroMemory(&fddmtr, sizeof(fddmtr));
 	FillMemory(fddmtr.head, sizeof(fddmtr.head), 42);
 }
@@ -157,11 +70,6 @@ void fddmtr_seek(REG8 drv, REG8 c, UINT size) {
 	if (regmove == 1) {
 		if (fddmtr.curevent < 80) {
 			fddmtr_event();
-#if defined(SUPPORT_SWSEEKSND)
-			fddmtrsnd_play(1, TRUE);
-#else
-			soundmng_pcmplay(SOUND_PCMSEEK1, FALSE);
-#endif
 			fddmtr.curevent = 80;
 			fddmtr.nextevent = gettick() + MOVEMOTOR1_MS;
 		}
@@ -169,11 +77,6 @@ void fddmtr_seek(REG8 drv, REG8 c, UINT size) {
 	else if (regmove) {
 		if (fddmtr.curevent < 100) {
 			fddmtr_event();
-#if defined(SUPPORT_SWSEEKSND)
-			fddmtrsnd_play(0, TRUE);
-#else
-			soundmng_pcmplay(SOUND_PCMSEEK, TRUE);
-#endif
 			fddmtr.curevent = 100;
 			fddmtr.nextevent = gettick() + (regmove * MOVE1TCK_MS);
 		}

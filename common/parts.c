@@ -59,7 +59,7 @@ UINT PARTSCALL jis2sjis(UINT jis) {
 	return((high << 8) | low);
 }
 
-void PARTSCALL satuation_s16(SINT16 *dst, const SINT32 *src, UINT size) {
+void PARTSCALL saturation_s16(SINT16 *dst, const SINT32 *src, UINT size) {
 
 	SINT32	data;
 
@@ -76,7 +76,7 @@ void PARTSCALL satuation_s16(SINT16 *dst, const SINT32 *src, UINT size) {
 	}
 }
 
-void PARTSCALL satuation_s16x(SINT16 *dst, const SINT32 *src, UINT size) {
+void PARTSCALL saturation_s16x(SINT16 *dst, const SINT32 *src, UINT size) {
 
 	SINT32	data;
 

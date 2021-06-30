@@ -175,13 +175,6 @@ inirdkb(const char *src, INITBL *ini)
 }
 
 static void
-inirdsnddrv(const char *src, INITBL *ini)
-{
-
-	*(UINT8 *)ini->value = snddrv_drv2num(src);
-}
-
-static void
 inirdinterp(const char *src, INITBL *ini)
 {
 
@@ -273,11 +266,6 @@ inireadcb(void *arg, const char *para, const char *key, const char *data)
 			case INITYPE_KB:
 				milstr_ncpy(work, data, 512);
 				inirdkb(work, p);
-				break;
-
-			case INITYPE_SNDDRV:
-				milstr_ncpy(work, data, 512);
-				inirdsnddrv(work, p);
 				break;
 
 			case INITYPE_INTERP:
@@ -467,10 +455,6 @@ ini_write(const char *path, const char *title, INITBL *tbl, UINT count, BOOL cre
 					milstr_ncpy(work, "106", sizeof(work));
 				break;
 
-			case INITYPE_SNDDRV:
-				snprintf(work, sizeof(work), "%s", snddrv_num2drv(*(UINT8 *)p->value));
-				break;
-
 			case INITYPE_INTERP:
 				snprintf(work, sizeof(work), "%s", iniwrinterp(*(UINT8 *)p->value));
 				break;
@@ -622,13 +606,10 @@ static INITBL iniitem[] = {
 #if defined(SUPPORT_STATSAVE)
 	{"STATSAVE", INIRO_BOOL,	&np2oscfg.statsave,	0},
 #endif
-#if defined(GCC_CPU_ARCH_IA32)
-	{"nousemmx", INITYPE_BOOL,	&np2oscfg.disablemmx,	0},
-#endif
+
 	{"toolwind", INITYPE_BOOL,	&np2oscfg.toolwin,	0},
 	{"jast_snd", INITYPE_BOOL,	&np2oscfg.jastsnd,	0},
 
-	{"sounddrv", INITYPE_SNDDRV,	&np2oscfg.snddrv,	0},
 	{"MIDIOUTd", INITYPE_STR,	&np2oscfg.MIDIDEV[0],	MAX_PATH},
 	{"MIDIIN_d", INITYPE_STR,	&np2oscfg.MIDIDEV[1],	MAX_PATH},
 	{"MIDIWAIT", INITYPE_UINT32,	&np2oscfg.MIDIWAIT,	0},

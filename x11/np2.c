@@ -82,11 +82,9 @@ NP2OSCFG np2oscfg = {
 	0,					/* jastsnd */
 	0,					/* I286SAVE */
 
-	SNDDRV_SDL,			/* snddrv */
 	{ "", "" },			/* MIDIDEV */
 	0,					/* MIDIWAIT */
 
-	MMXFLAG_DISABLE,	/* disablemmx */
 	INTERP_NEAREST,		/* drawinterp */
 	0,					/* F11KEY */
 
@@ -280,42 +278,4 @@ mainloop(void *graphics)
 	}
 
 	return TRUE;
-}
-
-int mmxflag;
-
-int
-havemmx(void)
-{
-#if !defined(GCC_CPU_ARCH_IA32)
-	return 0;
-#else	/* GCC_CPU_ARCH_IA32 */
-	int rv;
-
-#if defined(GCC_CPU_ARCH_AMD64)
-	rv = 1;
-#else	/* !GCC_CPU_ARCH_AMD64 */
-	asm volatile (
-		"pushf;"
-		"popl	%%eax;"
-		"movl	%%eax, %%edx;"
-		"xorl	$0x00200000, %%eax;"
-		"pushl	%%eax;"
-		"popf;"
-		"pushf;"
-		"popl	%%eax;"
-		"subl	%%edx, %%eax;"
-		"je	.nocpuid;"
-		"xorl	%%eax, %%eax;"
-		"incl	%%eax;"
-		"pushl	%%ebx;"
-		"cpuid;"
-		"popl	%%ebx;"
-		"movl	%%edx, %0;"
-		"andl	$0x00800000, %0;"
-	".nocpuid:"
-		: "=a" (rv));
-#endif /* GCC_CPU_ARCH_AMD64 */
-	return rv;
-#endif /* GCC_CPU_ARCH_IA32 */
 }

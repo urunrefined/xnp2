@@ -50,11 +50,9 @@ typedef struct {
 	UINT8	jastsnd;
 	UINT8	I286SAVE;
 
-	UINT8	snddrv;
 	char	MIDIDEV[2][MAX_PATH];
 	UINT32	MIDIWAIT;
 
-	UINT8	disablemmx;
 	UINT8	drawinterp;
 	UINT8	F11KEY;
 

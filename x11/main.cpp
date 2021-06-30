@@ -174,9 +174,6 @@ static void go(int argc, char *argv[]){
 
 	rand_setseed((SINT32)time(NULL));
 
-	mmxflag = havemmx() ? 0 : MMXFLAG_NOTSUPPORT;
-	mmxflag += np2oscfg.disablemmx ? MMXFLAG_DISABLE : 0;
-
 	TRACEINIT();
 
 	SDL_Init(0);

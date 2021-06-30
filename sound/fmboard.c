@@ -232,7 +232,6 @@ void fmboard_reset(const NP2CFG *pConfig, SOUNDID nSoundID)
 			break;
 	}
 	g_nSoundID = nSoundID;
-	soundmng_setreverse(pConfig->snd_x);
 	opngen_setVR(pConfig->spb_vrc, pConfig->spb_vrl);
 }
 

@@ -16,8 +16,8 @@ UINT8 PARTSCALL AdjustAfterMultiply(UINT8 value);
 UINT8 PARTSCALL AdjustBeforeDivision(UINT8 value);
 UINT PARTSCALL sjis2jis(UINT sjis);
 UINT PARTSCALL jis2sjis(UINT jis);
-void PARTSCALL satuation_s16(SINT16 *dst, const SINT32 *src, UINT size);
-void PARTSCALL satuation_s16x(SINT16 *dst, const SINT32 *src, UINT size);
+void PARTSCALL saturation_s16(SINT16 *dst, const SINT32 *src, UINT size);
+void PARTSCALL saturation_s16x(SINT16 *dst, const SINT32 *src, UINT size);
 
 #ifdef __cplusplus
 }
