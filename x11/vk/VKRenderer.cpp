@@ -77,16 +77,21 @@ void copyBufferToImage(const VkDevice device, const VkCommandPool& commandPool, 
 }
 
 void VulkanRenderer::updateImage(){
-	VulkanBufferGeneric stagingBuffer(device, physicalDevice, sizeof(image.data), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-	void* data;
-	vkMapMemory(device, stagingBuffer, 0, sizeof(image.data), 0, &data);
-		memcpy(data, image.data, sizeof(image.data));
-	vkUnmapMemory(device, stagingBuffer);
+	if(textureDirty){
+		VulkanBufferGeneric stagingBuffer(device, physicalDevice, sizeof(image.data), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-	transitionImageLayout(device, commandPool, graphicsQueue, texture, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	copyBufferToImage(device, commandPool, graphicsQueue, stagingBuffer, texture, 640, 400);
-	transitionImageLayout(device, commandPool, graphicsQueue, texture, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		void* data;
+		vkMapMemory(device, stagingBuffer, 0, sizeof(image.data), 0, &data);
+			memcpy(data, image.data, sizeof(image.data));
+		vkUnmapMemory(device, stagingBuffer);
+
+		transitionImageLayout(device, commandPool, graphicsQueue, texture, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		copyBufferToImage(device, commandPool, graphicsQueue, stagingBuffer, texture, 640, 400);
+		transitionImageLayout(device, commandPool, graphicsQueue, texture, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	}
+
+	textureDirty = false;
 }
 
 VulkanRenderer::VulkanRenderer(
@@ -99,6 +104,7 @@ VulkanRenderer::VulkanRenderer(
 		texture(texture_),
 		graphicsFamily(graphicsFamily_),
 		graphicsQueue(graphicsQueue_),
+		textureDirty(true),
 
 		commandPool(device, graphicsFamily),
 

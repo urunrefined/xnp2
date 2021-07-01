@@ -308,7 +308,7 @@ SCRNSURF scrnmng_surflock(void *graphics){
 
 void scrnmng_surfunlock(void *graphics){
 	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
-	scaler->renderer.updateImage();
+	scaler->renderer.textureDirty = true;
 }
 
 

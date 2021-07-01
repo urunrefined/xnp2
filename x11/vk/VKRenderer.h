@@ -37,6 +37,7 @@ public:
 	VkImage& texture;
 	uint32_t graphicsFamily;
 	VkQueue& graphicsQueue;
+	bool textureDirty;
 
 	VulkanCommandPool commandPool;
 
