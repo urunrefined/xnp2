@@ -4,6 +4,7 @@
 
 #include "np2.h"
 #include "scrnmng.h"
+#include "soundmng.h"
 #include "keystat.h"
 #include "loop.h"
 #include "exception.h"
@@ -212,6 +213,18 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 					}else if(mode == ViewPortMode::INTEGER){
 						mode = ViewPortMode::ASPECT;
 					}
+				}
+
+				if(keyEvent.key == KeyButtons::KEY_NUMPAD_DIV && keyEvent.state == PRESSED){
+					soundmng_decreaseVol(0.05);
+				}
+
+				if(keyEvent.key == KeyButtons::KEY_NUMPAD_MULT && keyEvent.state == PRESSED){
+					soundmng_increaseVol(0.05);
+				}
+
+				if(keyEvent.key == KeyButtons::KEY_M && keyEvent.state == PRESSED){
+					soundmng_toggleMute();
 				}
 			}
 		}

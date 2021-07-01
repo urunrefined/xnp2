@@ -15,8 +15,14 @@ void soundmng_play(void);
 void soundmng_stop(void);
 void soundmng_sync(void);
 
+/*incr decr / should be between 0 and 1*/
+void soundmng_increaseVol(double incr);
+void soundmng_decreaseVol(double decr);
+void soundmng_toggleMute(void);
+
 BRESULT soundmng_initialize(void);
 void soundmng_deinitialize(void);
+
 
 #ifdef __cplusplus
 } //#ifdef __cplusplus

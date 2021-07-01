@@ -46,6 +46,8 @@ MIDIMOD vermouth_module = NULL;
 static int audio_fd = -1;
 static BOOL opened = FALSE;
 static UINT opna_frame;
+static double masterVolume = 1;
+static bool mute = false;
 
 /*
  * buffer
@@ -138,6 +140,11 @@ sdlaudio_callback(void *userdata, unsigned char *stream, int len)
 	/* SDL2 から SDL 側で stream を無音で初期化しなくなった */
 	memset(stream, 0, len);
 
+	int sdlVol = (unsigned int)((double)SDL_MIX_MAXVOLUME * masterVolume);
+
+	sdlVol = std::max(0, sdlVol);
+	sdlVol = std::min(SDL_MIX_MAXVOLUME, sdlVol);
+
 	sndbuf_lock();
 
 	sndbuf = SNDBUF_FILLED_QUEUE_FIRST();
@@ -167,8 +174,10 @@ sdlaudio_callback(void *userdata, unsigned char *stream, int len)
 		sndbuf_unlock();
 	}
 
-	SDL_MixAudio(stream, (uint8_t *)sndbuf->buf + (sndbuf->size - sndbuf->remain),
-		len, SDL_MIX_MAXVOLUME);
+	if(!mute){
+		SDL_MixAudio(stream, (uint8_t *)sndbuf->buf + (sndbuf->size - sndbuf->remain),
+			len, sdlVol);
+	}
 	sndbuf->remain -= len;
 
 	if (sndbuf->remain == 0) {
@@ -401,6 +410,20 @@ soundmng_sync(void)
 	}
 }
 
+void soundmng_increaseVol(double incr){
+	masterVolume += incr;
+	masterVolume = std::min(1.0, masterVolume);
+}
+
+void soundmng_decreaseVol(double decr){
+	masterVolume -= decr;
+	masterVolume = std::max(0.0, masterVolume);
+}
+
+void soundmng_toggleMute(){
+	mute = !mute;
+}
+
 /*
  * sound buffer
  */
@@ -472,3 +495,4 @@ buffer_destroy(void)
 
 	sounddrv_unlock();
 }
+
