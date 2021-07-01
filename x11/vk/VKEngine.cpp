@@ -21,7 +21,7 @@ RenderState VulkanScaler::drawAndPresent(
 
 	VkResult resultImage = vkAcquireNextImageKHR(device, swapchainImages, 0, imageAvailableSemaphore, imageSitter, &imageIndex);
 
-	if(resultImage == VK_NOT_READY){
+	if(resultImage == VK_NOT_READY || resultImage == VK_TIMEOUT){
 		imageSitter.cancel();
 		return RenderState::WAITING;
 	}else if (resultImage == VK_ERROR_OUT_OF_DATE_KHR) {
