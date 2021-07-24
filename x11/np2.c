@@ -40,8 +40,8 @@
 #include "kbdmng.h"
 #include "scrnmng.h"
 #include "soundmng.h"
-#include "taskmng.h"
 
+#include <unistd.h>
 #include <sys/time.h>
 
 
@@ -90,8 +90,6 @@ NP2OSCFG np2oscfg = {
 
 	FALSE				/* cfgreadonly */
 };
-
-volatile sig_atomic_t np2running = 0;
 
 UINT framecnt = 0;
 UINT waitcnt = 0;
@@ -205,6 +203,20 @@ framereset()
 	framecnt = 0;
 	debugwin_process();
 	viewer_allreload(FALSE);
+}
+
+static BOOL
+taskmng_sleep(UINT32 tick)
+{
+	UINT32 base;
+	UINT32 now;
+
+	base = gettick();
+	while ((((now = gettick()) - base) < tick)) {
+		usleep((tick - (now - base) / 2) * 1000);
+	}
+
+	return 1;
 }
 
 void

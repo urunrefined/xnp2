@@ -18,7 +18,6 @@ SRC_C = \
 		./../x11/kbdmng.c                                   \
 		./../x11/commng.c                                   \
 		./../x11/joymng.c                                   \
-		./../x11/taskmng.c                                  \
 		./../x11/timemng.c                                  \
 		./../x11/debug/viewmem.c                            \
 		./../pccore.c                                       \

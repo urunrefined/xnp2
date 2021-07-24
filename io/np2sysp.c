@@ -3,7 +3,6 @@
 #if defined(OSLANG_UCS2)
 #include	"oemtext.h"
 #endif
-#include	"taskmng.h"
 #include	"cpucore.h"
 #include	"pccore.h"
 #include	"iocore.h"
@@ -65,8 +64,8 @@ void np2sysp_outstr(const void *arg1, long arg2) {
 }
 
 static void np2sysp_poweroff(const void *arg1, long arg2) {
+	//TODO: Poweroff currently removed. Reimplment.
 
-	taskmng_exit();
 	(void)arg1;
 	(void)arg2;
 }

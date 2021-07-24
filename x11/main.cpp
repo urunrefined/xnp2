@@ -46,7 +46,6 @@
 #include "kbdmng.h"
 #include "scrnmng.h"
 #include "soundmng.h"
-#include "taskmng.h"
 #include "trace.h"
 #include "signalFD.h"
 
@@ -205,7 +204,6 @@ static void go(int argc, char *argv[]){
 	joymng_initialize();
 
 	commng_initialize();
-	taskmng_initialize();
 
 	pccore_init();
 	S98_init();
