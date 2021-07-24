@@ -71,40 +71,38 @@ static const char appname[] = "np2";
  * option
  */
 static struct option longopts[] = {
-	{ "config",		required_argument,	0,	'c' },
-	{ "timidity-config",	required_argument,	0,	'C' },
-	{ "help",		no_argument,		0,	'h' },
-	{ 0,			0,			0,	0   },
+	{ "config", required_argument,  0,  'c' },
+	{ "help",   no_argument,        0,  'h' },
+	{ 0,        0,                  0,   0  },
 };
 
 static void
 usage(const char *progname)
 {
-
 	printf("Usage: %s [options] [[FD1 image] [[FD2 image] [[FD3 image] [FD4 image]]]]\n\n", progname);
 	printf("options:\n");
 	printf("\t--help            [-h]        : print this message\n");
 	printf("\t--config          [-c] <file> : specify config file\n");
-	printf("\t--timidity-config [-C] <file> : specify timidity config file\n");
+
 	exit(1);
 }
 
-static void go(int argc, char *argv[]){
-	struct stat sb;
+static int parseArguments(int argc, char *argv[]){
 	int ch;
-	int i, drvmax;
-
-	BR::SignalFD sfd;
 
 	while ((ch = getopt_long(argc, argv, "c:C:t:vh", longopts, NULL)) != -1) {
 		switch (ch) {
 		case 'c':
+		{
+			struct stat sb;
+
 			if (stat(optarg, &sb) < 0 || !S_ISREG(sb.st_mode)) {
 				printf("Can't access %s.\n", optarg);
 				exit(1);
 			}
 			milstr_ncpy(modulefile, optarg, sizeof(modulefile));
 			break;
+		}
 		case 'h':
 		case '?':
 		default:
@@ -112,15 +110,21 @@ static void go(int argc, char *argv[]){
 			break;
 		}
 	}
-	argc -= optind;
-	argv += optind;
 
+	//optind is a global in getopt_core
+	return optind;
+}
+
+static void discoverConfigFile(){
 	if (modulefile[0] == '\0') {
 		char *env = getenv("HOME");
 		if (env) {
 			/* base dir */
 			snprintf(modulefile, sizeof(modulefile),
 				"%s/.np2/", env);
+
+			struct stat sb;
+
 			if (stat(modulefile, &sb) < 0) {
 				if (mkdir(modulefile, 0700) < 0) {
 					perror(modulefile);
@@ -142,6 +146,9 @@ static void go(int argc, char *argv[]){
 			}
 		}
 	}
+}
+
+static void discoverFontFile(){
 	if (modulefile[0] != '\0') {
 		/* font file */
 		file_cpyname(np2cfg.fontfile, modulefile,
@@ -155,6 +162,9 @@ static void go(int argc, char *argv[]){
 		file_cpyname(statpath, modulefile, sizeof(statpath));
 		file_cutname(statpath);
 		file_catname(statpath, "/sav/", sizeof(statpath));
+
+		struct stat sb;
+
 		if (stat(statpath, &sb) < 0) {
 			if (mkdir(statpath, 0700) < 0) {
 				perror(statpath);
@@ -167,6 +177,18 @@ static void go(int argc, char *argv[]){
 		}
 		file_catname(statpath, appname, sizeof(statpath));
 	}
+}
+
+static void go(int argc, char *argv[]){
+	BR::SignalFD sfd;
+
+	int parsedCount = parseArguments(argc, argv);
+
+	argc -= parsedCount;
+	argv += parsedCount;
+
+	discoverConfigFile();
+	discoverFontFile();
 
 	dosio_init();
 	file_setcd(modulefile);
@@ -176,11 +198,12 @@ static void go(int argc, char *argv[]){
 
 	TRACEINIT();
 
-	SDL_Init(0);
 	viewer_init();
 	keystat_initialize();
 	soundmng_initialize();
+
 	joymng_initialize();
+
 	commng_initialize();
 	taskmng_initialize();
 
@@ -188,8 +211,8 @@ static void go(int argc, char *argv[]){
 	S98_init();
 	pccore_reset();
 
-	drvmax = (argc < 4) ? argc : 4;
-	for (i = 0; i < drvmax; i++) {
+	int drvmax = (argc < 4) ? argc : 4;
+	for (int i = 0; i < drvmax; i++) {
 		diskdrv_readyfdd(i, argv[i], 0);
 	}
 
@@ -207,8 +230,6 @@ static void go(int argc, char *argv[]){
 	soundmng_deinitialize();
 
 	initsave();
-
-	SDL_Quit();
 
 	TRACETERM();
 	dosio_term();

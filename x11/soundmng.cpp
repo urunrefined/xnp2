@@ -260,20 +260,6 @@ sdlaudio_stop(void)
 	SDL_PauseAudio(1);
 }
 
-static BRESULT
-sdlaudio_setup(void)
-{
-	return SUCCESS;
-}
-
-static void
-snddrv_setup(void)
-{
-	if (sdlaudio_setup() != SUCCESS) {
-		//TODO: Error handling
-	}
-}
-
 static void
 sounddrv_lock(void)
 {
@@ -297,8 +283,6 @@ soundmng_create(UINT rate, UINT bufmsec)
 		bufmsec = 20;
 	else if (bufmsec > 1000)
 		bufmsec = 1000;
-
-	snddrv_setup();
 
 	UINT samples = calc_blocksize((rate * bufmsec) / 1000 / 2);
 	opna_frame = samples * 2 * sizeof(SINT16);
@@ -341,6 +325,8 @@ soundmng_destroy(void)
 		audio_fd = -1;
 		opened = FALSE;
 	}
+
+	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
 void
@@ -358,7 +344,7 @@ soundmng_stop(void)
 BRESULT
 soundmng_initialize(void)
 {
-	snddrv_setup();
+	SDL_InitSubSystem(SDL_INIT_AUDIO);
 	return SUCCESS;
 }
 
