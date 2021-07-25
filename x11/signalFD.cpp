@@ -11,23 +11,29 @@
 
 namespace BR {
 
-SignalFD::SignalFD()
-{
-	sigset_t mask;
-
+SignalBlock::SignalBlock(){
 	sigemptyset(&mask);
 	sigaddset(&mask, SIGINT);
 	sigaddset(&mask, SIGQUIT);
 
-	sfd = signalfd(-1, &mask, O_CLOEXEC);
-
 	if (sigprocmask(SIG_BLOCK, &mask, NULL) == -1){
 		throw CException("sigprocmask failed", errno);
 	}
+};
+
+SignalBlock::~SignalBlock(){
+	sigprocmask(SIG_UNBLOCK, &mask, NULL);
+};
+
+SignalFD::SignalFD()
+{
+	sfd = signalfd(-1, &(block.mask), O_CLOEXEC);
 
 	if(sfd == -1){
 		throw CException("signalfd failed", errno);
 	}
+
+
 }
 
 bool SignalFD::isTriggered(){
