@@ -26,10 +26,6 @@
 #ifndef	NP2_X11_KBDMNG_H__
 #define	NP2_X11_KBDMNG_H__
 
-#include "keystat.h"
-#include "compiler.h"
-#include "common.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -43,10 +39,6 @@ enum {
 enum {
 	KEYBOARD_KC_NC = 0xff
 };
-
-BRESULT kbdmng_init(void);
-UINT8 kbdmng_getf12key(void);
-void kbdmng_resetf12(void);
 
 #ifdef __cplusplus
 }

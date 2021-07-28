@@ -51,6 +51,7 @@
 
 #include "loop.h"
 #include "exception.h"
+#include "keystat.h"
 
 #include <SDL.h>
 

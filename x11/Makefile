@@ -15,7 +15,6 @@ SRC_C = \
 		./../x11/cmserial.c                                 \
 		./../x11/drawmng.c                                  \
 		./../x11/fontmng.c                                  \
-		./../x11/kbdmng.c                                   \
 		./../x11/commng.c                                   \
 		./../x11/joymng.c                                   \
 		./../x11/timemng.c                                  \
