@@ -80,7 +80,6 @@ NP2OSCFG np2oscfg = {
 	0,					/* toolwin */
 	0,					/* hostdrv_write */
 	0,					/* jastsnd */
-	0,					/* I286SAVE */
 
 	{ "", "" },			/* MIDIDEV */
 	0,					/* MIDIWAIT */

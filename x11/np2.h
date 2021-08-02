@@ -48,7 +48,6 @@ typedef struct {
 	UINT8	toolwin;
 	UINT8	hostdrv_write;
 	UINT8	jastsnd;
-	UINT8	I286SAVE;
 
 	char	MIDIDEV[2][MAX_PATH];
 	UINT32	MIDIWAIT;
