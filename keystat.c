@@ -44,7 +44,7 @@ void keystat_initialize(void) {
 	ZeroMemory(&keystat, sizeof(keystat));
 	FillMemory(keystat.ref, sizeof(keystat.ref), NKEYREF_NC);
 	keystat_tblreset();
-	getbiospath(path, OEMTEXT("key.txt"), NELEMENTS(path));
+	getartifactpath(path, OEMTEXT("key.txt"), NELEMENTS(path));
 	keystat_tblload(path);
 }
 

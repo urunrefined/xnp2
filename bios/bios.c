@@ -234,7 +234,7 @@ void bios_initialize(void) {
 	UINT	pos;
 
 	biosrom = FALSE;
-	getbiospath(path, str_biosrom, NELEMENTS(path));
+	getartifactpath(path, str_biosrom, NELEMENTS(path));
 	fh = file_open_rb(path);
 	if (fh != FILEH_INVALID) {
 		biosrom = (file_read(fh, mem + 0x0e8000, 0x18000) == 0x18000);

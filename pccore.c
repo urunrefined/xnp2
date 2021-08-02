@@ -75,7 +75,7 @@ const OEMCHAR np2version[] = OEMTEXT(NP2VER_CORE);
 #if defined(SUPPORT_SCSI)
 				{OEMTEXT(""), OEMTEXT(""), OEMTEXT(""), OEMTEXT("")},
 #endif
-				OEMTEXT(""), OEMTEXT(""), OEMTEXT("")};
+				OEMTEXT(""), OEMTEXT("")};
 
 	PCCORE	pccore = {	PCBASECLOCK25, PCBASEMULTIPLE,
 						0, PCMODEL_VX, 0, 0, {0x3e, 0x73, 0x7b}, 0,
@@ -93,19 +93,9 @@ const OEMCHAR np2version[] = OEMTEXT(NP2VER_CORE);
 
 // ---------------------------------------------------------------------------
 
-void getbiospath(OEMCHAR *path, const OEMCHAR *fname, UINT maxlen) {
-
-const OEMCHAR	*p;
-
-	p = np2cfg.biospath;
-	if (p[0]) {
-		file_cpyname(path, p, maxlen);
-		file_setseparator(path, maxlen);
-		file_catname(path, fname, maxlen);
-	}
-	else {
-		file_cpyname(path, file_getcd(fname), maxlen);
-	}
+void getartifactpath(OEMCHAR *path, const OEMCHAR *fname, UINT maxlen) {
+	file_cpyname(path, file_getcd(fname), maxlen);
+	printf("Used Artifact (if present) %s\n", path);
 }
 
 

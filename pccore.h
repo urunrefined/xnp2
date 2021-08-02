@@ -140,7 +140,6 @@ struct tagNP2Config
 	OEMCHAR	scsihdd[4][MAX_PATH];									// ver0.74
 #endif
 	OEMCHAR	fontfile[MAX_PATH];
-	OEMCHAR	biospath[MAX_PATH];
 	OEMCHAR	hdrvroot[MAX_PATH];
 };
 typedef struct tagNP2Config  NP2CFG;		/*!< The define of config */
@@ -190,7 +189,7 @@ extern	PCSTAT	pcstat;
 extern	UINT8	soundrenewal;
 extern	UINT	drawcount;
 
-void getbiospath(OEMCHAR *path, const OEMCHAR *fname, UINT maxlen);
+void getartifactpath(OEMCHAR *path, const OEMCHAR *fname, UINT maxlen);
 void screendisp(NEVENTITEM item);
 void screenvsync(NEVENTITEM item);
 

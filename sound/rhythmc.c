@@ -65,7 +65,7 @@ static void rhythm_load(void) {
 
 	for (i=0; i<6; i++) {
 		if (rhythmcfg.pcm[i].sample == NULL) {
-			getbiospath(path, rhythmfile[i], NELEMENTS(path));
+			getartifactpath(path, rhythmfile[i], NELEMENTS(path));
 			pcmmix_regfile(rhythmcfg.pcm + i, path, rhythmcfg.rate);
 		}
 	}

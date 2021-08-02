@@ -30,7 +30,7 @@ static BRESULT loadsoundrom(UINT address, const OEMCHAR *name) {
 		file_catname(romname, name, NELEMENTS(romname));
 	}
 	file_catname(romname, file_extrom, NELEMENTS(romname));
-	getbiospath(path, romname, NELEMENTS(path));
+	getartifactpath(path, romname, NELEMENTS(path));
 	fh = file_open_rb(path);
 	if (fh == FILEH_INVALID) {
 		goto lsr_err;
