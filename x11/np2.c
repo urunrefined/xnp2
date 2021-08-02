@@ -97,8 +97,6 @@ UINT framemax = 1;
 BOOL s98logging = FALSE;
 int s98log_count = 0;
 
-char hddfolder[MAX_PATH];
-char fddfolder[MAX_PATH];
 char modulefile[MAX_PATH];
 char statpath[MAX_PATH];
 

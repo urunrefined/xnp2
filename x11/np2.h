@@ -103,9 +103,6 @@ void framereset();
 void processwait(UINT cnt);
 int mainloop(void *);
 
-extern int mmxflag;
-int havemmx(void);
-
 #ifdef __cplusplus
 }
 #endif
