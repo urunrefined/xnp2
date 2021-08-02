@@ -89,8 +89,6 @@ extern UINT framemax;
 extern BOOL s98logging;
 extern int s98log_count;
 
-extern char hddfolder[MAX_PATH];
-extern char fddfolder[MAX_PATH];
 extern char bmpfilefolder[MAX_PATH];
 extern char modulefile[MAX_PATH];
 extern char statpath[MAX_PATH];

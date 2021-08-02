@@ -492,8 +492,6 @@ enum {
 };
 
 static INITBL iniitem[] = {
-	{"FDfolder", INITYPE_STR,	fddfolder,		MAX_PATH},
-	{"HDfolder", INITYPE_STR,	hddfolder,		MAX_PATH},
 	{"fontfile", INITYPE_STR,	np2cfg.fontfile,	MAX_PATH},
 	{"hdrvroot", INIRO_STR,		np2cfg.hdrvroot,	MAX_PATH},
 	{"hdrv_acc", INIRO_UINT8,	&np2cfg.hdrvacc,	0},

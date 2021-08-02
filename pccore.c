@@ -82,13 +82,8 @@ const OEMCHAR np2version[] = OEMTEXT(NP2VER_CORE);
 						SOUNDID_NONE, 0,
 						PCBASECLOCK25 * PCBASEMULTIPLE, 0};
 	PCSTAT	pcstat = {3, TRUE, FALSE, FALSE};
-
-//	UINT8	screenupdate = 3;
-//	int		screendispflag = 1;
 	UINT8	soundrenewal = 0;
-//	BOOL	drawframe;
 	UINT	drawcount = 0;
-//	BOOL	hardwarereset = FALSE;
 
 
 // ---------------------------------------------------------------------------
