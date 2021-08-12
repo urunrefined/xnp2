@@ -284,13 +284,6 @@ extern "C" UINT8 mousemng_getstat(void *graphics, short *x, short *y){
 	return mouseButtonState;
 }
 
-//TODO: Remove
-static SCRNMNG scrnmng {
-	0,32,0
-};
-
-extern "C" SCRNMNG *scrnmngp = &scrnmng;
-
 SCRNSURF scrnmng_surflock(void *graphics){
 	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
 

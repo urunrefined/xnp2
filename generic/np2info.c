@@ -333,7 +333,7 @@ static void info_display(OEMCHAR *str, int maxlen, const NP2INFOEX *ex) {
 
 	UINT	bpp;
 
-	bpp = scrnmng_getbpp();
+	bpp = 32;
 	milstr_ncpy(str, milstr_list(str_winclr, ((bpp >> 3) - 1) & 3), maxlen);
 
 	(void)ex;

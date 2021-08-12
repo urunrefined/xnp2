@@ -83,8 +83,6 @@ NP2OSCFG np2oscfg = {
 
 	{ "", "" },			/* MIDIDEV */
 	0,					/* MIDIWAIT */
-
-	INTERP_NEAREST,		/* drawinterp */
 	0,					/* F11KEY */
 
 	FALSE				/* cfgreadonly */

@@ -174,21 +174,6 @@ inirdkb(const char *src, INITBL *ini)
 	}
 }
 
-static void
-inirdinterp(const char *src, INITBL *ini)
-{
-
-	if (!milstr_cmp(src, "NEAREST")) {
-		*(UINT8 *)ini->value = INTERP_NEAREST;
-	} else if (!milstr_cmp(src, "TILES")) {
-		*(UINT8 *)ini->value = INTERP_TILES;
-	} else if (!milstr_cmp(src, "HYPER")) {
-		*(UINT8 *)ini->value = INTERP_HYPER;
-	} else {
-		*(UINT8 *)ini->value = INTERP_BILINEAR;
-	}
-}
-
 static void update_iniread_flag(const INITBL *p);
 
 static BRESULT
@@ -268,11 +253,6 @@ inireadcb(void *arg, const char *para, const char *key, const char *data)
 				inirdkb(work, p);
 				break;
 
-			case INITYPE_INTERP:
-				milstr_ncpy(work, data, 512);
-				inirdinterp(work, p);
-				break;
-
 			default:
 				rv = FALSE;
 				break;
@@ -345,20 +325,6 @@ iwss_extend:
 		work[0] = '\"';
 		work[1] = '\0';
 	}
-}
-
-static const char *
-iniwrinterp(UINT8 interp)
-{
-
-	if (interp == INTERP_NEAREST)
-		return "NEAREST";
-	else if (interp == INTERP_TILES)
-		return "TILES";
-	else if (interp == INTERP_HYPER)
-		return "HYPER";
-	else
-		return "BILINEAR";
 }
 
 static BOOL read_iniread_flag(const INITBL *p);
@@ -453,10 +419,6 @@ ini_write(const char *path, const char *title, INITBL *tbl, UINT count, BOOL cre
 					milstr_ncpy(work, "101", sizeof(work));
 				else
 					milstr_ncpy(work, "106", sizeof(work));
-				break;
-
-			case INITYPE_INTERP:
-				snprintf(work, sizeof(work), "%s", iniwrinterp(*(UINT8 *)p->value));
 				break;
 
 			default:
@@ -611,7 +573,6 @@ static INITBL iniitem[] = {
 	{"MIDIIN_d", INITYPE_STR,	&np2oscfg.MIDIDEV[1],	MAX_PATH},
 	{"MIDIWAIT", INITYPE_UINT32,	&np2oscfg.MIDIWAIT,	0},
 
-	{"dinterp_", INITYPE_INTERP,	&np2oscfg.drawinterp,	0},
 	{"F11_KEY_", INITYPE_UINT8,	&np2oscfg.F11KEY,	0},
 	{"READONLY", INIRO_BOOL,	&np2oscfg.cfgreadonly,	0}
 };

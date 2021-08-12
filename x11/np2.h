@@ -51,8 +51,6 @@ typedef struct {
 
 	char	MIDIDEV[2][MAX_PATH];
 	UINT32	MIDIWAIT;
-
-	UINT8	drawinterp;
 	UINT8	F11KEY;
 
 	UINT8	cfgreadonly;
@@ -68,13 +66,6 @@ enum {
 enum {
 	MMXFLAG_DISABLE		= 1,
 	MMXFLAG_NOTSUPPORT	= 2
-};
-
-enum {
-	INTERP_NEAREST		= 0,
-	INTERP_TILES		= 1,
-	INTERP_BILINEAR		= 2,
-	INTERP_HYPER		= 3
 };
 
 /* np2.c */

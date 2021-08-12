@@ -332,7 +332,7 @@ void pal_eventclear(void) {
 
 	palevent.anabit = 0;
 	palevent.events = 0;
-	if ((!pcstat.drawframe) || (!np2cfg.RASTER) || (scrnmng_getbpp() == 8)) {
+	if ((!pcstat.drawframe) || (!np2cfg.RASTER) || (32 == 8)) {
 		palevent.events--;					// 0xffffffff にする...
 	}
 	else {
