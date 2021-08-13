@@ -121,8 +121,7 @@ typedef signed long nxp2ptr;
 #define OEMTEXT(s)	s
 
 #if defined(CPUCORE_IA32)
-#define	msgbox(title, msg)	toolkit_messagebox(title, msg);
-
+#define USE_FPU
 #if !defined(DISABLE_PC9821)
 #define	SUPPORT_PC9821
 #define	SUPPORT_CRT31KHZ

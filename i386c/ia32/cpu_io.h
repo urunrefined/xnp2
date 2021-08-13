@@ -27,6 +27,7 @@
 #define	IA32_CPU_CPU_IO_H__
 
 #include "interface.h"
+#include "compiler.h"
 
 #ifdef __cplusplus
 extern "C" {

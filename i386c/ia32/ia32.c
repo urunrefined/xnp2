@@ -26,6 +26,8 @@
 #include "compiler.h"
 #include "cpu.h"
 #include "ia32.mcr"
+#include "trace.h"
+#include "_memory.h"
 
 I386CORE	i386core;
 

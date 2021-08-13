@@ -26,6 +26,7 @@
 #include "compiler.h"
 #include "cpu.h"
 #include "ia32.mcr"
+#include "trace.h"
 
 const char *exception_str[EXCEPTION_NUM] = {
 	"DE_EXCEPTION",

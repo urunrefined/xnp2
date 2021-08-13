@@ -24,8 +24,12 @@
  */
 
 #include "compiler.h"
-
+#include "trace.h"
 #include "cpu.h"
+
+#include <stdio.h>
+#include <stdarg.h>
+
 #if defined(USE_FPU)
 #include "instructions/fpu/fp.h"
 #endif

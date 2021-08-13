@@ -3,6 +3,7 @@
 #include "compiler.h"
 #include "common.h"
 #include "pccore.h"
+#include "trace.h"
 
 #define	IDEIO_MULTIPLE_MAX	0
 #define	IDEIO_BUFSIZE_MAX	4096

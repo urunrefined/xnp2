@@ -26,6 +26,7 @@
 #include "compiler.h"
 #include "cpu.h"
 #include "cpumem.h"
+#include "trace.h"
 
 
 /*

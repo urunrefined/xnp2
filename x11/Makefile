@@ -1,4 +1,4 @@
-INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I./../i286c -I/usr/include/SDL2
+INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I/usr/include/SDL2
 
 LDLIBS = -pthread -lSDL2 -lm -lglfw -lvulkan
 
@@ -170,25 +170,14 @@ SRC_C = \
 		./../vram/makegrph.c                                \
 		./../vram/makegrex.c                                \
 		./../vram/scrnsave.c                                \
-		./../i286c/i286c.c                                  \
-		./../i286c/cpumem.c                                 \
-		./../i286c/i286c_mn.c                               \
-		./../i286c/i286c_ea.c                               \
-		./../i286c/i286c_0f.c                               \
-		./../i286c/i286c_8x.c                               \
-		./../i286c/i286c_sf.c                               \
-		./../i286c/i286c_f6.c                               \
-		./../i286c/i286c_fe.c                               \
-		./../i286c/i286c_rp.c                               \
-		./../i286c/v30patch.c                               \
 		./../debugsub.c
-      
+
 SRC_CPP = \
-                ./../x11/main.cpp                                   \
+                ./../x11/main.cpp                                \
 		./../x11/loop.cpp                                   \
 		./../x11/exception.cpp                              \
 		./../x11/signalFD.cpp                               \
-                ./../x11/soundmng.cpp                               \
+		./../x11/soundmng.cpp                               \
 		./../x11/misc/threadbase.cpp                        \
 		./../x11/misc/tty.cpp                               \
 		./../x11/misc/usbdev.cpp                            \
@@ -234,9 +223,67 @@ SRC_CPP = \
 		./../x11/vk/VKBuffers.cpp                           \
 		./../x11/vk/VKSampler.cpp                           \
 		./../x11/vk/VKRenderer.cpp                          \
-		./../x11/vk/VKDescriptorSet.cpp			    \
+		./../x11/vk/VKDescriptorSet.cpp                     \
 		./../x11/vk/VKCommandBuffer.cpp
 		
+cputype?=i286
+
+ifeq ($(cputype),i286)
+SRC_C += \
+                ./../i286c/i286c.c                                  \
+		./../i286c/cpumem.c                                 \
+		./../i286c/i286c_mn.c                               \
+		./../i286c/i286c_ea.c                               \
+		./../i286c/i286c_0f.c                               \
+		./../i286c/i286c_8x.c                               \
+		./../i286c/i286c_sf.c                               \
+		./../i286c/i286c_f6.c                               \
+		./../i286c/i286c_fe.c                               \
+		./../i286c/i286c_rp.c                               \
+		./../i286c/v30patch.c
+
+INC += -I./../i286c
+
+else
+CXXFLAGS += -DCPUCORE_IA32
+CFLAGS += -DCPUCORE_IA32
+
+SRC_C += \
+                ./../i386c/ia32/task.c                              \
+		./../i386c/ia32/debug.c                             \
+		./../i386c/ia32/inst_table.c                        \
+		./../i386c/ia32/cpu.c                               \
+		./../i386c/ia32/instructions/fpu.c                  \
+		./../i386c/ia32/instructions/system_inst.c          \
+		./../i386c/ia32/instructions/flag_ctrl.c            \
+		./../i386c/ia32/instructions/seg_reg.c              \
+		./../i386c/ia32/instructions/bin_arith.c            \
+		./../i386c/ia32/instructions/misc_inst.c            \
+		./../i386c/ia32/instructions/data_trans.c           \
+		./../i386c/ia32/instructions/string_inst.c          \
+		./../i386c/ia32/instructions/shift_rotate.c         \
+		./../i386c/ia32/instructions/logic_arith.c          \
+		./../i386c/ia32/instructions/bit_byte.c             \
+		./../i386c/ia32/instructions/dec_arith.c            \
+		./../i386c/ia32/instructions/ctrl_trans.c           \
+		./../i386c/ia32/instructions/fpu/fpemul.c           \
+		./../i386c/ia32/disasm.c                            \
+		./../i386c/ia32/resolve.c                           \
+		./../i386c/ia32/ia32.c                              \
+		./../i386c/ia32/ctrlxfer.c                          \
+		./../i386c/ia32/exception.c                         \
+		./../i386c/ia32/interface.c                         \
+		./../i386c/ia32/cpu_mem.c                           \
+		./../i386c/ia32/groups.c                            \
+		./../i386c/ia32/cpu_io.c                            \
+		./../i386c/ia32/paging.c                            \
+		./../i386c/ia32/segments.c                          \
+		./../i386c/cpucore.c                                \
+		./../i386c/cpumem.c
+
+INC += -I./../i386c
+
+endif
 
 OBJ = $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 DEP = $(SRC_C:.c=.d) $(SRC_CPP:.cpp=.d)

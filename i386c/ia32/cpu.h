@@ -35,6 +35,8 @@
 #define IA32_CPU_CPU_H__
 
 #include "interface.h"
+#include "compiler.h"
+#include <setjmp.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -292,7 +294,7 @@ extern I386CORE		i386core;
 #define	CPU_INPADRS	i386core.e.inport
 #define	CPU_EMSPTR	i386core.e.ems
 
-extern sigjmp_buf	exec_1step_jmpbuf;
+extern jmp_buf	exec_1step_jmpbuf;
 
 
 /*

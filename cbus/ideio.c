@@ -14,6 +14,9 @@
 #include	"sound.h"
 #include	"idebios.res"
 
+#include <stdarg.h>
+#include <stdlib.h>
+
 
 	IDEIO	ideio;
 
@@ -184,7 +187,7 @@ static void panic(const char *str, ...) {
 	vsnprintf(buf, sizeof(buf), str, ap);
 	va_end(ap);
 
-	msgbox("ide_panic", buf);
+	printf("ide_panic%s\n", buf);
 	exit(1);
 }
 

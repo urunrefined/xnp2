@@ -29,6 +29,7 @@
 #include "ia32/ctrlxfer.h"
 
 #include "ctrl_trans.h"
+#include "trace.h"
 
 #if defined(ENABLE_TRAP)
 #include "trap/inttrap.h"

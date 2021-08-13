@@ -26,6 +26,8 @@
 #ifndef	IA32_CPU_INST_TABLE_H__
 #define	IA32_CPU_INST_TABLE_H__
 
+#include "compiler.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

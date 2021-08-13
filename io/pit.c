@@ -9,6 +9,7 @@
 #include	"sound.h"
 #include	"beep.h"
 #include	"board14.h"
+#include	"trace.h"
 
 
 #define	BEEPCOUNTEREX					// BEEPアイドル時のカウンタをα倍に

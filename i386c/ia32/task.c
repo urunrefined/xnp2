@@ -25,6 +25,7 @@
 
 #include "compiler.h"
 #include "cpu.h"
+#include "trace.h"
 #include "ia32.mcr"
 
 #define	TSS_16_SIZE	44

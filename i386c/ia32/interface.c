@@ -34,6 +34,11 @@
 #include "iocore.h"
 #include "dmax86.h"
 #include "bios/bios.h"
+#include "trace.h"
+
+#include <stdio.h>
+#include <stddef.h>
+#include <stdarg.h>
 
 
 void
@@ -216,7 +221,7 @@ ia32_panic(const char *str, ...)
 	strcat(buf, cpu_reg2str());
 	VERBOSE(("%s", buf));
 
-	msgbox("ia32_panic", buf);
+	printf("ia32_panic %s\n", buf);
 
 #if defined(IA32_REBOOT_ON_PANIC)
 	VERBOSE(("ia32_panic: reboot"));
@@ -238,7 +243,7 @@ ia32_warning(const char *str, ...)
 	va_end(ap);
 	strcat(buf, "\n");
 
-	msgbox("ia32_warning", buf);
+	printf("ia32_warning %s\n", buf);
 }
 
 void
@@ -251,7 +256,7 @@ ia32_printf(const char *str, ...)
 	va_end(ap);
 	strcat(buf, "\n");
 
-	msgbox("ia32_printf", buf);
+	printf("ia32_printf %s\n", buf);
 }
 
 

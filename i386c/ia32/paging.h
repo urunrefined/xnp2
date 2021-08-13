@@ -26,6 +26,9 @@
 #ifndef	IA32_CPU_PAGING_H__
 #define	IA32_CPU_PAGING_H__
 
+#include "compiler.h"
+#include "common.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

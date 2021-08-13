@@ -107,11 +107,6 @@ const SDRAWFN *sdraw_getproctblex(const SCRNSURF *surf) {
 	int		proc;
 
 	proc = ((surf->bpp >> 3) - 1) & 3;
-#if defined(SUPPORT_NORMALDISP)
-	if (surf->extend) {
-		proc += 4;
-	}
-#endif
 	return(tblex[proc]);
 }
 #endif

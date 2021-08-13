@@ -28,6 +28,7 @@
 #include "ia32/ia32.mcr"
 
 #include "system_inst.h"
+#include "trace.h"
 
 
 void CPUCALL

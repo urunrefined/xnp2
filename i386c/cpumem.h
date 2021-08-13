@@ -1,6 +1,8 @@
 #ifndef	NP2_I386C_CPUMEM_H__
 #define	NP2_I386C_CPUMEM_H__
 
+#include "common.h"
+
 #ifdef NP2_MEMORY_ASM			// アセンブラ版は 必ずfastcallで
 #undef	MEMCALL
 #define	MEMCALL	FASTCALL
