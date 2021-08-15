@@ -8,6 +8,7 @@
 #include "keystat.h"
 #include "loop.h"
 #include "exception.h"
+#include "pccore.h"
 
 namespace BR {
 
@@ -226,6 +227,11 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 				if(keyEvent.key == KeyButtons::KEY_M && keyEvent.state == PRESSED){
 					soundmng_toggleMute();
 				}
+
+				if(keyEvent.key == KeyButtons::KEY_I && keyEvent.state == PRESSED){
+					pccore_reset();
+				}
+
 			}
 		}
 		else {
