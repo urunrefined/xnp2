@@ -98,7 +98,6 @@ static KeyMapping keyTable [] {
 	{KeyButtons::KEY_N,            0x2e},
 	{KeyButtons::KEY_M,            0x2f},
 
-
 	{KeyButtons::KEY_SPACE,	       0x34},
 	{KeyButtons::KEY_RIGHT_ALT,    0x35},
 
@@ -108,6 +107,8 @@ static KeyMapping keyTable [] {
 	{KeyButtons::KEY_ARROW_DOWN,   0x3d},
 
 	{KeyButtons::KEY_NUMPAD_NUM,   0x3e},
+	//HELP Key -- Apparently used to access the bios
+	{KeyButtons::KEY_F11,          0x3f},
 	{KeyButtons::KEY_NUMPAD_MINUS, 0x40},
 	{KeyButtons::KEY_NUMPAD_DIV,   0x41},
 	{KeyButtons::KEY_NUM_7,        0x42},
@@ -231,7 +232,6 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 				if(keyEvent.key == KeyButtons::KEY_I && keyEvent.state == PRESSED){
 					pccore_reset();
 				}
-
 			}
 		}
 		else {
