@@ -593,7 +593,7 @@ void screenvsync(NEVENTITEM item) {
 
 	// drawscreenで pccore.vsyncclockが変更される可能性があります
 	if (np2cfg.DISPSYNC) {
-		drawscreen(0);
+		drawscreen(item->userData);
 	}
 	(void)item;
 }
