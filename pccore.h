@@ -136,6 +136,7 @@ struct tagNP2Config
 	UINT8	hdrvacc;
 
 	OEMCHAR	sasihdd[2][MAX_PATH];									// ver0.74
+	OEMCHAR	fdd[4][MAX_PATH];
 #if defined(SUPPORT_SCSI)
 	OEMCHAR	scsihdd[4][MAX_PATH];									// ver0.74
 #endif

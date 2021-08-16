@@ -79,7 +79,7 @@ static struct option longopts[] = {
 static void
 usage(const char *progname)
 {
-	printf("Usage: %s [options] [[FD1 image] [[FD2 image] [[FD3 image] [FD4 image]]]]\n\n", progname);
+	printf("Usage: %s [options]\n\n", progname);
 	printf("options:\n");
 	printf("\t--help            [-h]        : print this message\n");
 	printf("\t--config          [-c] <file> : specify config file\n");
@@ -210,9 +210,11 @@ static void go(int argc, char *argv[]){
 	S98_init();
 	pccore_reset();
 
-	int drvmax = (argc < 4) ? argc : 4;
-	for (int i = 0; i < drvmax; i++) {
-		diskdrv_readyfdd(i, argv[i], 0);
+	for (int i = 0; i < 4; i++) {
+		if(strlen(np2cfg.fdd[i])){
+			printf("Ready Disk %s\n", np2cfg.fdd[i]);
+			diskdrv_readyfdd(i, np2cfg.fdd[i], 0);
+		}
 	}
 
 	BR::loop(sfd);

@@ -471,6 +471,11 @@ static INITBL iniitem[] = {
 	{"HDD1FILE", INITYPE_STR,	np2cfg.sasihdd[0],	MAX_PATH},
 	{"HDD2FILE", INITYPE_STR,	np2cfg.sasihdd[1],	MAX_PATH},
 
+	{"FDD1FILE", INITYPE_STR,	np2cfg.fdd[0],	MAX_PATH},
+	{"FDD2FILE", INITYPE_STR,	np2cfg.fdd[1],	MAX_PATH},
+	{"FDD3FILE", INITYPE_STR,	np2cfg.fdd[2],	MAX_PATH},
+	{"FDD4FILE", INITYPE_STR,	np2cfg.fdd[3],	MAX_PATH},
+
 	{"SampleHz", INITYPE_UINT32,	&np2cfg.samplingrate,	0},
 	{"Latencys", INITYPE_UINT16,	&np2cfg.delayms,	0},
 	{"SNDboard", INITYPE_HEX8,	&np2cfg.SOUND_SW,	0},
