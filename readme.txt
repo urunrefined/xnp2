@@ -20,7 +20,15 @@ vulkan-icd-loader
 Vulkan should already have been installed via your graphics drivers.
 To run simply start ./xnp2 inside the x11 directory. You do not need
 to set any config option except the font and whatever images you are using.
+If you do not have a config already run the app once, then look into
+the ~/.np2/ directory for the config and change the relevant params
+(such as the path to the font). It should be self-explanatory.
 
+If you see any message regarding (i386) you (most likely) need to compile
+this emu with the cputype=i386 flag (see above).
+
+Mouse capture is done via "clicking" on the emulator screen. To get out of
+this mode press F12.
 
 TODO:
 * Create a new config file. The old one has a thousand options - most should
@@ -39,7 +47,9 @@ additonal dependency worth it? Simply use FreeType libs instead?
 every one of the available settings via the commandline
 * The keymapping is incomplete and needs to be completed
 * Proper mouse support (mouse is in but seems to me to be incorrect)
-* Currently only one vk command buffer is being used (there is only
+* Currently only one Vulkan command buffer is being used (there is only
 one texture image). This needs to be done properly.
 * Pass all midi data directly to timidity / fluidsynth without
 parsing the timidity cfg
++ What exactly is the diff between i286c and i286x cores?
+ 
