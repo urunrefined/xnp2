@@ -46,9 +46,6 @@
 
 
 NP2OSCFG np2oscfg = {
-	0,					/* NOWAIT */
-	0,					/* DRAW_SKIP */
-
 	0,					/* DISPCLK */
 
 	KEY_KEY106,			/* KEYBOARD */
@@ -77,15 +74,11 @@ NP2OSCFG np2oscfg = {
 	0,					/* confirm */
 
 	0,					/* statsave */
-	0,					/* toolwin */
 	0,					/* hostdrv_write */
 	0,					/* jastsnd */
 
 	{ "", "" },			/* MIDIDEV */
 	0,					/* MIDIWAIT */
-	0,					/* F11KEY */
-
-	FALSE				/* cfgreadonly */
 };
 
 UINT framecnt = 0;
@@ -229,59 +222,32 @@ processwait(UINT cnt)
 int
 mainloop(void *graphics)
 {
-	if (np2oscfg.NOWAIT) {
+	/* auto skip */
+	if (waitcnt == 0) {
+		UINT cnt;
 		joymng_sync();
 		pccore_exec(graphics, framecnt == 0);
-		if (np2oscfg.DRAW_SKIP) {
-			/* nowait frame skip */
-			framecnt++;
-			if (framecnt >= np2oscfg.DRAW_SKIP) {
-				processwait(0);
+		framecnt++;
+		cnt = timing_getcount();
+		if (framecnt > cnt) {
+			waitcnt = framecnt;
+			if (framemax > 1) {
+				framemax--;
 			}
-		} else {
-			/* nowait auto skip */
-			framecnt = 1;
-			if (timing_getcount()) {
-				processwait(0);
+		} else if (framecnt >= framemax) {
+			if (framemax < 12) {
+				framemax++;
 			}
-		}
-	} else if (np2oscfg.DRAW_SKIP) {
-		/* frame skip */
-		if (framecnt < np2oscfg.DRAW_SKIP) {
-			joymng_sync();
-			pccore_exec(graphics, framecnt == 0);
-			framecnt++;
-		} else {
-			processwait(np2oscfg.DRAW_SKIP);
+			if (cnt >= 12) {
+				timing_reset();
+			} else {
+				timing_setcount(cnt - framecnt);
+			}
+			framereset();
 		}
 	} else {
-		/* auto skip */
-		if (waitcnt == 0) {
-			UINT cnt;
-			joymng_sync();
-			pccore_exec(graphics, framecnt == 0);
-			framecnt++;
-			cnt = timing_getcount();
-			if (framecnt > cnt) {
-				waitcnt = framecnt;
-				if (framemax > 1) {
-					framemax--;
-				}
-			} else if (framecnt >= framemax) {
-				if (framemax < 12) {
-					framemax++;
-				}
-				if (cnt >= 12) {
-					timing_reset();
-				} else {
-					timing_setcount(cnt - framecnt);
-				}
-				framereset();
-			}
-		} else {
-			processwait(waitcnt);
-			waitcnt = framecnt;
-		}
+		processwait(waitcnt);
+		waitcnt = framecnt;
 	}
 
 	return TRUE;

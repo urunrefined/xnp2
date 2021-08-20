@@ -509,8 +509,6 @@ static INITBL iniitem[] = {
 	{"DispSync", INITYPE_BOOL,	&np2cfg.DISPSYNC,	0},
 	{"Real_Pal", INITYPE_BOOL,	&np2cfg.RASTER,		0},
 	{"RPal_tim", INIMAX_UINT8,	&np2cfg.realpal,	64},
-	{"s_NOWAIT", INITYPE_BOOL,	&np2oscfg.NOWAIT,	0},
-	{"SkpFrame", INITYPE_UINT8,	&np2oscfg.DRAW_SKIP,	0},
 	{"uPD72020", INITYPE_BOOL,	&np2cfg.uPD72020,	0},
 	{"GRCG_EGC", INIAND_UINT8,	&np2cfg.grcg,		3},
 	{"color16b", INITYPE_BOOL,	&np2cfg.color16,	0},
@@ -571,15 +569,11 @@ static INITBL iniitem[] = {
 	{"STATSAVE", INIRO_BOOL,	&np2oscfg.statsave,	0},
 #endif
 
-	{"toolwind", INITYPE_BOOL,	&np2oscfg.toolwin,	0},
 	{"jast_snd", INITYPE_BOOL,	&np2oscfg.jastsnd,	0},
 
 	{"MIDIOUTd", INITYPE_STR,	&np2oscfg.MIDIDEV[0],	MAX_PATH},
 	{"MIDIIN_d", INITYPE_STR,	&np2oscfg.MIDIDEV[1],	MAX_PATH},
 	{"MIDIWAIT", INITYPE_UINT32,	&np2oscfg.MIDIWAIT,	0},
-
-	{"F11_KEY_", INITYPE_UINT8,	&np2oscfg.F11KEY,	0},
-	{"READONLY", INIRO_BOOL,	&np2oscfg.cfgreadonly,	0}
 };
 #define	INIITEMS	(sizeof(iniitem) / sizeof(iniitem[0]))
 

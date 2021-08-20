@@ -24,9 +24,6 @@ typedef struct {
 } COMCFG;
 
 typedef struct {
-	UINT8	NOWAIT;
-	UINT8	DRAW_SKIP;
-
 	UINT8	DISPCLK;
 
 	UINT8	KEYBOARD;
@@ -45,15 +42,11 @@ typedef struct {
 	UINT8	confirm;
 
 	UINT8	statsave;
-	UINT8	toolwin;
 	UINT8	hostdrv_write;
 	UINT8	jastsnd;
 
 	char	MIDIDEV[2][MAX_PATH];
 	UINT32	MIDIWAIT;
-	UINT8	F11KEY;
-
-	UINT8	cfgreadonly;
 } NP2OSCFG;
 
 
