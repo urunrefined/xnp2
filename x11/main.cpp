@@ -87,7 +87,7 @@ usage(const char *progname)
 	exit(1);
 }
 
-static int parseArguments(int argc, char *argv[]){
+static void parseArguments(int argc, char *argv[]){
 	int ch;
 
 	while ((ch = getopt_long(argc, argv, "c:C:t:vh", longopts, NULL)) != -1) {
@@ -110,9 +110,6 @@ static int parseArguments(int argc, char *argv[]){
 			break;
 		}
 	}
-
-	//optind is a global in getopt_core
-	return optind;
 }
 
 static void discoverConfigFile(){
@@ -182,10 +179,7 @@ static void discoverFontFile(){
 static void go(int argc, char *argv[]){
 	BR::SignalFD sfd;
 
-	int parsedCount = parseArguments(argc, argv);
-
-	argc -= parsedCount;
-	argv += parsedCount;
+	parseArguments(argc, argv);
 
 	discoverConfigFile();
 	discoverFontFile();
