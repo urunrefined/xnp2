@@ -2,7 +2,7 @@
 
 namespace BR {
 
-VulkanImageMemory::VulkanImageMemory(const VkPhysicalDevice &physicalDevice, VkDevice &device_, VkImage image, VkMemoryPropertyFlags properties) : device(device_){
+VulkanImageMemory::VulkanImageMemory(const VkPhysicalDevice &physicalDevice, const VkDevice &device_, VkImage image, VkMemoryPropertyFlags properties) : device(device_){
 	VkMemoryRequirements memRequirements;
 	vkGetImageMemoryRequirements(device, image, &memRequirements);
 

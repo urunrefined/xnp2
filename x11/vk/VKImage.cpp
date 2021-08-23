@@ -2,7 +2,7 @@
 
 namespace BR {
 
-VulkanImage::VulkanImage(VkDevice &device_, uint32_t width, uint32_t height, VkFormat format, VkImageUsageFlags usage) : device(device_){
+VulkanImage::VulkanImage(const VkDevice &device_, uint32_t width, uint32_t height, VkFormat format, VkImageUsageFlags usage) : device(device_){
 	VkImageCreateInfo imageInfo = {};
 	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 	imageInfo.imageType = VK_IMAGE_TYPE_2D;

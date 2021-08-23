@@ -10,16 +10,12 @@
 #include "VKDescriptorSet.h"
 #include "VKSampler.h"
 #include "VKCommandPool.h"
+#include "VKTexture.h"
+#include "VKImage.h"
+#include "VKImageMemory.h"
+#include "VKTexture.h"
 
 namespace BR {
-
-static const unsigned int pc98Width = 640;
-static const unsigned int pc98Height = 400;
-
-class Image {
-public:
-	unsigned char data[pc98Width * pc98Height * 4] = {0};
-};
 
 class VulkanRenderer {
 public:
@@ -34,29 +30,22 @@ public:
 	std::unique_ptr<PipelineTex>  pipelineStretch;
 	std::unique_ptr<PipelineTex>  pipelineInteger;
 
-	VkImage& texture;
 	uint32_t graphicsFamily;
 	VkQueue& graphicsQueue;
-	bool textureDirty;
-
-	VulkanCommandPool commandPool;
-
-	VulkanImageView textureView;
 	VulkanSampler sampler;
 
 	VulkanDescriptorLayout descriptorLayout;
-	VulkanDescriptorPool descriptorPool;
-	VulkanDescriptorSet descriptorSet;
-
-	Image image;
+	VulkanTexture texture;
 	
 	VulkanRenderer(
 		const VulkanPhysicalDevice& physicalDevice_, const VulkanDevice& device_,
 		uint32_t graphicsFamily_, VkQueue& graphicsQueue_, ShaderStore& shaderStore_,
-		VkFormat swapChainFormat, VkExtent2D swapChainExtent, VkImage& texture_
+		VkFormat swapChainFormat, VkExtent2D swapChainExtent
 	);
 
 	void reCreatePipeline(VkExtent2D swapChainExtent){
+		static const unsigned int pc98Width = 640;
+		static const unsigned int pc98Height = 400;
 
 		{
 			VkRect2D scissor = getAspectScissor((double)pc98Width / (double) pc98Height, swapChainExtent.width, swapChainExtent.height);

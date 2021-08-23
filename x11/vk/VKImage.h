@@ -6,11 +6,11 @@
 namespace BR {
 
 class VulkanImage {
-	VkDevice& device;
+	const VkDevice& device;
 public:
 	VkImage image;
 
-	VulkanImage(VkDevice &device_, uint32_t width, uint32_t height, VkFormat format, VkImageUsageFlags usage);
+	VulkanImage(const VkDevice &device_, uint32_t width, uint32_t height, VkFormat format, VkImageUsageFlags usage);
 	~VulkanImage();
 
 	operator VkImage& (){

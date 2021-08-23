@@ -224,7 +224,8 @@ SRC_CPP = \
 		./../x11/vk/VKSampler.cpp                           \
 		./../x11/vk/VKRenderer.cpp                          \
 		./../x11/vk/VKDescriptorSet.cpp                     \
-		./../x11/vk/VKCommandBuffer.cpp
+		./../x11/vk/VKCommandBuffer.cpp                     \
+		./../x11/vk/VKTexture.cpp
 		
 cputype?=i286
 

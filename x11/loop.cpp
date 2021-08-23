@@ -161,6 +161,11 @@ static void mapAndSendKey(KeyEvent& keyEvent){
 	}
 }
 
+struct CallbackContext {
+	VulkanTexture *texture;
+	Input *input;
+};
+
 static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 	BR::VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<BR::VulkanRenderBuffer> renderBuffer;
@@ -172,10 +177,15 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 		END
 	};
 
+	CallbackContext ctx{
+		&scaler.getRenderer().texture,
+		&scaler.context.glfwCtx.input
+	};
+
 	ViewPortMode mode = ViewPortMode::INTEGER;
 
 	while(scaler.getWindowState() != WindowState::SHOULDCLOSE && !sfd.isTriggered()){
-		mainloop(&scaler);
+		mainloop(&ctx);
 
 		if(scaler.renderingComplete()){
 			scaler.renderer.updateImage();
@@ -187,13 +197,13 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 			//scaler.renderer.pipelineV->record(*renderBuffer, 6);
 
 			if(mode == ViewPortMode::ASPECT){
-				scaler.renderer.pipelineAspect->record(*renderBuffer, scaler.renderer.descriptorSet, 6);
+				scaler.renderer.pipelineAspect->record(*renderBuffer, scaler.renderer.texture.descriptorSet, 6);
 			}
 			else if(mode == ViewPortMode::STRETCH){
-				scaler.renderer.pipelineStretch->record(*renderBuffer, scaler.renderer.descriptorSet, 6);
+				scaler.renderer.pipelineStretch->record(*renderBuffer, scaler.renderer.texture.descriptorSet, 6);
 			}
 			else {
-				scaler.renderer.pipelineInteger->record(*renderBuffer, scaler.renderer.descriptorSet, 6);
+				scaler.renderer.pipelineInteger->record(*renderBuffer, scaler.renderer.texture.descriptorSet, 6);
 			}
 
 			renderBuffer->end();
@@ -259,11 +269,11 @@ void loop(SignalFD& sfd){
 
 }
 
-extern "C" UINT8 mousemng_getstat(void *graphics, short *x, short *y){
+extern "C" UINT8 mousemng_getstat(void *inContext, short *x, short *y){
 
-	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
+	BR::CallbackContext *context = (BR::CallbackContext *)inContext;
 
-	auto& input = scaler->context.glfwCtx.getInput();
+	auto& input = *(context->input);
 
 	input.getMouseMove(*x, *y);
 	input.mouse_move_x = 0;
@@ -290,12 +300,12 @@ extern "C" UINT8 mousemng_getstat(void *graphics, short *x, short *y){
 	return mouseButtonState;
 }
 
-SCRNSURF scrnmng_surflock(void *graphics){
-	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
+SCRNSURF scrnmng_surflock(void *inContext){
+	BR::CallbackContext *context = (BR::CallbackContext *)inContext;
 
 	SCRNSURF scrnsurf;
 
-	scrnsurf.ptr = (UINT8 *) scaler->renderer.image.data;
+	scrnsurf.ptr = (UINT8 *) context->texture->image.data;
 	scrnsurf.bpp = 4 * 8;
 	scrnsurf.width = 640;
 	scrnsurf.height = 400;
@@ -305,9 +315,9 @@ SCRNSURF scrnmng_surflock(void *graphics){
 	return scrnsurf;
 }
 
-void scrnmng_surfunlock(void *graphics){
-	BR::VulkanScaler *scaler = (BR::VulkanScaler *)graphics;
-	scaler->renderer.textureDirty = true;
+void scrnmng_surfunlock(void *inContext){
+	BR::CallbackContext *context = (BR::CallbackContext *)inContext;
+	context->texture->textureDirty = true;
 }
 
 

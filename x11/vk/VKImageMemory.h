@@ -10,11 +10,11 @@ namespace BR {
 
 class VulkanImageMemory
 {
-	VkDevice& device;
+	const VkDevice& device;
 	VkDeviceMemory imageMemory;
 
 public:
-	VulkanImageMemory(const VkPhysicalDevice& physicalDevice, VkDevice& device_, VkImage image, VkMemoryPropertyFlags properties);
+	VulkanImageMemory(const VkPhysicalDevice& physicalDevice, const VkDevice& device_, VkImage image, VkMemoryPropertyFlags properties);
 
 	~VulkanImageMemory();
 
