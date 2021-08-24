@@ -166,13 +166,16 @@ struct CallbackContext {
 	Input *input;
 };
 
+static const unsigned int pc98Width = 640;
+static const unsigned int pc98Height = 400;
+
 static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 	BR::VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<BR::VulkanRenderBuffer> renderBuffer;
 	VulkanTexture texture(
 		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
 		scaler.renderer.graphicsFamily, scaler.renderer.descriptorLayout,
-		scaler.renderer.sampler
+		scaler.renderer.sampler, pc98Width, pc98Height
 	);
 
 	enum class ViewPortMode : uint8_t {
@@ -310,12 +313,12 @@ SCRNSURF scrnmng_surflock(void *inContext){
 
 	SCRNSURF scrnsurf;
 
-	scrnsurf.ptr = (UINT8 *) context->texture->image.data;
-	scrnsurf.bpp = 4 * 8;
-	scrnsurf.width = 640;
-	scrnsurf.height = 400;
+	scrnsurf.ptr = (UINT8 *) context->texture->image.data.data();
+	scrnsurf.bpp = 32;
+	scrnsurf.width = context->texture->image.width;
+	scrnsurf.height = context->texture->image.height;
 	scrnsurf.xalign = 4;
-	scrnsurf.yalign = 640 * 4;
+	scrnsurf.yalign = context->texture->image.width * 4;
 
 	return scrnsurf;
 }
