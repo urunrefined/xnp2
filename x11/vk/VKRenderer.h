@@ -35,7 +35,6 @@ public:
 	VulkanSampler sampler;
 
 	VulkanDescriptorLayout descriptorLayout;
-	VulkanTexture texture;
 	
 	VulkanRenderer(
 		const VulkanPhysicalDevice& physicalDevice_, const VulkanDevice& device_,
@@ -78,8 +77,6 @@ public:
 					new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
 		}
 	}
-	
-	void updateImage();
 
 	virtual ~VulkanRenderer(){}
 	

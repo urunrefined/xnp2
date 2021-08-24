@@ -169,6 +169,11 @@ struct CallbackContext {
 static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
 	BR::VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<BR::VulkanRenderBuffer> renderBuffer;
+	VulkanTexture texture(
+		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
+		scaler.renderer.graphicsFamily, scaler.renderer.descriptorLayout,
+		scaler.renderer.sampler
+	);
 
 	enum class ViewPortMode : uint8_t {
 		ASPECT = 0,
@@ -178,7 +183,7 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 	};
 
 	CallbackContext ctx{
-		&scaler.getRenderer().texture,
+		&texture,
 		&scaler.context.glfwCtx.input
 	};
 
@@ -188,7 +193,7 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 		mainloop(&ctx);
 
 		if(scaler.renderingComplete()){
-			scaler.renderer.updateImage();
+			texture.update();
 
 			renderBuffer = scaler.newRenderBuffer();
 			scaler.pollWindowEvents();
@@ -197,13 +202,13 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 			//scaler.renderer.pipelineV->record(*renderBuffer, 6);
 
 			if(mode == ViewPortMode::ASPECT){
-				scaler.renderer.pipelineAspect->record(*renderBuffer, scaler.renderer.texture.descriptorSet, 6);
+				scaler.renderer.pipelineAspect->record(*renderBuffer, texture.descriptorSet, 6);
 			}
 			else if(mode == ViewPortMode::STRETCH){
-				scaler.renderer.pipelineStretch->record(*renderBuffer, scaler.renderer.texture.descriptorSet, 6);
+				scaler.renderer.pipelineStretch->record(*renderBuffer, texture.descriptorSet, 6);
 			}
 			else {
-				scaler.renderer.pipelineInteger->record(*renderBuffer, scaler.renderer.texture.descriptorSet, 6);
+				scaler.renderer.pipelineInteger->record(*renderBuffer, texture.descriptorSet, 6);
 			}
 
 			renderBuffer->end();

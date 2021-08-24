@@ -6,10 +6,6 @@
 
 namespace BR {
 
-void VulkanRenderer::updateImage(){
-	texture.update();
-}
-
 VulkanRenderer::VulkanRenderer(
 		const VulkanPhysicalDevice& physicalDevice_, const VulkanDevice& device_,
 		uint32_t graphicsFamily_, VkQueue& graphicsQueue_, ShaderStore& shaderStore_,
@@ -20,11 +16,9 @@ VulkanRenderer::VulkanRenderer(
 		graphicsFamily(graphicsFamily_),
 		graphicsQueue(graphicsQueue_),
 		sampler(physicalDevice, device),
-		descriptorLayout(device),
-		texture(device, physicalDevice, graphicsQueue, graphicsFamily, descriptorLayout, sampler)
+		descriptorLayout(device)
 {
 	reCreatePipeline(swapChainExtent);
-	updateImage();
 }
 	
 } //namespace D5
