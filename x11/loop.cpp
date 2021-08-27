@@ -1,6 +1,7 @@
 
 #include "vk/VKEngine.h"
 #include "vk/VKPhysicalDeviceEnumerations.h"
+#include "vk/FreeFont.h"
 
 #include "np2.h"
 #include "scrnmng.h"
@@ -9,6 +10,7 @@
 #include "loop.h"
 #include "exception.h"
 #include "pccore.h"
+
 
 namespace BR {
 
@@ -170,13 +172,39 @@ static const unsigned int pc98Width = 640;
 static const unsigned int pc98Height = 400;
 
 static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
-	BR::VulkanScaler scaler(engine, physicalDevice);
-	std::unique_ptr<BR::VulkanRenderBuffer> renderBuffer;
-	VulkanTexture texture(
+
+	FontconfigLib lib;
+	FontList fontlist(lib);
+	std::string fontfile = fontlist.getFirst();
+
+	const char *teststring = "abc123 テスト";
+	//const char *teststring = "a";
+
+	FreetypeLib freetypeLib;
+	FreetypeFace freetypeFace(freetypeLib, fontfile.c_str());
+
+	HarfbuzzBlob hbblob(fontfile.c_str());
+	HarfbuzzFace hbface(hbblob.blob);
+	HarfbuzzFont hbfont(hbface.face);
+	HarfbuzzText harfbuzz(teststring, hbfont);
+
+	VulkanScaler scaler(engine, physicalDevice);
+	std::unique_ptr<VulkanRenderBuffer> renderBuffer;
+
+	VulkanTexture mainTexture(
 		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
 		scaler.renderer.graphicsFamily, scaler.renderer.descriptorLayout,
 		scaler.renderer.sampler, pc98Width, pc98Height
 	);
+
+	VulkanTexture logTexture(
+		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
+		scaler.renderer.graphicsFamily, scaler.renderer.descriptorLayout,
+		scaler.renderer.sampler, 1024, 1024
+	);
+
+	drawText(harfbuzz, freetypeFace, 400, logTexture.image);
+	logTexture.textureDirty = true;
 
 	enum class ViewPortMode : uint8_t {
 		ASPECT = 0,
@@ -185,8 +213,10 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 		END
 	};
 
+	int showlog = false;
+
 	CallbackContext ctx{
-		&texture,
+		&mainTexture,
 		&scaler.context.glfwCtx.input
 	};
 
@@ -196,7 +226,8 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 		mainloop(&ctx);
 
 		if(scaler.renderingComplete()){
-			texture.update();
+			mainTexture.update();
+			logTexture.update();
 
 			renderBuffer = scaler.newRenderBuffer();
 			scaler.pollWindowEvents();
@@ -204,14 +235,19 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 			renderBuffer->begin(scaler.getRenderPass(), scaler.swapchain);
 			//scaler.renderer.pipelineV->record(*renderBuffer, 6);
 
-			if(mode == ViewPortMode::ASPECT){
-				scaler.renderer.pipelineAspect->record(*renderBuffer, texture.descriptorSet, 6);
-			}
-			else if(mode == ViewPortMode::STRETCH){
-				scaler.renderer.pipelineStretch->record(*renderBuffer, texture.descriptorSet, 6);
+			if(showlog){
+				scaler.renderer.pipelineAspect1to1->record(*renderBuffer, logTexture.descriptorSet, 6);
 			}
 			else {
-				scaler.renderer.pipelineInteger->record(*renderBuffer, texture.descriptorSet, 6);
+				if(mode == ViewPortMode::ASPECT){
+					scaler.renderer.pipelineAspect->record(*renderBuffer, mainTexture.descriptorSet, 6);
+				}
+				else if(mode == ViewPortMode::STRETCH){
+					scaler.renderer.pipelineStretch->record(*renderBuffer, mainTexture.descriptorSet, 6);
+				}
+				else {
+					scaler.renderer.pipelineInteger->record(*renderBuffer, mainTexture.descriptorSet, 6);
+				}
 			}
 
 			renderBuffer->end();
@@ -249,6 +285,10 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 
 				if(keyEvent.key == KeyButtons::KEY_I && keyEvent.state == PRESSED){
 					pccore_reset();
+				}
+
+				if(keyEvent.key == KeyButtons::KEY_K && keyEvent.state == PRESSED){
+					showlog = !showlog;
 				}
 			}
 		}

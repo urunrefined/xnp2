@@ -8,6 +8,7 @@ Install the following packages
 glslang (for glslangValidator glsl -> spirv compiler)
 glfw-wayland OR glfw-x11 depending on what DE/WM you are running
 sdl2 (for sound & controller support)
+fontconfig, harfbuzz, freetype for rendering fonts
 cd into the "x11" directory and call "make".
 For i386 support use "make cputype=i386" instead
 
@@ -15,7 +16,10 @@ Running:
 To run you need:
 glfw-wayland OR glfw-x11
 sdl2
-vulkan-icd-loader 
+vulkan-icd-loader,
+fontconfig
+harfbuzz
+freetype
 
 Vulkan should already have been installed via your graphics drivers.
 To run simply start ./xnp2 inside the x11 directory. You do not need

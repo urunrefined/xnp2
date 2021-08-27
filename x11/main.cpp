@@ -36,10 +36,8 @@
 #include "serial.h"
 #include "timing.h"
 #include "milstr.h"
-
 #include "viewer.h"
 #include "debugwin.h"
-
 #include "commng.h"
 #include "fontmng.h"
 #include "joymng.h"
@@ -48,12 +46,9 @@
 #include "soundmng.h"
 #include "trace.h"
 #include "signalFD.h"
-
 #include "loop.h"
 #include "exception.h"
 #include "keystat.h"
-
-#include <SDL.h>
 
 #include <sys/stat.h>
 #include <getopt.h>

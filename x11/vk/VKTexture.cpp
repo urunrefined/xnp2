@@ -85,7 +85,7 @@ void VulkanTexture::update(){
 		vkUnmapMemory(device, stagingBuffer);
 
 		transitionImageLayout(device, commandPool, graphicsQueue, texture, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		copyBufferToImage(device, commandPool, graphicsQueue, stagingBuffer, texture, 640, 400);
+		copyBufferToImage(device, commandPool, graphicsQueue, stagingBuffer, texture, image.width, image.height);
 		transitionImageLayout(device, commandPool, graphicsQueue, texture, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
 

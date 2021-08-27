@@ -27,6 +27,7 @@ public:
 
 	std::unique_ptr<PipelineV>    pipelineV;
 	std::unique_ptr<PipelineTex>  pipelineAspect;
+	std::unique_ptr<PipelineTex>  pipelineAspect1to1;
 	std::unique_ptr<PipelineTex>  pipelineStretch;
 	std::unique_ptr<PipelineTex>  pipelineInteger;
 
@@ -49,13 +50,24 @@ public:
 		{
 			VkRect2D scissor = getAspectScissor((double)pc98Width / (double) pc98Height, swapChainExtent.width, swapChainExtent.height);
 
-			printf("Recreate apect pipeline with offset [%u, %u], extent [%u, %u]\n",
+			printf("Recreate aspect pipeline with offset [%u, %u], extent [%u, %u]\n",
 				   scissor.offset.x, scissor.offset.y,
 				   scissor.extent.width, scissor.extent.height);
 
 			pipelineV        = std::unique_ptr<PipelineV>   (new PipelineV   (device, shaderStore, scissor, renderPass));
 			pipelineAspect   = std::unique_ptr<PipelineTex> (new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
 		}
+
+		{
+			VkRect2D scissor = getAspectScissor(1, swapChainExtent.width, swapChainExtent.height);
+
+			printf("Recreate 1to1 aspect pipeline with offset [%u, %u], extent [%u, %u]\n",
+				   scissor.offset.x, scissor.offset.y,
+				   scissor.extent.width, scissor.extent.height);
+
+			pipelineAspect1to1   = std::unique_ptr<PipelineTex> (new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
+		}
+
 		{
 			VkRect2D scissor = getIntegerScissor(pc98Width, pc98Height, swapChainExtent.width, swapChainExtent.height);
 

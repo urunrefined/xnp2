@@ -1,6 +1,7 @@
-INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I/usr/include/SDL2
+INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram
+INCEXT=-I/usr/include/SDL2 -I/usr/include/fontconfig -I/usr/include/freetype2 -I/usr/include/harfbuzz
 
-LDLIBS = -pthread -lSDL2 -lm -lglfw -lvulkan
+LDLIBS = -pthread -lSDL2 -lm -lglfw -lvulkan -lfontconfig -lharfbuzz -lfreetype
 
 #General flags
 CXXFLAGS = -Wall -Wextra -std=gnu++17 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
@@ -173,7 +174,7 @@ SRC_C = \
 		./../debugsub.c
 
 SRC_CPP = \
-                ./../x11/main.cpp                                \
+                ./../x11/main.cpp                                   \
 		./../x11/loop.cpp                                   \
 		./../x11/exception.cpp                              \
 		./../x11/signalFD.cpp                               \
@@ -225,7 +226,9 @@ SRC_CPP = \
 		./../x11/vk/VKRenderer.cpp                          \
 		./../x11/vk/VKDescriptorSet.cpp                     \
 		./../x11/vk/VKCommandBuffer.cpp                     \
-		./../x11/vk/VKTexture.cpp
+		./../x11/vk/VKTexture.cpp                           \
+		./../x11/vk/FreeFont.cpp                            \
+		./../x11/vk/Image.cpp
 		
 cputype?=i286
 
@@ -305,10 +308,10 @@ $(BIN): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(LDLIBS) $^ -o $@
 
 %.o: %.cpp
-	$(CXX) -c $< $(CXXFLAGS) $(INC) -MMD -MP -o $@
+	$(CXX) -c $< $(CXXFLAGS) $(INC) $(INCEXT) -MMD -MP -o $@
 
 %.o: %.c
-	$(CC) -c $< $(CFLAGS) $(INC) -MMD -MP -o $@
+	$(CC) -c $< $(CFLAGS) $(INC) $(INCEXT) -MMD -MP -o $@
 	
 %.spv: %.vert
 	glslangValidator -V $< -o $@

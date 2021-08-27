@@ -7,22 +7,11 @@
 #include "VKImageView.h"
 #include "VKDescriptorSet.h"
 #include "VKSampler.h"
+#include "Image.h"
 
 #include <vector>
 
 namespace BR {
-
-class Image {
-public:
-	const uint16_t width;
-	const uint16_t height;
-
-	std::vector<unsigned char> data;
-
-	Image(uint16_t width_, uint16_t height_) : width(width_), height(height_){
-		data.resize(width * height * 4);
-	}
-};
 
 class VulkanTexture
 {
