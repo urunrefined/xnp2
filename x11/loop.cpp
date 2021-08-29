@@ -171,12 +171,43 @@ struct CallbackContext {
 static const unsigned int pc98Width = 640;
 static const unsigned int pc98Height = 400;
 
+static void draw(Pen &pen, const std::string& base, const char *add){
+
+	std::string str = base;
+
+	if(add && add[0] != 0){
+		str += add;
+	}
+	else {
+		str += "<empty>";
+	}
+
+	pen.draw(str.c_str());
+}
+
+static void drawFilename(Pen &pen, const std::string& base, const char *path){
+	if(path){
+		const char *filename = strrchr(path, '/');
+
+		if(!filename){
+			draw(pen, base, path);
+		} else {
+			draw(pen, base, filename + 1);
+		}
+	}
+	else {
+		draw(pen, base, path);
+	}
+}
+
 static void glLoop(
 		SignalFD& sfd,
 		VulkanContext& engine,
 		VulkanPhysicalDevice& physicalDevice,
 		HarfbuzzFont& hbfont,
-		FreetypeFace& freetypeFace)
+		FreetypeFace& freetypeFace,
+		NP2CFG& cfg,
+		NP2OSCFG& oscfg)
 {
 	VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<VulkanRenderBuffer> renderBuffer;
@@ -195,17 +226,19 @@ static void glLoop(
 
 	Pen pen(logTexture.image, 0.2, freetypeFace, hbfont);
 
-	{
-		pen.draw("abc123 テスト");
-	}
+	//pen.draw("abc123 テスト");
+	//pen.draw("eat 食べる");
+	//pen.draw("pesto ペスト");
 
-	{
-		pen.draw("eat 食べる");
-	}
+	drawFilename(pen, "FDD 0: ", cfg.fdd[0]);
+	drawFilename(pen, "FDD 1: ", cfg.fdd[1]);
+	drawFilename(pen, "FDD 2: ", cfg.fdd[2]);
+	drawFilename(pen, "FDD 3: ", cfg.fdd[3]);
 
-	{
-		pen.draw("pesto ペスト");
-	}
+	drawFilename(pen, "HDD 0: ", cfg.sasihdd[0]);
+	drawFilename(pen, "HDD 1: ", cfg.sasihdd[1]);
+	drawFilename(pen, "Font: ",  cfg.fontfile);
+
 
 	logTexture.textureDirty = true;
 
@@ -310,13 +343,17 @@ static void glLoop(
 	}
 }
 
-void loop(SignalFD& sfd){
+void loop(
+		SignalFD& sfd,
+		NP2CFG& cfg,
+		NP2OSCFG& oscfg
+){
 	FontconfigLib lib;
 	FontList fontlist(lib);
 	std::string fontfile = fontlist.getFirst();
 
 	FreetypeLib freetypeLib;
-	FreetypeFace freetypeFace(freetypeLib, fontfile.c_str(), 48);
+	FreetypeFace freetypeFace(freetypeLib, fontfile.c_str(), 32);
 
 	HarfbuzzBlob hbblob(fontfile.c_str());
 	HarfbuzzFace hbface(hbblob.blob);
@@ -325,7 +362,7 @@ void loop(SignalFD& sfd){
 	VulkanContext engine;
 	VulkanPhysicalDevice physicalDevice = glPhysicalDeviceSelection(engine);
 
-	glLoop(sfd, engine, physicalDevice, hbfont, freetypeFace);
+	glLoop(sfd, engine, physicalDevice, hbfont, freetypeFace, cfg, oscfg);
 }
 
 }

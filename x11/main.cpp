@@ -206,7 +206,7 @@ static void go(int argc, char *argv[]){
 		}
 	}
 
-	BR::loop(sfd);
+	BR::loop(sfd, np2cfg, np2oscfg);
 
 	printf("Normal exit\n");
 
