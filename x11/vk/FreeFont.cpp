@@ -149,14 +149,18 @@ FreetypeLib::~FreetypeLib(){
 	FT_Done_FreeType(library);
 }
 
-FreetypeFace::FreetypeFace(FreetypeLib &library, const char *fontfile){
+FreetypeFace::FreetypeFace(FreetypeLib &library, const char *fontfile, FT_UInt ftpx){
 	FT_New_Face(library.library, fontfile, 0, &face);
 	if(!face){
 		throw Exception("No face");
 	}
 
-	//FT_Set_Pixel_Sizes(face, 64, 64);
-	FT_Set_Char_Size(face, 192, 192, 1024, 1024);
+	FT_Set_Pixel_Sizes(face, 0, ftpx);
+
+	lineheight = ((double)face->size->metrics.height) / ((double)(64));
+
+	printf("lineheight %f", lineheight);
+
 	slot = face->glyph;
 }
 
@@ -216,9 +220,9 @@ draw_bitmap(FT_Bitmap* bitmap, Image& image, FT_Int bitmap_left, FT_Int bitmap_t
 	FT_Int line_offset)
 {
 	unsigned char *data = image.data.data();
-	printf("FT Rows     : %d, width: %d\n", bitmap->rows, bitmap->width);
-	printf("Image height: %d, width: %d\n", image.width,  image.height);
-	printf("top height: %d\n", bitmap_top);
+	//printf("FT Rows     : %d, width: %d\n", bitmap->rows, bitmap->width);
+	//printf("Image height: %d, width: %d\n", image.width,  image.height);
+	//printf("top height: %d\n", bitmap_top);
 
 	for(unsigned int y = 0; y < bitmap->rows; y++){
 		for(unsigned int x = 0; x < bitmap->width; x++){
@@ -237,7 +241,7 @@ draw_bitmap(FT_Bitmap* bitmap, Image& image, FT_Int bitmap_left, FT_Int bitmap_t
 	}
 }
 
-void drawText(HarfbuzzText& hb, FreetypeFace& face, int target_height, Image& image){
+void drawText(HarfbuzzText& hb, FreetypeFace& face, unsigned int line, double padding, Image& image){
 	FT_Vector pen = {0, 0};
 
 	for(unsigned int n = 0;n < hb.getGlyphCount();n++){
@@ -250,8 +254,9 @@ void drawText(HarfbuzzText& hb, FreetypeFace& face, int target_height, Image& im
 		}
 
 		FT_GlyphSlot& slot = face.slot;
+		FT_Int bitmap_top = (FT_Int)((double)(line + 1)* (face.lineheight + padding));
 
-		draw_bitmap( &slot->bitmap, image, slot->bitmap_left, slot->bitmap_top, target_height);
+		draw_bitmap( &slot->bitmap, image, slot->bitmap_left, slot->bitmap_top, bitmap_top);
 
 		pen.x += slot->advance.x;
 		pen.y += slot->advance.y;

@@ -46,12 +46,13 @@ public:
 	~FreetypeLib();
 };
 
-class FreetypeFace{
+class FreetypeFace {
 public:
 	FT_Face face = 0;
+	double lineheight;
 	FT_GlyphSlot slot;
 
-	FreetypeFace(FreetypeLib& library, const char *fontfile);
+	FreetypeFace(FreetypeLib& library, const char *fontfile, FT_UInt ftpx);
 
 };
 
@@ -102,7 +103,36 @@ public:
 	hb_position_t getAdvanceY(unsigned int i);
 };
 
-void drawText(HarfbuzzText& hb, FreetypeFace& face, int target_height, Image& image);
+void drawText(HarfbuzzText& hb, FreetypeFace& face, unsigned int line, double padding, Image& image);
+
+class Pen{
+	unsigned int line = 0;
+	double padding;
+	Image& image;
+	FreetypeFace& freetypeFace;
+	HarfbuzzFont& harfbuzzFont;
+
+public:
+
+	Pen(Image& image_,
+		double padding_,
+		FreetypeFace& freetypeFace_,
+		HarfbuzzFont& harfbuzzFont_)
+	:
+		padding(padding_),
+		image(image_),
+		freetypeFace(freetypeFace_),
+		harfbuzzFont(harfbuzzFont_)
+	{}
+
+	void draw(const char *text){
+		HarfbuzzText harfbuzzText(text, harfbuzzFont);
+		drawText(harfbuzzText, freetypeFace, line, padding, image);
+		line++;
+	}
+};
+
+
 
 }
 

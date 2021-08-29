@@ -171,23 +171,13 @@ struct CallbackContext {
 static const unsigned int pc98Width = 640;
 static const unsigned int pc98Height = 400;
 
-static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& physicalDevice){
-
-	FontconfigLib lib;
-	FontList fontlist(lib);
-	std::string fontfile = fontlist.getFirst();
-
-	const char *teststring = "abc123 テスト";
-	//const char *teststring = "a";
-
-	FreetypeLib freetypeLib;
-	FreetypeFace freetypeFace(freetypeLib, fontfile.c_str());
-
-	HarfbuzzBlob hbblob(fontfile.c_str());
-	HarfbuzzFace hbface(hbblob.blob);
-	HarfbuzzFont hbfont(hbface.face);
-	HarfbuzzText harfbuzz(teststring, hbfont);
-
+static void glLoop(
+		SignalFD& sfd,
+		VulkanContext& engine,
+		VulkanPhysicalDevice& physicalDevice,
+		HarfbuzzFont& hbfont,
+		FreetypeFace& freetypeFace)
+{
 	VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<VulkanRenderBuffer> renderBuffer;
 
@@ -203,7 +193,20 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 		scaler.renderer.sampler, 1024, 1024
 	);
 
-	drawText(harfbuzz, freetypeFace, 400, logTexture.image);
+	Pen pen(logTexture.image, 0.2, freetypeFace, hbfont);
+
+	{
+		pen.draw("abc123 テスト");
+	}
+
+	{
+		pen.draw("eat 食べる");
+	}
+
+	{
+		pen.draw("pesto ペスト");
+	}
+
 	logTexture.textureDirty = true;
 
 	enum class ViewPortMode : uint8_t {
@@ -308,11 +311,21 @@ static void glLoop(SignalFD& sfd, VulkanContext& engine, VulkanPhysicalDevice& p
 }
 
 void loop(SignalFD& sfd){
-	VulkanContext engine;
+	FontconfigLib lib;
+	FontList fontlist(lib);
+	std::string fontfile = fontlist.getFirst();
 
+	FreetypeLib freetypeLib;
+	FreetypeFace freetypeFace(freetypeLib, fontfile.c_str(), 48);
+
+	HarfbuzzBlob hbblob(fontfile.c_str());
+	HarfbuzzFace hbface(hbblob.blob);
+	HarfbuzzFont hbfont(hbface.face);
+
+	VulkanContext engine;
 	VulkanPhysicalDevice physicalDevice = glPhysicalDeviceSelection(engine);
 
-	glLoop(sfd, engine, physicalDevice);
+	glLoop(sfd, engine, physicalDevice, hbfont, freetypeFace);
 }
 
 }
