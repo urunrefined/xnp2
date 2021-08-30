@@ -31,5 +31,7 @@ xnp2.cxxflags
 xnp2.files
 xnp2.includes
 
+build/
+
 *.d
 *.spv

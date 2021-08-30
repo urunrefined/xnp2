@@ -26,7 +26,7 @@ static std::vector<char> readShaderFile(const char *filename){
 	try {
 		return readFile(std::string("shader") + filename);
 	}  catch (...) {
-		return readFile(std::string("/usr/share/xnp2katze") + filename);
+		return readFile(std::string("/usr/share/xnp2katze/") + filename);
 	}
 }
 
