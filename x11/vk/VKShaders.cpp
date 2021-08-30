@@ -22,6 +22,14 @@ static std::vector<char> readFile(const std::string& filename) {
 	return buffer;
 }
 
+static std::vector<char> readShaderFile(const char *filename){
+	try {
+		return readFile(std::string("shader") + filename);
+	}  catch (...) {
+		return readFile(std::string("/usr/share/xnp2katze") + filename);
+	}
+}
+
 ShaderStage::ShaderStage(const VkDevice &device_, const std::vector<char> &code) : device(device_){
 	VkShaderModuleCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -41,11 +49,13 @@ ShaderStage::operator VkShaderModule &(){
 	return shaderModule;
 }
 
+
+
 ShaderStore::ShaderStore(const VkDevice &device) :
-	vertTri (device, readFile("shader/vertTri.spv")),
-	fragTri (device, readFile("shader/fragTri.spv")),
-	vertTex  (device, readFile("shader/vertTex.spv")),
-	fragTex  (device, readFile("shader/fragTex.spv"))
+	vertTri (device, readShaderFile("vertTri.spv")),
+	fragTri (device, readShaderFile("fragTri.spv")),
+	vertTex  (device, readShaderFile("vertTex.spv")),
+	fragTex  (device, readShaderFile("fragTex.spv"))
 {}
 
 ShaderStore::~ShaderStore(){
