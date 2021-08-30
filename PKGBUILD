@@ -5,7 +5,7 @@ pkgdesc="xnp2katze is PC-9801 series emulator for Linux"
 url="https://github.com/urunrefined/xnp2katze"
 source=("https://github.com/urunrefined/xnp2katze/archive/refs/tags/$pkgver.tar.gz")
 arch=("x86_64")
-sha512sums=("bcf0c9fcfacc10ce66598ccfa1bd2fc4e09d68020da233a3019ade8c4496fe0155234d5fc6dfdf1398335d3439be788e44a836e7f2191fa826c987cfcc9ad755")
+sha512sums=("29e30d4f34d834464cd9a2acec6066c1a667e83050f7113429e8c3e6a4f10d58dcd50cabb33b9039313ed1b6afabcd931f83443f5b6c2ff993e8fb78dd2b93dc")
 
 makedepends=(
   "make"

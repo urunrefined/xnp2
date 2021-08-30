@@ -56,4 +56,10 @@ one texture image). This needs to be done properly.
 * Pass all midi data directly to timidity / fluidsynth without
 parsing the timidity cfg
 + What exactly is the diff between i286c and i286x cores?
- 
+
+Building on Arch via PKGBUILD. You can build a package of this
+program via makepkg. An PKGBUILD file is provided.
+However, please note because of a hen/egg problem
+you need to use the commit _after_ the release tag, as the archive on
+github is only created (and the sha only calculated) after the git tag has
+already been placed, due to the PKGBUILD file being inside the repo itself.
