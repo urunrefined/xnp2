@@ -8,15 +8,15 @@ arch=("x86_64")
 sha512sums=("29e30d4f34d834464cd9a2acec6066c1a667e83050f7113429e8c3e6a4f10d58dcd50cabb33b9039313ed1b6afabcd931f83443f5b6c2ff993e8fb78dd2b93dc")
 
 makedepends=(
-  "make"
-  "glibc"
+  "vulkan-headers"
+  "glslang"
 )
 
 depends=(
+  "glibc"
   "glfw"
   "sdl2"
   "vulkan-icd-loader"
-  "glslang"
   "fontconfig"
   "harfbuzz"
   "freetype2"
@@ -28,7 +28,7 @@ prepare() {
 
 build() {
   cd "$srcdir/$pkgname-$pkgver/x11"
-  make -j8
+  make cputype=i386 -j8
 }
 
 check() {
