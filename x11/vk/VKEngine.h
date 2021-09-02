@@ -33,7 +33,7 @@ public:
 	VulkanDebugCallback callback;
 	VulkanSurface surface;
 
-	VulkanContext();
+	VulkanContext(bool enableValidationLayers);
 };
 
 enum class WindowState {

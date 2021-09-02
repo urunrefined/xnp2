@@ -359,7 +359,7 @@ void loop(
 	HarfbuzzFace hbface(hbblob.blob);
 	HarfbuzzFont hbfont(hbface.face);
 
-	VulkanContext engine;
+	VulkanContext engine(false);
 	VulkanPhysicalDevice physicalDevice = glPhysicalDeviceSelection(engine);
 
 	glLoop(sfd, engine, physicalDevice, hbfont, freetypeFace, cfg, oscfg);

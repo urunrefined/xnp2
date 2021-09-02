@@ -2,10 +2,10 @@
 
 namespace BR {
 
-VulkanContext::VulkanContext() :
+VulkanContext::VulkanContext(bool enableValidationLayers) :
 	glfwCtx(640, 400),
-	instance(true),
-	callback(instance, true),
+	instance(enableValidationLayers),
+	callback(instance, enableValidationLayers),
 	surface(glfwCtx, instance)
 {
 
