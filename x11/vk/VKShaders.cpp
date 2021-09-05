@@ -24,9 +24,13 @@ static std::vector<char> readFile(const std::string& filename) {
 
 static std::vector<char> readShaderFile(const char *filename){
 	try {
-		return readFile(std::string("shader") + filename);
+		std::string shaderFilename (std::string("shader/") + filename);
+		printf("Try relative shaderfilename: %s\n", shaderFilename.c_str());
+		return readFile(shaderFilename);
 	}  catch (...) {
-		return readFile(std::string("/usr/share/xnp2katze/") + filename);
+		std::string shaderFilename (std::string("/usr/share/xnp2katze/") + filename);
+		printf("Try global shaderfilename: %s\n", shaderFilename.c_str());
+		return readFile(shaderFilename);
 	}
 }
 
@@ -52,10 +56,11 @@ ShaderStage::operator VkShaderModule &(){
 
 
 ShaderStore::ShaderStore(const VkDevice &device) :
-	vertTri (device, readShaderFile("vertTri.spv")),
-	fragTri (device, readShaderFile("fragTri.spv")),
-	vertTex  (device, readShaderFile("vertTex.spv")),
-	fragTex  (device, readShaderFile("fragTex.spv"))
+	vertTri    (device, readShaderFile("vertTri.spv")),
+	fragTri    (device, readShaderFile("fragTri.spv")),
+	vertTexExt (device, readShaderFile("vertTexExt.spv")),
+	vertTex    (device, readShaderFile("vertTex.spv")),
+	fragTex    (device, readShaderFile("fragTex.spv"))
 {}
 
 ShaderStore::~ShaderStore(){

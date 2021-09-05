@@ -221,14 +221,20 @@ SRC_CPP = \
 		./../x11/vk/VKShaders.cpp                           \
 		./../x11/vk/VKPipelineV.cpp                         \
 		./../x11/vk/VKPipelineTex.cpp                       \
+		./../x11/vk/VKPipelineTexExt.cpp                    \
 		./../x11/vk/VKBuffers.cpp                           \
 		./../x11/vk/VKSampler.cpp                           \
 		./../x11/vk/VKRenderer.cpp                          \
 		./../x11/vk/VKDescriptorSet.cpp                     \
+		./../x11/vk/VKDescriptorSetExt.cpp                  \
+		./../x11/vk/VKDescriptorPool.cpp                    \
+		./../x11/vk/VKDescriptorPoolExt.cpp                 \
 		./../x11/vk/VKCommandBuffer.cpp                     \
 		./../x11/vk/VKTexture.cpp                           \
 		./../x11/vk/FreeFont.cpp                            \
-		./../x11/vk/Image.cpp
+		./../x11/vk/Image.cpp                               \
+		./../x11/vk/Vertex.cpp                              \
+		./../x11/vk/Matrix4x4.cpp
 		
 cputype?=i286
 

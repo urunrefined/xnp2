@@ -212,6 +212,8 @@ static void glLoop(
 	VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<VulkanRenderBuffer> renderBuffer;
 
+
+
 	VulkanTexture mainTexture(
 		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
 		scaler.renderer.graphicsFamily, scaler.renderer.descriptorLayout,
@@ -222,6 +224,24 @@ static void glLoop(
 		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
 		scaler.renderer.graphicsFamily, scaler.renderer.descriptorLayout,
 		scaler.renderer.sampler, 1024, 1024
+	);
+
+	VulkanDescriptorPool descriptorPool(scaler.device, 4);
+
+	VulkanDescriptorSet descriptorSetMain(
+		scaler.device,
+		mainTexture.textureView,
+		scaler.renderer.sampler,
+		descriptorPool,
+		scaler.renderer.descriptorLayout
+	);
+
+	VulkanDescriptorSet descriptorSetLog(
+		scaler.device,
+		logTexture.textureView,
+		scaler.renderer.sampler,
+		descriptorPool,
+		scaler.renderer.descriptorLayout
 	);
 
 	Pen pen(logTexture.image, 0.2, freetypeFace, hbfont);
@@ -272,17 +292,17 @@ static void glLoop(
 			//scaler.renderer.pipelineV->record(*renderBuffer, 6);
 
 			if(showlog){
-				scaler.renderer.pipelineAspect1to1->record(*renderBuffer, logTexture.descriptorSet, 6);
+				scaler.renderer.pipelineAspect1to1->record(*renderBuffer, descriptorSetLog, 6);
 			}
 			else {
 				if(mode == ViewPortMode::ASPECT){
-					scaler.renderer.pipelineAspect->record(*renderBuffer, mainTexture.descriptorSet, 6);
+					scaler.renderer.pipelineAspect->record(*renderBuffer, descriptorSetMain, 6);
 				}
 				else if(mode == ViewPortMode::STRETCH){
-					scaler.renderer.pipelineStretch->record(*renderBuffer, mainTexture.descriptorSet, 6);
+					scaler.renderer.pipelineStretch->record(*renderBuffer, descriptorSetMain, 6);
 				}
 				else {
-					scaler.renderer.pipelineInteger->record(*renderBuffer, mainTexture.descriptorSet, 6);
+					scaler.renderer.pipelineInteger->record(*renderBuffer, descriptorSetMain, 6);
 				}
 			}
 

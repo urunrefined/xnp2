@@ -25,6 +25,7 @@ class ShaderStore {
 public:
 	ShaderStage vertTri;
 	ShaderStage fragTri;
+	ShaderStage vertTexExt;
 
 	ShaderStage vertTex;
 	ShaderStage fragTex;

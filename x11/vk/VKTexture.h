@@ -7,6 +7,7 @@
 #include "VKImageView.h"
 #include "VKDescriptorSet.h"
 #include "VKSampler.h"
+#include "VKDescriptorPool.h"
 #include "Image.h"
 
 #include <vector>
@@ -21,14 +22,11 @@ class VulkanTexture
 	VulkanImage texture;
 	VulkanImageMemory textureMemory;
 	VulkanCommandPool commandPool;
-	VulkanImageView textureView;
-
-	VulkanDescriptorPool descriptorPool;
 
 public:
+	VulkanImageView textureView;
 	bool textureDirty;
 	Image image;
-	VulkanDescriptorSet descriptorSet;
 
 	VulkanTexture(const VkDevice& device_, const VkPhysicalDevice& physicalDevice_, const VkQueue& graphicsQueue_, int graphicsFamily, VulkanDescriptorLayout& descriptorLayout, VulkanSampler& sampler,
 			uint16_t width, uint16_t height) :
@@ -40,16 +38,12 @@ public:
 
 		commandPool(device, graphicsFamily),
 		textureView(device, texture, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT),
-		descriptorPool(device),
 		textureDirty(true),
-		image(width, height),
-		descriptorSet(device, textureView, sampler, descriptorPool, descriptorLayout)
+		image(width, height)
 	{
 	}
 
 	void update();
-
-
 };
 
 } // namespace BR

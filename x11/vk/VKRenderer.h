@@ -6,8 +6,10 @@
 #include "VKPhysicalDevice.h"
 #include "VKPipelineV.h"
 #include "VKPipelineTex.h"
+#include "VKPipelineTexExt.h"
 #include "VKRenderPass.h"
 #include "VKDescriptorSet.h"
+#include "VKDescriptorSetExt.h"
 #include "VKSampler.h"
 #include "VKCommandPool.h"
 #include "VKTexture.h"
@@ -25,17 +27,19 @@ public:
 	ShaderStore& shaderStore;
 	VulkanRenderPass renderPass;
 
-	std::unique_ptr<PipelineV>    pipelineV;
-	std::unique_ptr<PipelineTex>  pipelineAspect;
-	std::unique_ptr<PipelineTex>  pipelineAspect1to1;
-	std::unique_ptr<PipelineTex>  pipelineStretch;
-	std::unique_ptr<PipelineTex>  pipelineInteger;
+	std::unique_ptr<PipelineV>       pipelineV;
+	std::unique_ptr<PipelineTex>     pipelineAspect;
+	std::unique_ptr<PipelineTex>     pipelineAspect1to1;
+	std::unique_ptr<PipelineTex>     pipelineStretch;
+	std::unique_ptr<PipelineTex>     pipelineInteger;
+	std::unique_ptr<PipelineTexExt>  pipelineStretchExt;
 
 	uint32_t graphicsFamily;
 	VkQueue& graphicsQueue;
 	VulkanSampler sampler;
 
 	VulkanDescriptorLayout descriptorLayout;
+	VulkanDescriptorLayoutExt descriptorLayoutExt;
 	
 	VulkanRenderer(
 		const VulkanPhysicalDevice& physicalDevice_, const VulkanDevice& device_,
@@ -87,6 +91,9 @@ public:
 
 			pipelineStretch  = std::unique_ptr<PipelineTex> (
 					new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
+
+			//pipelineStretchExt  = std::unique_ptr<PipelineTexExt> (
+			//		new PipelineTexExt (device, shaderStore, scissor, renderPass, descriptorLayoutExt));
 		}
 	}
 

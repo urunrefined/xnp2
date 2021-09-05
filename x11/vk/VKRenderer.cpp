@@ -16,7 +16,8 @@ VulkanRenderer::VulkanRenderer(
 		graphicsFamily(graphicsFamily_),
 		graphicsQueue(graphicsQueue_),
 		sampler(physicalDevice, device),
-		descriptorLayout(device)
+		descriptorLayout(device),
+		descriptorLayoutExt(device)
 {
 	reCreatePipeline(swapChainExtent);
 }

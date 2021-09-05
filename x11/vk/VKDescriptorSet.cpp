@@ -7,7 +7,7 @@ namespace BR {
 
 VulkanDescriptorLayout::VulkanDescriptorLayout(const VkDevice& device_) : device(device_){
 	VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-	samplerLayoutBinding.binding = 0;
+	samplerLayoutBinding.binding = 2;
 	samplerLayoutBinding.descriptorCount = 1;
 	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	samplerLayoutBinding.pImmutableSamplers = nullptr;
@@ -25,30 +25,6 @@ VulkanDescriptorLayout::VulkanDescriptorLayout(const VkDevice& device_) : device
 
 VulkanDescriptorLayout::~VulkanDescriptorLayout(){
 	vkDestroyDescriptorSetLayout(device, layout, 0);
-}
-
-VulkanDescriptorPool::VulkanDescriptorPool(const VkDevice& device_)
-	: device(device_){
-
-	VkDescriptorPoolSize poolSize;
-
-	poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSize.descriptorCount = 1;
-
-	VkDescriptorPoolCreateInfo poolInfo{};
-	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = 1;
-	poolInfo.pPoolSizes = &poolSize;
-	poolInfo.maxSets = 1;
-	poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-
-	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create descriptor pool!");
-	}
-}
-
-VulkanDescriptorPool::~VulkanDescriptorPool(){
-	vkDestroyDescriptorPool(device, descriptorPool, 0);
 }
 
 VulkanDescriptorSet::VulkanDescriptorSet(
@@ -75,7 +51,7 @@ VulkanDescriptorSet::VulkanDescriptorSet(
 
 	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 	descriptorWrite.dstSet = descriptorSet;
-	descriptorWrite.dstBinding = 0;
+	descriptorWrite.dstBinding = 2;
 	descriptorWrite.dstArrayElement = 0;
 	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	descriptorWrite.descriptorCount = 1;

@@ -19,19 +19,6 @@ public:
 	}
 };
 
-class VulkanDescriptorPool {
-	const VkDevice& device;
-	VkDescriptorPool descriptorPool;
-
-public:
-	VulkanDescriptorPool(const VkDevice& device_);
-	~VulkanDescriptorPool();
-
-	operator const VkDescriptorPool& () const{
-		return descriptorPool;
-	}
-};
-
 class VulkanDescriptorSet
 {
 	const VkDevice& device;
