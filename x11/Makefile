@@ -295,6 +295,11 @@ INC += -I./../i386c
 
 endif
 
+ifeq ($(VKDEBUG),1)
+    CXXFLAGS += -DVKDEBUG=1
+    CFLAGS += -DVKDEBUG=1
+endif
+
 OBJ = $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 DEP = $(SRC_C:.c=.d) $(SRC_CPP:.cpp=.d)
 
