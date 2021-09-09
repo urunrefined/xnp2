@@ -65,12 +65,14 @@ public:
 	ShaderStore shaderStore;
 	VulkanRenderer renderer;
 	VkCommandBuffer commandBuffer;
+	VulkanCommandPool pool;
 
 	Sitter imageSitter;
 	Sitter queueSitter;
 
 	VulkanSemaphore imageAvailableSemaphore;
 	VulkanSemaphore renderFinishedSemaphore;
+	VulkanSemaphore vboUpdatedSemaphore;
 
 	uint32_t imageIndex;
 
@@ -87,16 +89,16 @@ public:
 			swapchainImages.swapChainImageFormat, swapchainImages.swapChainExtent),
 		shaderStore(device),
 		renderer(physicalDevice, device, device.graphicsFamily, device.graphicsQueue, shaderStore, swapchainImages.swapChainImageFormat, swapchainImages.swapChainExtent),
-
 		commandBuffer(VK_NULL_HANDLE),
+		pool(device, device.graphicsFamily),
 
 		imageSitter(device),
 		queueSitter(device),
+
 		imageAvailableSemaphore(device),
-		renderFinishedSemaphore(device)
-
+		renderFinishedSemaphore(device),
+		vboUpdatedSemaphore(device)
 	{
-
 	}
 
 	VulkanRenderer& getRenderer() {
@@ -148,7 +150,7 @@ public:
 		return false;
 	}
 
-	RenderState drawAndPresent(VulkanRenderBuffer& buffer);
+	RenderState drawAndPresent(VulkanRenderBuffer& renderBuffer, std::vector<VulkanCmbBuffer *>& cmbBuffers);
 
 
 };

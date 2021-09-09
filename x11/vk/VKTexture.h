@@ -28,7 +28,9 @@ public:
 	bool textureDirty;
 	Image image;
 
-	VulkanTexture(const VkDevice& device_, const VkPhysicalDevice& physicalDevice_, const VkQueue& graphicsQueue_, int graphicsFamily, VulkanDescriptorLayout& descriptorLayout, VulkanSampler& sampler,
+	VulkanTexture(
+			const VkDevice& device_, const VkPhysicalDevice& physicalDevice_,
+			const VkQueue& graphicsQueue_, int graphicsFamily,
 			uint16_t width, uint16_t height) :
 		device(device_),
 		physicalDevice(physicalDevice_),

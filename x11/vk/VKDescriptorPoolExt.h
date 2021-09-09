@@ -5,15 +5,15 @@
 
 namespace BR {
 
-class VKDescriptorPoolExt
+class VulkanDescriptorPoolExt
 {
 	const VkDevice& device;
 	VkDescriptorPool descriptorPool;
 
 public:
-	VKDescriptorPoolExt(const VkDevice& device_);
+	VulkanDescriptorPoolExt(const VkDevice& device_, uint32_t descriptorCount);
 
-	~VKDescriptorPoolExt();
+	~VulkanDescriptorPoolExt();
 
 	operator const VkDescriptorPool& () const{
 		return descriptorPool;

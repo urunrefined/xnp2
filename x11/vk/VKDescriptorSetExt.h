@@ -3,6 +3,10 @@
 
 #include <vulkan/vulkan.h>
 
+#include "VKPhysicalDevice.h"
+#include "VKBuffers.h"
+#include "Matrix4x4.h"
+
 namespace BR {
 
 class VulkanDescriptorLayoutExt {
@@ -22,16 +26,25 @@ public:
 class VulkanDescriptorSetExt
 {
 	const VkDevice& device;
+	VulkanPhysicalDevice& physicalDevice;
 	const VkDescriptorPool& descriptorPoolExt;
-
 	VkDescriptorSet descriptorSet;
 
 public:
-	VulkanDescriptorSetExt(const VkDevice& device_, VkImageView& imageView,
+	VulkanUniformBuffer uniformBuffer;
+
+	VulkanDescriptorSetExt(
+		const VkDevice& device_,
+		VulkanPhysicalDevice& physicalDevice,
+		VkImageView& imageView,
+		VkSampler& sampler,
 		const VkDescriptorPool& descriptorPoolExt_,
 		const VkDescriptorSetLayout &layout);
 
 	~VulkanDescriptorSetExt();
+
+	void updateWorldMatrix(const Matrix4x4f& world);
+	void updateModelMatrix(size_t which, const Matrix4x4f& model);
 
 	operator const VkDescriptorSet& () const{
 		return descriptorSet;

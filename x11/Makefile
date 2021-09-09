@@ -234,7 +234,8 @@ SRC_CPP = \
 		./../x11/vk/FreeFont.cpp                            \
 		./../x11/vk/Image.cpp                               \
 		./../x11/vk/Vertex.cpp                              \
-		./../x11/vk/Matrix4x4.cpp
+		./../x11/vk/Matrix4x4.cpp                           \
+		./../x11/vk/Range.cpp
 		
 cputype?=i286
 

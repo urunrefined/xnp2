@@ -1,7 +1,9 @@
 
 #include "vk/VKEngine.h"
 #include "vk/VKPhysicalDeviceEnumerations.h"
+#include "vk/VKDescriptorPoolExt.h"
 #include "vk/FreeFont.h"
+
 
 #include "np2.h"
 #include "scrnmng.h"
@@ -10,7 +12,8 @@
 #include "loop.h"
 #include "exception.h"
 #include "pccore.h"
-
+#include "Vertex.h"
+#include "Matrix4x4.h"
 
 namespace BR {
 
@@ -212,18 +215,14 @@ static void glLoop(
 	VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<VulkanRenderBuffer> renderBuffer;
 
-
-
 	VulkanTexture mainTexture(
 		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
-		scaler.renderer.graphicsFamily, scaler.renderer.descriptorLayout,
-		scaler.renderer.sampler, pc98Width, pc98Height
+		scaler.renderer.graphicsFamily, pc98Width, pc98Height
 	);
 
 	VulkanTexture logTexture(
 		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
-		scaler.renderer.graphicsFamily, scaler.renderer.descriptorLayout,
-		scaler.renderer.sampler, 1024, 1024
+		scaler.renderer.graphicsFamily, 1024, 1024
 	);
 
 	VulkanDescriptorPool descriptorPool(scaler.device, 4);
@@ -242,6 +241,17 @@ static void glLoop(
 		scaler.renderer.sampler,
 		descriptorPool,
 		scaler.renderer.descriptorLayout
+	);
+
+	VulkanDescriptorPoolExt descriptorPoolExt(scaler.device, 12);
+
+	VulkanDescriptorSetExt descriptorSetExt(
+		scaler.device,
+		physicalDevice,
+		logTexture.textureView,
+		scaler.renderer.sampler,
+		descriptorPoolExt,
+		scaler.renderer.descriptorLayoutExt
 	);
 
 	Pen pen(logTexture.image, 0.2, freetypeFace, hbfont);
@@ -276,7 +286,40 @@ static void glLoop(
 		&scaler.context.glfwCtx.input
 	};
 
+	VulkanVtxBuffer vtxBuffer(scaler.device, physicalDevice, 1024);
+	VulkanVtxBuffer uvBuffer(scaler.device, physicalDevice, 1024);
+
+	Vec2 pos[6] {
+		{-1.0, 1.0},  // lower left
+		{-1.0,-1.0},  // upper left
+		{ 1.0,-1.0},  // upper right
+
+		{-1.0, 1.0},  // lower left
+		{ 1.0,-1.0},  // upper right
+		{ 1.0, 1.0}   // lower right
+	};
+
+	Vec2 uv[6] {
+		{0.0, 1.0},
+		{0.0, 0.0},
+		{1.0, 0.0},
+		{0.0, 1.0},
+		{1.0, 0.0},
+		{1.0, 1.0}
+	};
+
+	vtxBuffer.update((const char *)pos, 0, sizeof(pos));
+	uvBuffer.update((const char *)uv, 0, sizeof(uv));
+
+	descriptorSetExt.updateWorldMatrix(Matrix4x4f::ident());
+	descriptorSetExt.updateModelMatrix(0, Matrix4x4f::ident());
+
 	ViewPortMode mode = ViewPortMode::INTEGER;
+
+	std::vector<VulkanCmbBuffer *> cmbBuffers;
+	cmbBuffers.push_back(&vtxBuffer);
+	cmbBuffers.push_back(&uvBuffer);
+	cmbBuffers.push_back(&descriptorSetExt.uniformBuffer);
 
 	while(scaler.getWindowState() != WindowState::SHOULDCLOSE && !sfd.isTriggered()){
 		mainloop(&ctx);
@@ -292,7 +335,12 @@ static void glLoop(
 			//scaler.renderer.pipelineV->record(*renderBuffer, 6);
 
 			if(showlog){
-				scaler.renderer.pipelineAspect1to1->record(*renderBuffer, descriptorSetLog, 6);
+				//scaler.renderer.pipelineAspect1to1->record(*renderBuffer, descriptorSetLog, 6);
+				scaler.renderer.pipelineStretchExt->record(
+					*renderBuffer, descriptorSetExt,
+					vtxBuffer, 0,
+					uvBuffer, 0,
+					6);
 			}
 			else {
 				if(mode == ViewPortMode::ASPECT){
@@ -308,7 +356,7 @@ static void glLoop(
 
 			renderBuffer->end();
 
-			if(scaler.drawAndPresent(*renderBuffer) == RenderState::NEEDSSWAPCHAINUPDATE){
+			if(scaler.drawAndPresent(*renderBuffer, cmbBuffers) == RenderState::NEEDSSWAPCHAINUPDATE){
 				scaler.recreateSwapChain();
 			}
 		}

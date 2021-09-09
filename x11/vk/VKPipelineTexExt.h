@@ -23,8 +23,12 @@ public:
 	VkPipeline& getPipeline();
 
 	void record(
-		VulkanRenderBuffer& renderBuffer,
+		VulkanRenderBuffer &renderBuffer,
 		const VkDescriptorSet& descriptorSet,
+		VkBuffer vertices,
+		VkDeviceSize verticesOffset,
+		VkBuffer uvs,
+		VkDeviceSize uvOffset,
 		size_t drawCount);
 };
 

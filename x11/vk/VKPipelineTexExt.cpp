@@ -28,7 +28,7 @@ PipelineTexExt::PipelineTexExt(
 
 	std::array<VkVertexInputBindingDescription, 2> bindingDescription = {};
 	bindingDescription[0].binding = 0;
-	bindingDescription[0].stride = sizeof(Vec3);
+	bindingDescription[0].stride = sizeof(Vec2);
 	bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
 	bindingDescription[1].binding = 1;
@@ -147,7 +147,14 @@ VkPipeline &PipelineTexExt::getPipeline(){
 	return pipeline;
 }
 
-void PipelineTexExt::record(VulkanRenderBuffer &renderBuffer, const VkDescriptorSet& descriptorSet, size_t drawCount)
+void PipelineTexExt::record(
+	VulkanRenderBuffer &renderBuffer,
+	const VkDescriptorSet& descriptorSet,
+	VkBuffer vertices,
+	VkDeviceSize verticesOffset,
+	VkBuffer uvs,
+	VkDeviceSize uvOffset,
+	size_t drawCount)
 {
 	if(!drawCount) return;
 
@@ -156,6 +163,11 @@ void PipelineTexExt::record(VulkanRenderBuffer &renderBuffer, const VkDescriptor
 	for (size_t i = 0; i < commandBuffers.size(); i++) {
 
 		VkPipeline& pipeline = getPipeline();
+
+		VkBuffer buffers [2] = {vertices, uvs};
+		VkDeviceSize bufferSizes [2] = {verticesOffset, uvOffset};
+
+		vkCmdBindVertexBuffers(commandBuffers[i], 0, 2, buffers, bufferSizes);
 
 		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 

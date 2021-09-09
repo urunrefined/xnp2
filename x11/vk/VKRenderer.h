@@ -92,8 +92,8 @@ public:
 			pipelineStretch  = std::unique_ptr<PipelineTex> (
 					new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
 
-			//pipelineStretchExt  = std::unique_ptr<PipelineTexExt> (
-			//		new PipelineTexExt (device, shaderStore, scissor, renderPass, descriptorLayoutExt));
+			pipelineStretchExt  = std::unique_ptr<PipelineTexExt> (
+					new PipelineTexExt (device, shaderStore, scissor, renderPass, descriptorLayoutExt));
 		}
 	}
 
