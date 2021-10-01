@@ -34,7 +34,7 @@ static VulkanPhysicalDevice glPhysicalDeviceSelection(VulkanContext& engine){
 static const unsigned int pc98Width = 640;
 static const unsigned int pc98Height = 400;
 
-static void draw(Pen &pen, const std::string& base, const char *add){
+static TextDims draw(Pen &pen, const std::string& base, const char *add){
 
 	std::string str = base;
 
@@ -45,29 +45,69 @@ static void draw(Pen &pen, const std::string& base, const char *add){
 		str += "<empty>";
 	}
 
-	pen.draw(str.c_str());
+	return pen.draw(str.c_str());
 }
 
-static void drawFilename(Pen &pen, const std::string& base, const char *path){
+static TextDims drawFilename(Pen &pen, const std::string& base, const char *path){
 	if(path){
 		const char *filename = strrchr(path, '/');
 
 		if(!filename){
-			draw(pen, base, path);
+			return draw(pen, base, path);
 		} else {
-			draw(pen, base, filename + 1);
+			return draw(pen, base, filename + 1);
 		}
 	}
 	else {
-		draw(pen, base, path);
+		return draw(pen, base, path);
 	}
 }
 
-class Text {
+class UVs {
 public:
-	Text(){}
-	~Text(){}
+	Vec2 uvs[6];
 };
+
+Vec2 uv344[6] {
+	{0.0, 1.0},
+	{0.0, 0.0},
+	{1.0, 0.0},
+	{0.0, 1.0},
+	{1.0, 0.0},
+	{1.0, 1.0}
+};
+
+UVs calculateUvs(TextDims& dims, Image& image){
+	Vec2 ll{(float)dims.startX / (float)image.width,
+			((float)dims.startY + (float)dims.sizeY) / (float)image.height};
+
+	Vec2 ul{(float)dims.startX / (float)image.width,
+			(float)dims.startY / (float)image.height};
+
+	Vec2 ur{((float)dims.startX + (float)dims.sizeX) / (float)image.width,
+			(float)dims.startY / (float)image.height};
+
+	Vec2 lr{((float)dims.startX + (float)dims.sizeX) / (float)image.width,
+			((float)dims.startY + (float)dims.sizeY) / (float)image.height};
+
+	printf("ul %f %f\n", ul.x, ul.y);
+	printf("ll %f %f\n", ll.x, ll.y);
+	printf("ur %f %f\n", ur.x, ur.y);
+	printf("lr %f %f\n", lr.x, lr.y);
+
+	//Vec2 uv344[6] {
+	//	{0.0, 1.0},
+	//	{0.0, 0.0},
+	//	{1.0, 0.0},
+	//	{0.0, 1.0},
+	//	{1.0, 0.0},
+	//	{1.0, 1.0}
+	//};
+
+	//return UVs{ll, ul, ur, ll, ur, lr};
+
+	return UVs {uv344[0], uv344[1], uv344[2], uv344[3], uv344[4], uv344[5]};
+}
 
 static void glLoop(
 		SignalFD& sfd,
@@ -120,21 +160,19 @@ static void glLoop(
 		scaler.renderer.descriptorLayoutExt
 	);
 
-	Pen pen(logTexture.image, 0.0, freetypeFace, hbfont);
+	Pen pen(logTexture.image, freetypeFace, hbfont);
 
-	//pen.draw("abc123 テスト");
-	//pen.draw("eat 食べる");
-	//pen.draw("pesto ペスト");
+	std::vector<TextDims> texts;
 
-	drawFilename(pen, "FDD 0: ", cfg.fdd[0]);
-	drawFilename(pen, "FDD 1: ", cfg.fdd[1]);
-	drawFilename(pen, "FDD 2: ", cfg.fdd[2]);
+	TextDims dims = drawFilename(pen, "FDD 0: ", cfg.fdd[0]);
+	TextDims dims2 = drawFilename(pen, "FDD 1: ", cfg.fdd[1]);
+
+	TextDims dims3 = drawFilename(pen, "FDD 2: ", cfg.fdd[2]);
 	drawFilename(pen, "FDD 3: ", cfg.fdd[3]);
 
 	drawFilename(pen, "HDD 0: ", cfg.sasihdd[0]);
 	drawFilename(pen, "HDD 1: ", cfg.sasihdd[1]);
 	drawFilename(pen, "Font: ",  cfg.fontfile);
-
 
 	logTexture.textureDirty = true;
 	bool showLog = false;
@@ -157,20 +195,16 @@ static void glLoop(
 		{ 1.0, 1.0}   // lower right
 	};
 
-	Vec2 uv[6] {
-		{0.0, 1.0},
-		{0.0, 0.0},
-		{1.0, 0.0},
-		{0.0, 1.0},
-		{1.0, 0.0},
-		{1.0, 1.0}
-	};
+	UVs uvs = calculateUvs(dims2, logTexture.image);
 
 	vtxBuffer.update((const char *)pos, 0, sizeof(pos));
-	uvBuffer.update((const char *)uv, 0, sizeof(uv));
+	uvBuffer.update((const char *)uvs.uvs, 0, sizeof(uvs));
+
+	Matrix4x4f model = Matrix4x4f::ident();
+	model.sx() /= (16.f / 9.f);
 
 	descriptorSetExt.updateWorldMatrix(Matrix4x4f::ident());
-	descriptorSetExt.updateModelMatrix(0, Matrix4x4f::ident());
+	descriptorSetExt.updateModelMatrix(0, model);
 
 	ViewPortMode mode = ViewPortMode::INTEGER;
 

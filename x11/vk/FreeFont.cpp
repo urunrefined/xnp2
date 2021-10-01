@@ -7,7 +7,7 @@ namespace BR {
 FontconfigLib::FontconfigLib() {
 	config = FcInitLoadConfigAndFonts();
 	if(!config){
-		throw Exception("Loading Fontconfig failed failed");
+		throw Exception("Loading Fontconfig failed");
 	}
 
 	FcConfigSetRescanInterval(config, 0);
@@ -39,7 +39,7 @@ public:
 	FcObjectSet *os;
 
 	FontconfigOS(){
-		os = FcObjectSetBuild (FC_FAMILY, FC_STYLE, FC_LANG, FC_FILE, (char *) 0);
+		os = FcObjectSetBuild (FC_FAMILY, FC_STYLE, FC_LANG, FC_FILE, FC_SCALABLE, FC_OUTLINE, (char *) 0);
 	}
 
 	~FontconfigOS(){
@@ -110,12 +110,23 @@ std::string FontList::getFirst(){
 			continue;
 		}
 
+		FcBool scaleable;
+		FcPatternGetBool(font, FC_SCALABLE, 0, &scaleable);
+
+		if(!scaleable) continue;
+
+		FcBool outline;
+		FcPatternGetBool(font, FC_OUTLINE, 0, &outline);
+
+		if(!outline) continue;
+
 		{
 			FcLangSet *lang = 0;
 			FcPatternGetLangSet(font, FC_LANG, 0, &lang);
 
-			if(FcLangSetHasLang (lang, (FcChar8 *)"en") == FcLangEqual &&
-					FcLangSetHasLang (lang, (FcChar8 *)"ja") == FcLangEqual){
+			if(FcLangSetHasLang (lang, (FcChar8 *)"en") == FcLangEqual)
+					//&& FcLangSetHasLang (lang, (FcChar8 *)"ja") == FcLangEqual)
+			{
 
 				FcChar8 *file = 0;
 				FcPatternGetString(font, FC_FILE, 0, &file);
@@ -157,11 +168,15 @@ FreetypeFace::FreetypeFace(FreetypeLib &library, const char *fontfile, FT_UInt f
 
 	FT_Set_Pixel_Sizes(face, 0, ftpx);
 
-	lineheight = ((double)face->size->metrics.height) / ((double)(64));
-
-	printf("lineheight %f", lineheight);
+	descender = face->size->metrics.descender / 64 + 1;
+	lineheight = (face->size->metrics.height / 64 ) + 1;
+	printf("lineheight: %u\n", lineheight);
 
 	slot = face->glyph;
+}
+
+FreetypeFace::~FreetypeFace(){
+	FT_Done_Face(face);
 }
 
 HarfbuzzText::HarfbuzzText(const char *text, HarfbuzzFont& font){
@@ -215,33 +230,69 @@ HarfbuzzText::~HarfbuzzText(){
 	hb_buffer_destroy(buf);
 }
 
-void
-draw_bitmap(FT_Bitmap* bitmap, Image& image, FT_Int bitmap_left, FT_Int bitmap_top,
-	FT_Int line_offset)
+static void draw_lineY(FT_Int y, Image& image){
+
+	unsigned char *data = image.data.data();
+
+	for(unsigned int x = 0; x < image.width; x++){
+		size_t idx = y * image.width * 4 + x * 4;
+
+		if(idx >= image.data.size()) continue;
+
+		data[idx + 0] |= 255;
+		data[idx + 3] |= 255;
+	}
+}
+
+static void draw_lineDown(FT_Int x, FT_Int y1, FT_Int len, Image& image){
+
+	unsigned char *data = image.data.data();
+
+	for(FT_Int y = y1; y < y1 + len; y++){
+		size_t idx = y * image.width * 4 + x * 4;
+
+		if(idx >= image.data.size()) continue;
+
+		data[idx + 0] |= 255;
+		data[idx + 1] |= 255;
+		data[idx + 3] |= 255;
+	}
+}
+
+static void draw_bitmap(
+	FT_Bitmap* bitmap,
+	Image& image,
+	FT_Int bitmap_left,
+	FT_Int bitmap_top)
 {
 	unsigned char *data = image.data.data();
-	//printf("FT Rows     : %d, width: %d\n", bitmap->rows, bitmap->width);
-	//printf("Image height: %d, width: %d\n", image.width,  image.height);
-	//printf("top height: %d\n", bitmap_top);
+
+	printf("Bitmap ROWS %d\n", bitmap->rows);
+	printf("bitmap top %d\n", bitmap_top);
 
 	for(unsigned int y = 0; y < bitmap->rows; y++){
 		for(unsigned int x = 0; x < bitmap->width; x++){
-			size_t idx = (line_offset + (y - bitmap_top)) *
+			size_t idx = (y + bitmap_top) *
 				image.width * 4 + (x + bitmap_left) * 4;
 
 			if(idx >= image.data.size()) continue;
 
 			uint8_t px = bitmap->buffer[bitmap->width * y + x];
-
 			data[idx + 0] |= px;
-			data[idx + 1] |= px;
-			data[idx + 2] |= px;
-			data[idx + 3] = 255;
+			data[idx + 3] |= 255;
+
+
+			//uint8_t px = bitmap->buffer[bitmap->width * y + x];
+			//
+			//data[idx + 0] |= px;
+			//data[idx + 1] |= px;
+			//data[idx + 2] |= px;
+			//data[idx + 3] = 255;
 		}
 	}
 }
 
-void drawText(HarfbuzzText& hb, FreetypeFace& face, unsigned int line, double padding, Image& image){
+TextDims drawText(HarfbuzzText& hb, FreetypeFace& face, unsigned int line, Image& image){
 	FT_Vector pen = {0, 0};
 
 	for(unsigned int n = 0;n < hb.getGlyphCount();n++){
@@ -254,13 +305,25 @@ void drawText(HarfbuzzText& hb, FreetypeFace& face, unsigned int line, double pa
 		}
 
 		FT_GlyphSlot& slot = face.slot;
-		FT_Int bitmap_top = (FT_Int)((double)(line + 1)* (face.lineheight + padding));
+		FT_Int bitmap_top = (FT_Int)((double)(line + 1) * (face.lineheight));
 
-		draw_bitmap( &slot->bitmap, image, slot->bitmap_left, slot->bitmap_top, bitmap_top);
+		draw_lineY(bitmap_top, image);
+
+		draw_bitmap(
+			&slot->bitmap,
+			image,
+			slot->bitmap_left,
+			bitmap_top - slot->bitmap_top + face.descender
+		);
 
 		pen.x += slot->advance.x;
 		pen.y += slot->advance.y;
 	}
+
+	return {
+		0, (line)* (long)face.lineheight,
+		pen.x / 64, (long)face.lineheight
+	};
 }
 
 HarfbuzzBlob::HarfbuzzBlob(const char *fontfile){
