@@ -195,16 +195,12 @@ HarfbuzzText::HarfbuzzText(const char *text, HarfbuzzFont& font){
 }
 
 void HarfbuzzText::print(){
-	hb_position_t cursor_x = 0;
-	hb_position_t cursor_y = 0;
+
 	for (unsigned int i = 0; i < glyph_count; i++) {
 		//hb_position_t x_offset  = glyph_pos[i].x_offset;
 		//hb_position_t y_offset  = glyph_pos[i].y_offset;
 		hb_position_t x_advance = glyph_pos[i].x_advance;
 		hb_position_t y_advance = glyph_pos[i].y_advance;
-
-		cursor_x += x_advance;
-		cursor_y += y_advance;
 
 		printf("i %u | gid: %u, x_advance %u, y_advance %u\n", i, glyph_info[i].codepoint, x_advance, y_advance);
 	}
@@ -244,6 +240,7 @@ static void draw_lineY(FT_Int y, Image& image){
 	}
 }
 
+/*
 static void draw_lineDown(FT_Int x, FT_Int y1, FT_Int len, Image& image){
 
 	unsigned char *data = image.data.data();
@@ -258,6 +255,7 @@ static void draw_lineDown(FT_Int x, FT_Int y1, FT_Int len, Image& image){
 		data[idx + 3] |= 255;
 	}
 }
+*/
 
 static void draw_bitmap(
 	FT_Bitmap* bitmap,
@@ -266,9 +264,6 @@ static void draw_bitmap(
 	FT_Int bitmap_top)
 {
 	unsigned char *data = image.data.data();
-
-	printf("Bitmap ROWS %d\n", bitmap->rows);
-	printf("bitmap top %d\n", bitmap_top);
 
 	for(unsigned int y = 0; y < bitmap->rows; y++){
 		for(unsigned int x = 0; x < bitmap->width; x++){
