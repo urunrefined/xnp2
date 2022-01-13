@@ -31,8 +31,8 @@ static VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR
 	Bitset<4> supported;
 	supported.zero();
 
-	std::array<VkPresentModeKHR, 4> priorities {VK_PRESENT_MODE_FIFO_RELAXED_KHR, VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_FIFO_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR};
-	const char * priorityStrings[priorities.size()] = {"RELAXED KHR", "MAILBOX KHR", "FIFO KHR", "IMMEDIATE KHR"};
+	std::array<VkPresentModeKHR, 4> priorities        {VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_FIFO_RELAXED_KHR, VK_PRESENT_MODE_FIFO_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR};
+	const char * priorityStrings[priorities.size()] = {               "MAILBOX KHR",                    "RELAXED KHR",               "FIFO KHR",               "IMMEDIATE KHR"};
 
 	for(const auto& availablePresentMode : availablePresentModes){
 		for(size_t i = 0; i < priorities.size(); i++){
