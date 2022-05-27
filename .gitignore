@@ -1,4 +1,3 @@
-CVS
 .dirstamp
 *.o
 *~
@@ -31,6 +30,7 @@ xnp2.cxxflags
 xnp2.files
 xnp2.includes
 
+.qtc_*
 build/
 
 *.d

@@ -49,6 +49,7 @@
 #include "loop.h"
 #include "exception.h"
 #include "keystat.h"
+#include "inicfg.h"
 
 #include <sys/stat.h>
 #include <getopt.h>
@@ -61,6 +62,7 @@
 
 
 static const char appname[] = "np2";
+static const char ini_title[] = "NekoProjectII_Katze";
 
 /*
  * option
@@ -181,7 +183,10 @@ static void go(int argc, char *argv[]){
 
 	dosio_init();
 	file_setcd(modulefile);
-	initload();
+
+	IniCfg iniCfg(np2oscfg, np2cfg);
+
+	initload(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
 
 	rand_setseed((SINT32)time(NULL));
 
@@ -219,7 +224,7 @@ static void go(int argc, char *argv[]){
 
 	soundmng_deinitialize();
 
-	initsave();
+	initsave(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
 
 	TRACETERM();
 	dosio_term();

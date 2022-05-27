@@ -176,6 +176,7 @@ SRC_C = \
 SRC_CPP = \
                 ./../x11/main.cpp                                   \
 		./../x11/loop.cpp                                   \
+		./../x11/inicfg.cpp                                 \
 		./../x11/exception.cpp                              \
 		./../x11/pccorecallbacks.cpp                        \
 		./../x11/inputhandling.cpp                          \
