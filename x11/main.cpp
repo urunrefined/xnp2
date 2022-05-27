@@ -142,16 +142,8 @@ static void discoverConfigFile(){
 	}
 }
 
-static void discoverFontFile(){
+static void discoverSavFile(){
 	if (modulefile[0] != '\0') {
-		/* font file */
-		file_cpyname(np2cfg.fontfile, modulefile,
-			sizeof(np2cfg.fontfile));
-		file_cutname(np2cfg.fontfile);
-		file_setseparator(np2cfg.fontfile, sizeof(np2cfg.fontfile));
-		file_catname(np2cfg.fontfile, "font.bmp",
-			sizeof(np2cfg.fontfile));
-
 		/* statsave dir */
 		file_cpyname(statpath, modulefile, sizeof(statpath));
 		file_cutname(statpath);
@@ -177,16 +169,25 @@ static void go(int argc, char *argv[]){
 	BR::SignalFD sfd;
 
 	parseArguments(argc, argv);
-
 	discoverConfigFile();
-	discoverFontFile();
+	discoverSavFile();
+
+	IniCfg iniCfg(np2oscfg, np2cfg);
+	initload(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
+
+	if(access(modulefile, F_OK) != 0){
+		initsave(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
+		printf("Config created, set font file in ~/np2/np2rc\n");
+		return;
+	}
+
+	if(np2cfg.fontfile[0] == '\0'){
+		printf("Set font file in ~/np2/np2rc\n");
+		return;
+	}
 
 	dosio_init();
 	file_setcd(modulefile);
-
-	IniCfg iniCfg(np2oscfg, np2cfg);
-
-	initload(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
 
 	rand_setseed((SINT32)time(NULL));
 
