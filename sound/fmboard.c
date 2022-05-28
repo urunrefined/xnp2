@@ -1,5 +1,4 @@
 #include	"compiler.h"
-#include	"joymng.h"
 #include	"soundmng.h"
 #include	"pccore.h"
 #include	"iocore.h"
@@ -49,21 +48,12 @@ REG8 fmboard_getjoypad(int nPort)
 
 	s_rapids ^= 0xf0;											// ver0.28
 	ret = 0xff;
-	if (nPort == 0)
+
+	if (np2cfg.KEY_MODE == 2)
 	{
-		ret &= (joymng_getstat() | (s_rapids & 0x30));
-		if (np2cfg.KEY_MODE == 1)
-		{
-			ret &= keystat_getjoy();
-		}
+		ret &= keystat_getjoy();
 	}
-	else
-	{
-		if (np2cfg.KEY_MODE == 2)
-		{
-			ret &= keystat_getjoy();
-		}
-	}
+
 	if (np2cfg.BTN_RAPID)
 	{
 		ret |= s_rapids;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "compiler.h"
+#include "common.h"
 
 enum {
 	MIMPI_LA		= 0,

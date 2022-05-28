@@ -36,7 +36,6 @@
 #include "debugwin.h"
 
 #include "commng.h"
-#include "joymng.h"
 #include "kbdmng.h"
 #include "scrnmng.h"
 #include "soundmng.h"
@@ -50,18 +49,8 @@ NP2OSCFG np2oscfg = {
 
 	KEY_KEY106,			/* KEYBOARD */
 	0,					/* F12KEY */
-
 	0,					/* JOYPAD1 */
 	0,					/* JOYPAD2 */
-	{ 1, 2, 5, 6 },		/* JOY1BTN */
-	{
-		{ 0, 1 },		/* JOYAXISMAP[0] */
-		{ 0, 1 },		/* JOYAXISMAP[1] */
-	},
-	{
-		{ 0, 1, 0xff, 0xff },	/* JOYBTNMAP[0] */
-		{ 0, 1, 0xff, 0xff },	/* JOYBTNMAP[1] */
-	},
 	{ "", "" },					/* JOYDEV */
 
 	{ COMPORT_MIDI, 0, 0x3e, 19200, "", "", "", "" },	/* mpu */
@@ -225,7 +214,6 @@ mainloop(void *graphics)
 	/* auto skip */
 	if (waitcnt == 0) {
 		UINT cnt;
-		joymng_sync();
 		pccore_exec(graphics, framecnt == 0);
 		framecnt++;
 		cnt = timing_getcount();

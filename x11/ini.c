@@ -8,7 +8,6 @@
 #include "strres.h"
 
 #include "commng.h"
-#include "joymng.h"
 #include "kbdmng.h"
 #include "soundmng.h"
 #include "milstr.h"

@@ -2,8 +2,6 @@
 #define	NP2_X11_NP2_H__
 
 #include <signal.h>
-
-#include "joymng.h"
 #include "compiler.h"
 
 #ifdef __cplusplus
@@ -31,9 +29,6 @@ typedef struct {
 
 	UINT8	JOYPAD1;
 	UINT8	JOYPAD2;
-	UINT8	JOY1BTN[JOY_NBUTTON];
-	UINT8	JOYAXISMAP[2][JOY_NAXIS];
-	UINT8	JOYBTNMAP[2][JOY_NBUTTON];
 	char	JOYDEV[2][MAX_PATH];
 
 	COMCFG	mpu;

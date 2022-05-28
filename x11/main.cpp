@@ -40,7 +40,6 @@
 #include "debugwin.h"
 #include "commng.h"
 #include "fontmng.h"
-#include "joymng.h"
 #include "kbdmng.h"
 #include "scrnmng.h"
 #include "soundmng.h"
@@ -196,9 +195,6 @@ static void go(int argc, char *argv[]){
 	viewer_init();
 	keystat_initialize();
 	soundmng_initialize();
-
-	joymng_initialize();
-
 	commng_initialize();
 
 	pccore_init();
@@ -217,7 +213,6 @@ static void go(int argc, char *argv[]){
 	printf("Normal exit\n");
 
 	pccore_cfgupdate();
-	joymng_deinitialize();
 	S98_trash();
 
 	pccore_term();
