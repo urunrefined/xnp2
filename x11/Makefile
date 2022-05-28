@@ -170,7 +170,6 @@ SRC_C = \
 		./../vram/maketgrp.c                                \
 		./../vram/makegrph.c                                \
 		./../vram/makegrex.c                                \
-		./../vram/scrnsave.c                                \
 		./../debugsub.c
 
 SRC_CPP = \
