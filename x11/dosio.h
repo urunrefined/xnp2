@@ -62,11 +62,6 @@ typedef struct {
 	char	path[MAX_PATH];
 } FLINFO;
 
-
-/* DOSIO:関数の準備 */
-void dosio_init(void);
-void dosio_term(void);
-
 /* ファイル操作 */
 FILEH file_open(const OEMCHAR *path);
 FILEH file_open_rb(const OEMCHAR *path);

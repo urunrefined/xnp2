@@ -17,21 +17,6 @@ static OEMCHAR *curfilep = curpath;
 
 #define ISKANJI(c)	((((c) - 0xa1) & 0xff) < 0x5c)
 
-
-void
-dosio_init(void)
-{
-
-	/* nothing to do */
-}
-
-void
-dosio_term(void)
-{
-
-	/* nothing to do */
-}
-
 /* ファイル操作 */
 FILEH
 file_open(const OEMCHAR *path)

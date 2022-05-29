@@ -185,7 +185,6 @@ static void go(int argc, char *argv[]){
 		return;
 	}
 
-	dosio_init();
 	file_setcd(modulefile);
 
 	rand_setseed((SINT32)time(NULL));
@@ -219,7 +218,6 @@ static void go(int argc, char *argv[]){
 	soundmng_deinitialize();
 
 	initsave(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
-	dosio_term();
 
 	viewer_term();
 }
