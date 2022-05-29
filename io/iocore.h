@@ -1,10 +1,4 @@
-
-#ifndef IOOUTCALL
-#define	IOOUTCALL
-#endif
-#ifndef IOINPCALL
-#define	IOINPCALL
-#endif
+#pragma once
 
 #include	"common.h"
 #include	"pccore.h"
