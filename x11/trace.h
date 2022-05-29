@@ -7,31 +7,19 @@
 extern "C" {
 #endif
 
-extern int trace_flag;
+void trace_fmt(const char *fmt, ...);
 
-void trace_init(void);
-void trace_term(void);
-void trace_fmt(const char *str, ...) __attribute__ ((format (printf, 1, 2)));
-
-#ifndef TRACE
-
-#define	TRACEINIT()
-#define	TRACETERM()
+#ifdef TRACE
+#define	TRACEOUT(arg) trace_fmt arg
+#else
 #define	TRACEOUT(a)
-#ifndef	VERBOSE
-#define	VERBOSE(s)
 #endif
 
-#else	/* TRACE */
-
-#define	TRACEINIT()	trace_init()
-#define	TRACETERM()	trace_term()
-#define	TRACEOUT(arg)	trace_fmt arg
-#ifndef	VERBOSE
-#define	VERBOSE(arg)	if (trace_flag) trace_fmt arg
+#ifdef TRACEVERBOSE
+#define	VERBOSE(arg) trace_fmt arg
+#else
+#define	VERBOSE(a)
 #endif
-
-#endif	/* !TRACE */
 
 #ifdef __cplusplus
 }

@@ -191,4 +191,9 @@ typedef signed long nxp2ptr;
 
 #define	SUPPORT_S98
 
+#ifdef DEBUG
+#define TRACE
+#define TRACEVERBOSE
+#endif
+
 #endif	/* NP2_X11_COMPILER_H__ */

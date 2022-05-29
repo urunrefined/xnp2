@@ -190,8 +190,6 @@ static void go(int argc, char *argv[]){
 
 	rand_setseed((SINT32)time(NULL));
 
-	TRACEINIT();
-
 	viewer_init();
 	keystat_initialize();
 	soundmng_initialize();
@@ -221,8 +219,6 @@ static void go(int argc, char *argv[]){
 	soundmng_deinitialize();
 
 	initsave(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
-
-	TRACETERM();
 	dosio_term();
 
 	viewer_term();
