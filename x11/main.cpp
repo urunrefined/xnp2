@@ -176,12 +176,12 @@ static void go(int argc, char *argv[]){
 
 	if(access(modulefile, F_OK) != 0){
 		initsave(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
-		printf("Config created, set font file in ~/np2/np2rc\n");
+		printf("Config created, set font file in ~/.np2/np2rc\n");
 		return;
 	}
 
 	if(np2cfg.fontfile[0] == '\0'){
-		printf("Set font file in ~/np2/np2rc\n");
+		printf("Set font file in ~/.np2/np2rc\n");
 		return;
 	}
 
