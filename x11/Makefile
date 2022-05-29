@@ -18,7 +18,6 @@ SRC_C = \
 		./../x11/fontmng.c                                  \
 		./../x11/commng.c                                   \
 		./../x11/timemng.c                                  \
-		./../x11/debug/viewmem.c                            \
 		./../pccore.c                                       \
 		./../global.c                                       \
 		./../nevent.c                                       \

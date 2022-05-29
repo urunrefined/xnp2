@@ -32,9 +32,6 @@
 #include "scrndraw.h"
 #include "timing.h"
 
-#include "viewer.h"
-#include "debugwin.h"
-
 #include "commng.h"
 #include "kbdmng.h"
 #include "scrnmng.h"
@@ -178,8 +175,6 @@ void
 framereset()
 {
 	framecnt = 0;
-	debugwin_process();
-	viewer_allreload(FALSE);
 }
 
 static BOOL

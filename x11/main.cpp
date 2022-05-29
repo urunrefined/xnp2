@@ -36,8 +36,6 @@
 #include "serial.h"
 #include "timing.h"
 #include "milstr.h"
-#include "viewer.h"
-#include "debugwin.h"
 #include "commng.h"
 #include "fontmng.h"
 #include "kbdmng.h"
@@ -189,8 +187,6 @@ static void go(int argc, char *argv[]){
 	file_setcd(modulefile);
 
 	rand_setseed((SINT32)time(NULL));
-
-	viewer_init();
 	keystat_initialize();
 	soundmng_initialize();
 	commng_initialize();
@@ -214,13 +210,9 @@ static void go(int argc, char *argv[]){
 	S98_trash();
 
 	pccore_term();
-	debugwin_destroy();
-
 	soundmng_deinitialize();
 
 	initsave(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());
-
-	viewer_term();
 }
 
 /*
