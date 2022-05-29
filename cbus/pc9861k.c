@@ -112,6 +112,9 @@ static void pc9861ch2_open(void) {
 	pc9861k.ch2.speed = pc9861k_getspeed(pc9861k.ch2.dip);
 	pc9861k.ch2.vect = ((np2cfg.pc9861sw[1] >> 3) & 1) |
 						((np2cfg.pc9861sw[1] >> 1) & 2);
+
+	//Critical: Should this be ch2_irq?
+
 	pc9861k.ch2.irq = ch1_irq[pc9861k.ch2.vect];
 	pc9861_makeclk(&pc9861k.ch2, 10*2);
 	nevent_set(NEVENT_PC9861CH2, pc9861k.ch2.clk,
