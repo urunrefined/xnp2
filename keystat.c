@@ -6,6 +6,7 @@
 #include	"keystat.h"
 #include	"keystat.tbl"
 #include	"milstr.h"
+#include	"global.h"
 
 	KEYCTRL		keyctrl;
 	KEYSTAT		keystat;

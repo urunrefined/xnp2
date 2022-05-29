@@ -4,6 +4,7 @@
 #include	"iocore.h"
 #include	"scrndraw.h"
 #include	"palettes.h"
+#include	"global.h"
 
 		RGB32		np2_pal32[NP2PAL_MAX];
 

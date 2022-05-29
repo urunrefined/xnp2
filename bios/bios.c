@@ -9,6 +9,7 @@
 #include "sxsibios.h"
 #include "strres.h"
 #include "cpucore.h"
+#include "global.h"
 #include "pccore.h"
 #include "iocore.h"
 #include "lio/lio.h"

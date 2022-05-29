@@ -7,6 +7,7 @@
 #include	"dispsync.h"
 #include	"palettes.h"
 #include	"trace.h"
+#include	"global.h"
 
 
 	UINT8	renewal_line[SURFACE_HEIGHT];

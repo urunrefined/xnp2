@@ -21,6 +21,7 @@
 #include	"beep.h"
 #include	"soundrom.h"
 #include	"keystat.h"
+#include	"global.h"
 
 
 	SOUNDID g_nSoundID;

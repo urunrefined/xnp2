@@ -10,6 +10,7 @@
 #include "iocore.h"
 #include "fddfile.h"
 #include "sxsi.h"
+#include "global.h"
 
 #define DISK_DELAY	20			/*!< Delay 0.4sec */
 

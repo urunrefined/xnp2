@@ -3,6 +3,7 @@
 #include	"pccore.h"
 #include	"fdd_mtr.h"
 #include	"np2.h"
+#include	"global.h"
 
 // ----
 

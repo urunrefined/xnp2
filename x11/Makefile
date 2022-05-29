@@ -20,6 +20,7 @@ SRC_C = \
 		./../x11/timemng.c                                  \
 		./../x11/debug/viewmem.c                            \
 		./../pccore.c                                       \
+		./../global.c                                       \
 		./../nevent.c                                       \
 		./../calendar.c                                     \
 		./../timing.c                                       \

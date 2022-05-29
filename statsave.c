@@ -12,6 +12,7 @@
 #include "soundmng.h"
 #include "timemng.h"
 #include "cpucore.h"
+#include "global.h"
 #include "pccore.h"
 #include "iocore.h"
 #include "gdc_sub.h"

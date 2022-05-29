@@ -7,6 +7,7 @@
 #include	"iocore.h"
 #include	"cbuscore.h"
 #include	"pc9861k.h"
+#include	"global.h"
 
 
 	_PC9861K	pc9861k;

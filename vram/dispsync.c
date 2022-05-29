@@ -4,6 +4,7 @@
 #include	"iocore.h"
 #include	"scrndraw.h"
 #include	"dispsync.h"
+#include	"global.h"
 
 
 	DSYNC	dsync;

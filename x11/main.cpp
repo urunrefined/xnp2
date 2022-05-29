@@ -49,6 +49,7 @@
 #include "exception.h"
 #include "keystat.h"
 #include "inicfg.h"
+#include "global.h"
 
 #include <sys/stat.h>
 #include <getopt.h>

@@ -3,6 +3,7 @@
 #include	"timemng.h"
 #include	"pccore.h"
 #include	"calendar.h"
+#include	"global.h"
 
 
 	_CALENDAR	cal;

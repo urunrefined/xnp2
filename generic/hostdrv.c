@@ -11,6 +11,7 @@
 
 #include	"dosio.h"
 #include	"cpucore.h"
+#include	"global.h"
 #include	"pccore.h"
 #include	"iocore.h"
 #include	"hostdrv.h"

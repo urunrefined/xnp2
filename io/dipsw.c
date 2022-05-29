@@ -4,6 +4,7 @@
 #include	"iocore.h"
 #include	"sound.h"
 #include	"beep.h"
+#include	"global.h"
 
 
 void IOOUTCALL dipsw_w8(UINT port, REG8 value) {

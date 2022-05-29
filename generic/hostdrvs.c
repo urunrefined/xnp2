@@ -11,6 +11,7 @@
 #include "codecnv/codecnv.h"
 #include "pccore.h"
 #include "trace.h"
+#include "global.h"
 
 /*! ルート情報 */
 static const HDRVFILE s_hddroot = {{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}, 0, 0, 0x10, {0}, {0}};

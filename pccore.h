@@ -8,6 +8,8 @@
 #include "nevent.h"
 #include "compiler.h"
 
+#define	PCBASEMULTIPLE	4
+
 enum {
 	PCBASECLOCK25		= 2457600,
 	PCBASECLOCK20		= 1996800
@@ -184,7 +186,6 @@ extern "C" {
 
 extern const OEMCHAR np2version[];
 
-extern	NP2CFG	np2cfg;
 extern	PCCORE	pccore;
 extern	PCSTAT	pcstat;
 extern	UINT8	soundrenewal;
