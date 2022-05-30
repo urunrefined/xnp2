@@ -140,14 +140,13 @@ static void glLoop(
 	std::vector<TextDims> texts;
 
 	TextDims dims = drawFilename(pen, "FDD 0: ", cfg.fdd[0]);
-	drawFilename(pen, "FDD 1: ", cfg.fdd[1]);
+	dims += drawFilename(pen, "FDD 1: ", cfg.fdd[1]);
+	dims += drawFilename(pen, "FDD 2: ", cfg.fdd[2]);
+	dims += drawFilename(pen, "FDD 3: ", cfg.fdd[3]);
 
-	drawFilename(pen, "FDD 2: ", cfg.fdd[2]);
-	drawFilename(pen, "FDD 3: ", cfg.fdd[3]);
-
-	drawFilename(pen, "HDD 0: ", cfg.sasihdd[0]);
-	drawFilename(pen, "HDD 1: ", cfg.sasihdd[1]);
-	drawFilename(pen, "Font: ",  cfg.fontfile);
+	dims += drawFilename(pen, "HDD 0: ", cfg.sasihdd[0]);
+	dims += drawFilename(pen, "HDD 1: ", cfg.sasihdd[1]);
+	dims += drawFilename(pen, "Font: ",  cfg.fontfile);
 
 	logTexture.textureDirty = true;
 	bool showLog = false;

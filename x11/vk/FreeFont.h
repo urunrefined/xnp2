@@ -116,6 +116,22 @@ public:
 		sizeX(sizeX_), sizeY(sizeY_)
 	{}
 
+	TextDims operator += (const TextDims& dims)
+	{
+		long minX = std::min(startX, dims.startX);
+		long minY = std::min(startY, dims.startY);
+
+		long maxX = std::max(startX + sizeX, dims.startX + dims.sizeX);
+		long maxY = std::max(startY + sizeY, dims.startY + dims.sizeY);
+
+		startX = minX;
+		startX = minY;
+		sizeX = maxX - minX;
+		sizeY = maxY - minY;
+
+		return *this;
+	}
+
 	~TextDims(){}
 };
 
