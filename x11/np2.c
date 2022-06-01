@@ -40,15 +40,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-UINT framecnt = 0;
-UINT waitcnt = 0;
-UINT framemax = 1;
-
-BOOL s98logging = FALSE;
-int s98log_count = 0;
-
-char modulefile[MAX_PATH];
-char statpath[MAX_PATH];
+static UINT framecnt = 0;
+static UINT waitcnt = 0;
+static UINT framemax = 1;
 
 UINT32
 gettick(void)
@@ -57,84 +51,6 @@ gettick(void)
 
 	gettimeofday(&tv, 0);
 	return tv.tv_usec / 1000 + tv.tv_sec * 1000;
-}
-
-static void
-getstatfilename(char* path, const char* ext, int size)
-{
-
-	/*
-	 * default:
-	 * e.g. resume:   "/home/user_name/.np2/sav/np2.sav"
-	 *      statpath: "/home/user_name/.np2/sav/np2.s00"
-	 *      config:   "/home/user_name/.np2/np2rc"
-	 *
-	 * --config option:
-	 * e.g. resume:   "/config_file_path/sav/np2.sav"
-	 *      statpath: "/config_file_path/sav/np2.s00"
-	 *      config:   "/config_file_path/config_file_name"
-	 */
-	file_cpyname(path, statpath, size);
-	file_catname(path, ".", size);
-	file_catname(path, ext, size);
-}
-
-int
-flagsave(const char* ext)
-{
-	char path[MAX_PATH];
-	int ret;
-
-	getstatfilename(path, ext, sizeof(path));
-	soundmng_stop();
-	ret = statsave_save(path);
-	if (ret) {
-		file_delete(path);
-	}
-	soundmng_play();
-
-	return ret;
-}
-
-void
-flagdelete(const char* ext)
-{
-	char path[MAX_PATH];
-
-	getstatfilename(path, ext, sizeof(path));
-	file_delete(path);
-}
-
-int
-flagload(const char* ext, BOOL force)
-{
-	char path[MAX_PATH];
-	char buf[1024];
-	int ret;
-	int rv = 0;
-
-	getstatfilename(path, ext, sizeof(path));
-	ret = statsave_check(path, buf, sizeof(buf));
-	if (ret & (~STATFLAG_DISKCHG)) {
-		rv = 1;
-	} else if ((!force) && (ret & STATFLAG_DISKCHG)) {
-		rv = 1;
-	}
-	if (rv == 0) {
-		statsave_load(path);
-	}
-
-	return rv;
-}
-
-void
-changescreen(void *graphics, UINT8 newmode)
-{
-	(void) newmode;
-
-	soundmng_stop();
-	scrndraw_redraw(graphics);
-	soundmng_play();
 }
 
 void

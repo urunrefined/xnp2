@@ -62,6 +62,9 @@
 static const char appname[] = "np2";
 static const char ini_title[] = "NekoProjectII_Katze";
 
+static char modulefile[MAX_PATH];
+static char statpath[MAX_PATH];
+
 /*
  * option
  */

@@ -56,24 +56,6 @@ enum {
 	MMXFLAG_NOTSUPPORT	= 2
 };
 
-/* np2.c */
-extern volatile sig_atomic_t np2running;
-
-extern UINT framecnt;
-extern UINT waitcnt;
-extern UINT framemax;
-
-extern BOOL s98logging;
-extern int s98log_count;
-
-extern char bmpfilefolder[MAX_PATH];
-extern char modulefile[MAX_PATH];
-extern char statpath[MAX_PATH];
-
-int flagload(const char* ext, BOOL force);
-int flagsave(const char* ext);
-void flagdelete(const char* ext);
-
 void framereset();
 void processwait(UINT cnt);
 int mainloop(void *);
