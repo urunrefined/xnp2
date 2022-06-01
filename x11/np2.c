@@ -40,33 +40,6 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-
-NP2OSCFG np2oscfg = {
-	0,					/* DISPCLK */
-
-	KEY_KEY106,			/* KEYBOARD */
-	0,					/* F12KEY */
-	0,					/* JOYPAD1 */
-	0,					/* JOYPAD2 */
-	{ "", "" },					/* JOYDEV */
-
-	{ COMPORT_MIDI, 0, 0x3e, 19200, "", "", "", "" },	/* mpu */
-	{
-		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com1 */
-		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com2 */
-		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com3 */
-	},
-
-	0,					/* confirm */
-
-	0,					/* statsave */
-	0,					/* hostdrv_write */
-	0,					/* jastsnd */
-
-	{ "", "" },			/* MIDIDEV */
-	0,					/* MIDIWAIT */
-};
-
 UINT framecnt = 0;
 UINT waitcnt = 0;
 UINT framemax = 1;
@@ -76,13 +49,6 @@ int s98log_count = 0;
 
 char modulefile[MAX_PATH];
 char statpath[MAX_PATH];
-
-const char np2flagext[] = "s%02d";
-
-#ifndef FONTFACE
-#define FONTFACE "-misc-fixed-%s-r-normal--%d-*-*-*-*-*-*-*"
-#endif
-char fontname[1024] = FONTFACE;
 
 UINT32
 gettick(void)

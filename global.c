@@ -1,4 +1,6 @@
 #include "global.h"
+#include "kbdmng.h"
+#include "commng.h"
 
 NP2CFG	np2cfg = {
 			0, 1, 0, 32, 0, 0, 0x40,
@@ -21,3 +23,30 @@ NP2CFG	np2cfg = {
 			{OEMTEXT(""), OEMTEXT(""), OEMTEXT(""), OEMTEXT("")},
 #endif
 			OEMTEXT(""), OEMTEXT("")};
+
+
+NP2OSCFG np2oscfg = {
+	0,					/* DISPCLK */
+
+	KEY_KEY106,			/* KEYBOARD */
+	0,					/* F12KEY */
+	0,					/* JOYPAD1 */
+	0,					/* JOYPAD2 */
+	{ "", "" },					/* JOYDEV */
+
+	{ COMPORT_MIDI, 0, 0x3e, 19200, "", "", "", "" },	/* mpu */
+	{
+		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com1 */
+		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com2 */
+		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com3 */
+	},
+
+	0,					/* confirm */
+
+	0,					/* statsave */
+	0,					/* hostdrv_write */
+	0,					/* jastsnd */
+
+	{ "", "" },			/* MIDIDEV */
+	0,					/* MIDIWAIT */
+};

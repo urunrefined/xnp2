@@ -6,6 +6,7 @@
 #include "sound.h"
 #include "_memory.h"
 #include "milstr.h"
+#include "global.h"
 
 #include <sys/time.h>
 #include <time.h>

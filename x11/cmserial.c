@@ -29,6 +29,7 @@
 #include "commng.h"
 #include "trace.h"
 #include "_memory.h"
+#include "global.h"
 
 #include <sys/ioctl.h>
 #include <stdio.h>

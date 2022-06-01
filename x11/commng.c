@@ -3,6 +3,7 @@
 #include "np2.h"
 #include "commng.h"
 #include "cmjasts.h"
+#include "global.h"
 
 
 // ---- non connect

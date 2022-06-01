@@ -58,7 +58,6 @@ enum {
 
 /* np2.c */
 extern volatile sig_atomic_t np2running;
-extern NP2OSCFG np2oscfg;
 
 extern UINT framecnt;
 extern UINT waitcnt;
@@ -70,9 +69,6 @@ extern int s98log_count;
 extern char bmpfilefolder[MAX_PATH];
 extern char modulefile[MAX_PATH];
 extern char statpath[MAX_PATH];
-extern char fontname[1024];
-
-extern const char np2flagext[];
 
 int flagload(const char* ext, BOOL force);
 int flagsave(const char* ext);
