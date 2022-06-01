@@ -34,6 +34,9 @@ this emu with the cputype=i386 flag (see above).
 Mouse capture is done via "clicking" on the emulator screen. To get out of
 this mode press F12.
 
+To acces the bios press F11 right at the start. If you miss it,
+press SUPER-I to reset and press F11 right after.
+
 TODO:
 * Create a new config file. The old one has a thousand options - most should
 be discarded. Valid options IMHO are: viewport-mode, cpu type, memory,
