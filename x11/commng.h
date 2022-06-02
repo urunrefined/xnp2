@@ -86,7 +86,4 @@ void commng_initialize(void);
 }
 #endif
 
-#include "cmmidi.h"
-#include "cmserial.h"
-
 #endif	/* NP2_X11_COMMNG_H__ */

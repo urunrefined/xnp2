@@ -13,6 +13,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <cmmidi.h>
 
 #include "sound/vermouth/vermouth.h"
 

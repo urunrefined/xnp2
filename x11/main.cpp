@@ -62,9 +62,6 @@
 static const char appname[] = "np2";
 static const char ini_title[] = "NekoProjectII_Katze";
 
-static char modulefile[MAX_PATH];
-static char statpath[MAX_PATH];
-
 /*
  * option
  */
@@ -85,7 +82,8 @@ usage(const char *progname)
 	exit(1);
 }
 
-static void parseArguments(int argc, char *argv[]){
+template <size_t N>
+static void parseArguments(int argc, char *argv[], char (&modulefile)[N]){
 	int ch;
 
 	while ((ch = getopt_long(argc, argv, "c:C:t:vh", longopts, NULL)) != -1) {
@@ -110,7 +108,8 @@ static void parseArguments(int argc, char *argv[]){
 	}
 }
 
-static void discoverConfigFile(){
+template <size_t N>
+static void discoverConfigFile(char (&modulefile)[N]){
 	if (modulefile[0] == '\0') {
 		char *env = getenv("HOME");
 		if (env) {
@@ -143,7 +142,8 @@ static void discoverConfigFile(){
 	}
 }
 
-static void discoverSavFile(){
+template <size_t N>
+static void discoverSavFile(const char *modulefile, char (&statpath)[N]){
 	if (modulefile[0] != '\0') {
 		/* statsave dir */
 		file_cpyname(statpath, modulefile, sizeof(statpath));
@@ -167,11 +167,14 @@ static void discoverSavFile(){
 }
 
 static void go(int argc, char *argv[]){
+	static char modulefile[MAX_PATH];
+	static char statpath[MAX_PATH];
+
 	BR::SignalFD sfd;
 
-	parseArguments(argc, argv);
-	discoverConfigFile();
-	discoverSavFile();
+	parseArguments(argc, argv, modulefile);
+	discoverConfigFile(modulefile);
+	discoverSavFile(modulefile, statpath);
 
 	IniCfg iniCfg(np2oscfg, np2cfg);
 	initload(modulefile, ini_title, iniCfg.config.data(), iniCfg.config.size());

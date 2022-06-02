@@ -30,6 +30,7 @@
 #include "trace.h"
 #include "_memory.h"
 #include "global.h"
+#include "cmserial.h"
 
 #include <sys/ioctl.h>
 #include <stdio.h>
