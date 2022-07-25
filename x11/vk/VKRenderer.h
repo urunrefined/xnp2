@@ -32,6 +32,7 @@ public:
 	std::unique_ptr<PipelineTex>     pipelineAspect1to1;
 	std::unique_ptr<PipelineTex>     pipelineStretch;
 	std::unique_ptr<PipelineTex>     pipelineInteger;
+	std::unique_ptr<PipelineTexExt>  pipelineExt1to1;
 	std::unique_ptr<PipelineTexExt>  pipelineStretchExt;
 
 	uint32_t graphicsFamily;
@@ -70,6 +71,16 @@ public:
 				   scissor.extent.width, scissor.extent.height);
 
 			pipelineAspect1to1   = std::unique_ptr<PipelineTex> (new PipelineTex (device, shaderStore, scissor, renderPass, descriptorLayout));
+		}
+
+		{
+			VkRect2D scissor = get1to1Scissor(swapChainExtent.width, swapChainExtent.height);
+
+			printf("Recreate 1to1 pipeline with offset [%u, %u], extent [%u, %u]\n",
+				   scissor.offset.x, scissor.offset.y,
+				   scissor.extent.width, scissor.extent.height);
+
+			pipelineExt1to1 = std::unique_ptr<PipelineTexExt> (new PipelineTexExt (device, shaderStore, scissor, renderPass, descriptorLayoutExt));
 		}
 
 		{

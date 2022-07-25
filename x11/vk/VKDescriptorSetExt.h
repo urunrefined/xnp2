@@ -28,10 +28,14 @@ class VulkanDescriptorSetExt
 	const VkDevice& device;
 	VulkanPhysicalDevice& physicalDevice;
 	const VkDescriptorPool& descriptorPoolExt;
-	VkDescriptorSet descriptorSet;
+
+	std::vector<VkDescriptorSet> descriptorSets;
 
 public:
 	VulkanUniformBuffer uniformBuffer;
+private:
+	size_t modelCount;
+public:
 
 	VulkanDescriptorSetExt(
 		const VkDevice& device_,
@@ -39,15 +43,16 @@ public:
 		VkImageView& imageView,
 		VkSampler& sampler,
 		const VkDescriptorPool& descriptorPoolExt_,
-		const VkDescriptorSetLayout &layout);
+		const VkDescriptorSetLayout &layout,
+		size_t modelCount_);
 
 	~VulkanDescriptorSetExt();
 
 	void updateWorldMatrix(const Matrix4x4f& world);
-	void updateModelMatrix(size_t which, const Matrix4x4f& model);
+	void updateModelMatrix(const Matrix4x4f& world, size_t index);
 
-	operator const VkDescriptorSet& () const{
-		return descriptorSet;
+	const VkDescriptorSet& get(size_t index) const{
+		return descriptorSets[index];
 	}
 };
 

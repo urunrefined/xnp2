@@ -34,40 +34,15 @@ static VulkanPhysicalDevice glPhysicalDeviceSelection(VulkanContext& engine){
 static const unsigned int pc98Width = 640;
 static const unsigned int pc98Height = 400;
 
-static TextDims draw(Pen &pen, const std::string& base, const char *add){
-
-	std::string str = base;
-
-	if(add && add[0] != 0){
-		str += add;
-	}
-	else {
-		str += "<empty>";
-	}
-
-	return pen.draw(str.c_str());
-}
-
-static TextDims drawFilename(Pen &pen, const std::string& base, const char *path){
-	if(path){
-		const char *filename = strrchr(path, '/');
-
-		if(!filename){
-			return draw(pen, base, path);
-		} else {
-			return draw(pen, base, filename + 1);
-		}
-	}
-	else {
-		return draw(pen, base, path);
-	}
-}
-
-class UVs {
-public:
+struct UVs {
 	Vec2 uvs[6];
 };
 
+struct VTXs{
+	Vec2 vtxs[6];
+};
+
+//TODO Change ll to bl // --
 UVs calculateUvs(TextDims& dims, Image& image){
 	Vec2 ll{(float)dims.startX / (float)image.width,
 			((float)dims.startY + (float)dims.sizeY) / (float)image.height};
@@ -84,6 +59,218 @@ UVs calculateUvs(TextDims& dims, Image& image){
 	return UVs {ll, ul, ur, ll, ur, lr};
 }
 
+VTXs getTriangleList(Vec2& ul, Vec2& ur, Vec2& ll, Vec2& lr){
+	return VTXs {ll, ul, ur, ll, ur, lr};
+}
+
+Vec2 posstatic[6] {
+	{-1.0, 1.0},  // lower left
+	{-1.0,-1.0},  // upper left
+	{ 1.0,-1.0},  // upper right
+
+	{-1.0, 1.0},  // lower left
+	{ 1.0,-1.0},  // upper right
+	{ 1.0, 1.0}   // lower right
+};
+
+class Dimensions {
+public:
+	float x;
+	float y;
+};
+
+class Column {
+public:
+	std::vector<TextDims> elements;
+
+	Column(){}
+
+	Dimensions calculate(VulkanVtxBuffer& vtxBuffer, VulkanVtxBuffer& uvBuffer, size_t offset, Image& image){
+		Dimensions cDims = {0,0};
+
+		VTXs vtxs[elements.size()];
+		UVs uvs[elements.size()];
+
+		float top = 0;
+
+		for(size_t i = 0 ; i < elements.size(); i++){
+			TextDims& dims = elements[i];
+			VTXs& pos = vtxs[i];
+
+			float t = top + dims.sizeY;
+			float b = top;
+			top = t;
+
+			Vec2 ul = {0, t};
+			Vec2 ur = {(float)dims.sizeX, t};
+			Vec2 ll = {0, b};
+			Vec2 lr = {(float)dims.sizeX, b};
+
+			pos = getTriangleList(ul, ur, ll, lr);
+
+			cDims.x = std::max(cDims.x, ul.x);
+			cDims.x = std::max(cDims.x, ur.x);
+			cDims.x = std::max(cDims.x, ll.x);
+			cDims.x = std::max(cDims.x, lr.x);
+
+			cDims.y = std::max(cDims.y, ul.y);
+			cDims.y = std::max(cDims.y, ur.y);
+			cDims.y = std::max(cDims.y, ll.y);
+			cDims.y = std::max(cDims.y, lr.y);
+		}
+
+		for(size_t i = 0 ; i < elements.size(); i++){
+			TextDims& dims = elements[i];
+			UVs& uv = uvs[i];
+			uv = calculateUvs(dims, image);
+		}
+
+		printf("offset: %zu Update Size: %zu\n", offset * sizeof(VTXs), elements.size() * sizeof(VTXs));
+		vtxBuffer.update((char *)vtxs, offset * sizeof(VTXs), elements.size() * sizeof(VTXs));
+		uvBuffer.update((char *)uvs, offset * sizeof(VTXs), elements.size() * sizeof(UVs));
+
+		return cDims;
+	}
+
+	size_t getRenderCount(){ return elements.size() * 6;}
+	size_t getRenderSize(){ return elements.size() * sizeof(VTXs);}
+
+	void add(TextDims element){
+		elements.push_back(element);
+	}
+};
+
+//Pen pen(drawArray.texture.image, freetypeFace, hbfont);
+
+class Text{
+public:
+	std::string text;
+	TextDims dims;
+};
+
+class TextCache {
+	Pen pen;
+	std::vector<Text> texts;
+
+	TextDims alloc(const char *text){
+		TextDims textDims = pen.draw(text);
+		texts.push_back({text, textDims});
+		return textDims;
+	}
+
+public:
+	TextCache (VulkanTexture& texture, FreetypeFace& face, HarfbuzzFont& font) :
+		pen(texture.image, face, font){
+	}
+
+	TextDims query(const char *text){
+		std::string str;
+		if(!text || text[0] == '\0'){
+			str = "(empty)";
+		}
+		else {
+			str = text;
+		}
+
+		for(auto& cachedText : texts){
+			if(cachedText.text == str) return cachedText.dims;
+		}
+
+		return alloc(str.c_str());
+	}
+};
+
+static float getFittingScale(const Dimensions& in, const Dimensions& limits){
+
+	float scaleX = (limits.x / in.x);
+	float scaleY = (limits.y / in.y);
+
+	if(scaleX < scaleY){
+		return scaleX;
+	}
+	else{
+		return scaleY;
+	}
+}
+
+class Menu {
+	Column left, right;
+
+	VulkanVtxBuffer vtxBuffer;
+	VulkanVtxBuffer uvBuffer;
+	VulkanDescriptorPoolExt descriptorPoolExt;
+	VulkanDescriptorSetExt descriptorSetExt;
+
+public:
+
+	Menu(VulkanDevice& device, VulkanPhysicalDevice& physicalDevice,
+		 VulkanTexture& textTexture, VulkanRenderer& renderer) :
+		vtxBuffer(device, physicalDevice, 1024),
+		uvBuffer(device, physicalDevice, 1024),
+		descriptorPoolExt(device, 2),
+		descriptorSetExt(device, physicalDevice, textTexture.textureView, renderer.sampler,
+			descriptorPoolExt, renderer.descriptorLayoutExt, 2
+		)
+	{
+
+	}
+
+	void add(TextCache& textCache, const char *leftString, const char *rightString){
+		left.add(textCache.query(leftString));
+		right.add(textCache.query(rightString));
+	}
+
+	void updateUniforms(float scale){
+		Matrix4x4f model = Matrix4x4f::ident();
+
+		model.sx() *= scale;
+		model.sy() *= scale;
+
+		descriptorSetExt.updateModelMatrix(model, 0);
+
+		model.tx() = 0.5;
+
+		descriptorSetExt.updateModelMatrix(model, 1);
+
+	}
+
+	void prepare(VulkanTexture& textTexture){
+
+		Dimensions lDims = left.calculate(vtxBuffer, uvBuffer, 0, textTexture.image);
+		float lScale = getFittingScale(lDims, {0.4, 1.0});
+
+		Dimensions rDims = right.calculate(vtxBuffer, uvBuffer, left.elements.size(), textTexture.image);
+		float rScale = getFittingScale(rDims, {0.4, 1.0});
+
+		updateUniforms(std::min(lScale, rScale));
+
+		Matrix4x4f world = Matrix4x4f::ortho1To1();
+		descriptorSetExt.updateWorldMatrix(world);
+	};
+
+	void render(VulkanRenderer& renderer, VulkanRenderBuffer& renderBuffer){
+		renderer.pipelineExt1to1->record(
+			renderBuffer, descriptorSetExt.get(0),
+			vtxBuffer, 0,
+			uvBuffer, 0,
+			left.getRenderCount()
+		);
+
+		renderer.pipelineExt1to1->record(
+			renderBuffer, descriptorSetExt.get(1),
+			vtxBuffer, left.getRenderSize(),
+			uvBuffer, left.getRenderSize(),
+			right.getRenderCount()
+		);
+	}
+
+	void chainBuffers(std::vector<VulkanCmbBuffer *>& cmbBuffers){
+		cmbBuffers.push_back(&vtxBuffer);
+		cmbBuffers.push_back(&uvBuffer);
+		cmbBuffers.push_back(&descriptorSetExt.uniformBuffer);
+	};
+};
+
 static void glLoop(
 		SignalFD& sfd,
 		VulkanContext& engine,
@@ -93,6 +280,8 @@ static void glLoop(
 		NP2CFG& cfg,
 		NP2OSCFG& oscfg)
 {
+	VisualScreen visualScreen = VisualScreen::MAIN;
+
 	VulkanScaler scaler(engine, physicalDevice);
 	std::unique_ptr<VulkanRenderBuffer> renderBuffer;
 
@@ -101,12 +290,7 @@ static void glLoop(
 		scaler.renderer.graphicsFamily, pc98Width, pc98Height
 	);
 
-	VulkanTexture logTexture(
-		scaler.device, physicalDevice, scaler.renderer.graphicsQueue,
-		scaler.renderer.graphicsFamily, 1024, 1024
-	);
-
-	VulkanDescriptorPool descriptorPool(scaler.device, 4);
+	VulkanDescriptorPool descriptorPool(scaler.device, 1);
 
 	VulkanDescriptorSet descriptorSetMain(
 		scaler.device,
@@ -116,97 +300,50 @@ static void glLoop(
 		scaler.renderer.descriptorLayout
 	);
 
-	VulkanDescriptorSet descriptorSetLog(
-		scaler.device,
-		logTexture.textureView,
-		scaler.renderer.sampler,
-		descriptorPool,
-		scaler.renderer.descriptorLayout
-	);
-
-	VulkanDescriptorPoolExt descriptorPoolExt(scaler.device, 12);
-
-	VulkanDescriptorSetExt descriptorSetExt(
-		scaler.device,
-		physicalDevice,
-		logTexture.textureView,
-		scaler.renderer.sampler,
-		descriptorPoolExt,
-		scaler.renderer.descriptorLayoutExt
-	);
-
-	Pen pen(logTexture.image, freetypeFace, hbfont);
-
-	std::vector<TextDims> texts;
-
-	TextDims dims = drawFilename(pen, "FDD 0: ", cfg.fdd[0]);
-	dims += drawFilename(pen, "FDD 1: ", cfg.fdd[1]);
-	dims += drawFilename(pen, "FDD 2: ", cfg.fdd[2]);
-	dims += drawFilename(pen, "FDD 3: ", cfg.fdd[3]);
-
-	dims += drawFilename(pen, "HDD 0: ", cfg.sasihdd[0]);
-	dims += drawFilename(pen, "HDD 1: ", cfg.sasihdd[1]);
-	dims += drawFilename(pen, "Font: ",  cfg.fontfile);
-
-	logTexture.textureDirty = true;
-	bool showLog = false;
-
 	CallbackContext ctx{
 		&mainTexture,
 		&scaler.context.glfwCtx.input
 	};
 
-	VulkanVtxBuffer vtxBuffer(scaler.device, physicalDevice, 1024);
-	VulkanVtxBuffer uvBuffer(scaler.device, physicalDevice, 1024);
+	VulkanTexture textTexture(scaler.device, physicalDevice, scaler.device.graphicsQueue,
+		scaler.device.graphicsFamily, 1024, 1024);
 
-	Vec2 pos[6] {
-		{-1.0, 1.0},  // lower left
-		{-1.0,-1.0},  // upper left
-		{ 1.0,-1.0},  // upper right
+	TextCache textCache(textTexture, freetypeFace, hbfont);
 
-		{-1.0, 1.0},  // lower left
-		{ 1.0,-1.0},  // upper right
-		{ 1.0, 1.0}   // lower right
-	};
+	Menu menu(scaler.device, scaler.physicalDevice, textTexture, scaler.renderer);
+	menu.add(textCache, "FDD 0:", basename(cfg.fdd[0]));
+	menu.add(textCache, "FDD 1:", basename(cfg.fdd[1]));
+	menu.add(textCache, "FDD 2:", basename(cfg.fdd[2]));
+	menu.add(textCache, "FDD 3:", basename(cfg.fdd[3]));
 
-	UVs uvs = calculateUvs(dims, logTexture.image);
+	menu.add(textCache, "HDD 0:", basename(cfg.sasihdd[0]));
+	menu.add(textCache, "HDD 1:", basename(cfg.sasihdd[1]));
 
-	vtxBuffer.update((const char *)pos, 0, sizeof(pos));
-	uvBuffer.update((const char *)uvs.uvs, 0, sizeof(uvs));
+	menu.add(textCache, "Font: ", basename(cfg.fontfile));
 
-	Matrix4x4f model = Matrix4x4f::ident();
-	model.sx() /= (16.f / 9.f);
+	menu.prepare(textTexture);
 
-	descriptorSetExt.updateWorldMatrix(Matrix4x4f::ident());
-	descriptorSetExt.updateModelMatrix(0, Matrix4x4f::ident());
+	textTexture.textureDirty = true;
 
 	ViewPortMode mode = ViewPortMode::INTEGER;
 
 	std::vector<VulkanCmbBuffer *> cmbBuffers;
-	cmbBuffers.push_back(&vtxBuffer);
-	cmbBuffers.push_back(&uvBuffer);
-	cmbBuffers.push_back(&descriptorSetExt.uniformBuffer);
+	menu.chainBuffers(cmbBuffers);
 
 	while(scaler.getWindowState() != WindowState::SHOULDCLOSE && !sfd.isTriggered()){
 		mainloop(&ctx);
 
 		if(scaler.renderingComplete()){
 			mainTexture.update();
-			logTexture.update();
+			textTexture.update();
 
 			renderBuffer = scaler.newRenderBuffer();
 			scaler.pollWindowEvents();
 
 			renderBuffer->begin(scaler.getRenderPass(), scaler.swapchain);
-			//scaler.renderer.pipelineV->record(*renderBuffer, 6);
 
-			if(showLog){
-				//scaler.renderer.pipelineAspect1to1->record(*renderBuffer, descriptorSetLog, 6);
-				scaler.renderer.pipelineStretchExt->record(
-					*renderBuffer, descriptorSetExt,
-					vtxBuffer, 0,
-					uvBuffer, 0,
-					6);
+			if(visualScreen == VisualScreen::CFG){
+				menu.render(scaler.renderer, *renderBuffer);
 			}
 			else {
 				if(mode == ViewPortMode::ASPECT){
@@ -229,7 +366,7 @@ static void glLoop(
 
 		GLFWInput& input = engine.glfwCtx.getInput();
 
-		handleInput(input, mode, showLog);
+		handleInput(input, mode, visualScreen);
 
 		input.reset();
 	}

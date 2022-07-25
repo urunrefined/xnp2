@@ -12,7 +12,7 @@ class VulkanDescriptorLayout {
 public:
 
 	VulkanDescriptorLayout(const VkDevice& device_);
-	~VulkanDescriptorLayout();;
+	~VulkanDescriptorLayout();
 
 	operator const VkDescriptorSetLayout& () const{
 		return layout;

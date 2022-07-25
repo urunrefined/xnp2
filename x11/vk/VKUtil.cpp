@@ -54,13 +54,34 @@ VkRect2D getAspectScissor(double ideal, unsigned int width, unsigned int height)
 	else if(ratio < ideal){
 		yOffset = (height - (unsigned int)((double) height / (1 / (ratio / ideal))));
 	}
-	
-	printf("xOffset %u, yOffset %u\n", xOffset, yOffset);
 
 	if(xOffset > width) xOffset = width;
 	if(yOffset > height) yOffset = height;
 
 	//printf("%u, %u | %u, %u | %u, %u\n", width, height, xOffset/2, yOffset / 2, width - xOffset, height - yOffset);
+	VkRect2D scissor;
+
+	scissor.offset = VkOffset2D {(int32_t)(xOffset / 2), (int32_t)(yOffset / 2)};
+	scissor.extent = VkExtent2D {width - xOffset, height - yOffset};
+
+	if(scissor.extent.width < 1) scissor.extent.width = 1;
+	if(scissor.extent.height < 1) scissor.extent.height = 1;
+
+	return scissor;
+}
+
+//Same thing, just ignore the aspect
+VkRect2D get1to1Scissor(unsigned int width, unsigned int height){
+	unsigned int xOffset = 0;
+	unsigned int yOffset = 0;
+
+	if(width > height){
+		xOffset = width - height;
+	}
+	else if(height > width){
+		yOffset = height - width;
+	}
+
 	VkRect2D scissor;
 
 	scissor.offset = VkOffset2D {(int32_t)(xOffset / 2), (int32_t)(yOffset / 2)};

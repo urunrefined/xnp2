@@ -140,17 +140,16 @@ static void mapAndSendKey(KeyEvent& keyEvent){
 	}
 }
 
-void handleInput(Input& input, ViewPortMode& mode, bool& showLog){
+template <class T1>
+T1 next(const T1& t1){
+	return (T1)((((int)t1) + 1)% (int)T1::END);
+}
+
+void handleInput(Input& input, ViewPortMode& viewPortMode, VisualScreen& visualScreen){
 	if(input.getButton(KeyButtons::KEY_SUPER)){
 		for(auto& keyEvent : input.keyEvents){
 			if(keyEvent.key == KeyButtons::KEY_E && keyEvent.state == PRESSED){
-				if(mode == ViewPortMode::ASPECT){
-					mode = ViewPortMode::STRETCH;
-				}else if(mode == ViewPortMode::STRETCH){
-					mode = ViewPortMode::INTEGER;
-				}else if(mode == ViewPortMode::INTEGER){
-					mode = ViewPortMode::ASPECT;
-				}
+				viewPortMode = next(viewPortMode);
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_NUMPAD_DIV && keyEvent.state == PRESSED){
@@ -170,7 +169,7 @@ void handleInput(Input& input, ViewPortMode& mode, bool& showLog){
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_K && keyEvent.state == PRESSED){
-				showLog = !showLog;
+				visualScreen = next(visualScreen);
 			}
 		}
 	}

@@ -276,7 +276,6 @@ static void draw_bitmap(
 			data[idx + 0] |= px;
 			data[idx + 3] |= 255;
 
-
 			//uint8_t px = bitmap->buffer[bitmap->width * y + x];
 			//
 			//data[idx + 0] |= px;
@@ -302,7 +301,7 @@ TextDims drawText(HarfbuzzText& hb, FreetypeFace& face, unsigned int line, Image
 		FT_GlyphSlot& slot = face.slot;
 		FT_Int bitmap_top = (FT_Int)((double)(line + 1) * (face.lineheight));
 
-		draw_lineY(bitmap_top, image);
+		//draw_lineY(bitmap_top, image);
 
 		draw_bitmap(
 			&slot->bitmap,
