@@ -11,45 +11,14 @@
 	_BEEP		g_beep;
 	BEEPCFG		beepcfg;
 
-
-// #define	BEEPLOG
-
-#if defined(BEEPLOG)
-static struct {
-	FILEH	fh;
-	UINT	events;
-	UINT32	event[0x10000];
-} bplog;
-
-static void beeplogflash(void) {
-
-	if ((bplog.fh != FILEH_INVALID) && (bplog.events)) {
-		file_write(bplog.fh, bplog.event, bplog.events * sizeof(UINT32));
-		bplog.events = 0;
-	}
-}
-#endif
-
-
 void beep_initialize(UINT rate) {
 
 	beepcfg.rate = rate;
 	beepcfg.vol = 2;
-#if defined(BEEPLOG)
-	bplog.fh = file_create("beeplog");
-	bplog.events = 0;
-#endif
 }
 
 void beep_deinitialize(void) {
 
-#if defined(BEEPLOG)
-	beeplogflash();
-	if (bplog.fh != FILEH_INVALID) {
-		file_close(bplog.fh);
-		bplog.fh = FILEH_INVALID;
-	}
-#endif
 }
 
 void beep_setvol(UINT vol) {
@@ -109,20 +78,6 @@ static void beep_eventset(void) {
 
 	enable = g_beep.low & g_beep.buz;
 	if (g_beep.enable != enable) {
-#if defined(BEEPLOG)
-		UINT32	tmp;
-		tmp = CPU_CLOCK + CPU_BASECLOCK - CPU_REMCLOCK;
-		if (enable) {
-			tmp |= 0x80000000;
-		}
-		else {
-			tmp &= ~0x80000000;
-		}
-		bplog.event[bplog.events++] = tmp;
-		if (bplog.events >= NELEMENTS(bplog.event)) {
-			beeplogflash();
-		}
-#endif
 		if (g_beep.events >= (BEEPEVENT_MAX / 2)) {
 			sound_sync();
 		}
