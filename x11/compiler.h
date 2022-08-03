@@ -35,7 +35,6 @@
 #endif
 
 #define CPUCORE_IA32
-#define	OSLINEBREAK_LF
 
 #include <stdint.h>
 

@@ -23,12 +23,7 @@
  */
 static const OEMCHAR s_eol[] =
 {
-#if defined(OSLINEBREAK_CR) || defined(OSLINEBREAK_CRLF)
-	'\r',
-#endif
-#if defined(OSLINEBREAK_LF) || defined(OSLINEBREAK_CRLF)
 	'\n',
-#endif
 };
 
 /**
