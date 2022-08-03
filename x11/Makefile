@@ -1,4 +1,4 @@
-INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram
+INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I./../i386c
 INCEXT=-I/usr/include/SDL2 -I/usr/include/fontconfig -I/usr/include/freetype2 -I/usr/include/harfbuzz
 
 LDLIBS = -pthread -lSDL2 -lm -lglfw -lvulkan -lfontconfig -lharfbuzz -lfreetype
@@ -169,7 +169,38 @@ SRC_C = \
 		./../vram/maketgrp.c                                \
 		./../vram/makegrph.c                                \
 		./../vram/makegrex.c                                \
-		./../debugsub.c
+		./../debugsub.c                                     \
+		./../i386c/ia32/task.c                              \
+		./../i386c/ia32/debug.c                             \
+		./../i386c/ia32/inst_table.c                        \
+		./../i386c/ia32/cpu.c                               \
+		./../i386c/ia32/instructions/fpu.c                  \
+		./../i386c/ia32/instructions/system_inst.c          \
+		./../i386c/ia32/instructions/flag_ctrl.c            \
+		./../i386c/ia32/instructions/seg_reg.c              \
+		./../i386c/ia32/instructions/bin_arith.c            \
+		./../i386c/ia32/instructions/misc_inst.c            \
+		./../i386c/ia32/instructions/data_trans.c           \
+		./../i386c/ia32/instructions/string_inst.c          \
+		./../i386c/ia32/instructions/shift_rotate.c         \
+		./../i386c/ia32/instructions/logic_arith.c          \
+		./../i386c/ia32/instructions/bit_byte.c             \
+		./../i386c/ia32/instructions/dec_arith.c            \
+		./../i386c/ia32/instructions/ctrl_trans.c           \
+		./../i386c/ia32/instructions/fpu/fpemul.c           \
+		./../i386c/ia32/disasm.c                            \
+		./../i386c/ia32/resolve.c                           \
+		./../i386c/ia32/ia32.c                              \
+		./../i386c/ia32/ctrlxfer.c                          \
+		./../i386c/ia32/exception.c                         \
+		./../i386c/ia32/interface.c                         \
+		./../i386c/ia32/cpu_mem.c                           \
+		./../i386c/ia32/groups.c                            \
+		./../i386c/ia32/cpu_io.c                            \
+		./../i386c/ia32/paging.c                            \
+		./../i386c/ia32/segments.c                          \
+		./../i386c/cpucore.c                                \
+		./../i386c/cpumem.c
 
 SRC_CPP = \
                 ./../x11/main.cpp                                   \
@@ -238,64 +269,6 @@ SRC_CPP = \
 		./../x11/vk/Matrix4x4.cpp                           \
 		./../x11/vk/Range.cpp
 		
-cputype?=i286
-
-ifeq ($(cputype),i286)
-SRC_C += \
-                ./../i286c/i286c.c                                  \
-		./../i286c/cpumem.c                                 \
-		./../i286c/i286c_mn.c                               \
-		./../i286c/i286c_ea.c                               \
-		./../i286c/i286c_0f.c                               \
-		./../i286c/i286c_8x.c                               \
-		./../i286c/i286c_sf.c                               \
-		./../i286c/i286c_f6.c                               \
-		./../i286c/i286c_fe.c                               \
-		./../i286c/i286c_rp.c                               \
-		./../i286c/v30patch.c
-
-INC += -I./../i286c
-
-else
-CXXFLAGS += -DCPUCORE_IA32
-CFLAGS += -DCPUCORE_IA32
-
-SRC_C += \
-                ./../i386c/ia32/task.c                              \
-		./../i386c/ia32/debug.c                             \
-		./../i386c/ia32/inst_table.c                        \
-		./../i386c/ia32/cpu.c                               \
-		./../i386c/ia32/instructions/fpu.c                  \
-		./../i386c/ia32/instructions/system_inst.c          \
-		./../i386c/ia32/instructions/flag_ctrl.c            \
-		./../i386c/ia32/instructions/seg_reg.c              \
-		./../i386c/ia32/instructions/bin_arith.c            \
-		./../i386c/ia32/instructions/misc_inst.c            \
-		./../i386c/ia32/instructions/data_trans.c           \
-		./../i386c/ia32/instructions/string_inst.c          \
-		./../i386c/ia32/instructions/shift_rotate.c         \
-		./../i386c/ia32/instructions/logic_arith.c          \
-		./../i386c/ia32/instructions/bit_byte.c             \
-		./../i386c/ia32/instructions/dec_arith.c            \
-		./../i386c/ia32/instructions/ctrl_trans.c           \
-		./../i386c/ia32/instructions/fpu/fpemul.c           \
-		./../i386c/ia32/disasm.c                            \
-		./../i386c/ia32/resolve.c                           \
-		./../i386c/ia32/ia32.c                              \
-		./../i386c/ia32/ctrlxfer.c                          \
-		./../i386c/ia32/exception.c                         \
-		./../i386c/ia32/interface.c                         \
-		./../i386c/ia32/cpu_mem.c                           \
-		./../i386c/ia32/groups.c                            \
-		./../i386c/ia32/cpu_io.c                            \
-		./../i386c/ia32/paging.c                            \
-		./../i386c/ia32/segments.c                          \
-		./../i386c/cpucore.c                                \
-		./../i386c/cpumem.c
-
-INC += -I./../i386c
-
-endif
 
 ifeq ($(VKDEBUG),1)
     CXXFLAGS += -DVKDEBUG=1

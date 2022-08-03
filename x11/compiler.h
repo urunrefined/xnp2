@@ -34,6 +34,7 @@
 #error Please set preprocessor macro __BYTE_ORDER__ to __ORDER_BIG_ENDIAN__ or __ORDER_LITTLE_ENDIAN__
 #endif
 
+#define CPUCORE_IA32
 #define	X11
 #define	OSLINEBREAK_LF
 

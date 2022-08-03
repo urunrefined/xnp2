@@ -28,7 +28,7 @@ prepare() {
 
 build() {
   cd "$srcdir/$pkgname-$pkgver/x11"
-  make cputype=i386 -j8
+  make -j8
 }
 
 check() {
