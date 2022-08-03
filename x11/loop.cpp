@@ -193,6 +193,19 @@ static float getFittingScale(const Dimensions& in, const Dimensions& limits){
 	}
 }
 
+static char hexmap [16]{
+	'0','1','2','3','4','5','6','7',
+	'8','9','A','B','C','D','E','F'
+};
+
+template <size_t N>
+static void toHex(unsigned char (&in) [N], char (&out)[N * 2]){
+	for(size_t i=0; i < N; i++){
+		out[i * 2    ] = hexmap[(in[i] >> 4)& 0b00001111];
+		out[i * 2 + 1] = hexmap[ in[i]      & 0b00001111];
+	}
+}
+
 class Menu {
 	Column left, right;
 
@@ -205,14 +218,34 @@ public:
 
 	Menu(VulkanDevice& device, VulkanPhysicalDevice& physicalDevice,
 		 VulkanTexture& textTexture, VulkanRenderer& renderer) :
-		vtxBuffer(device, physicalDevice, 1024),
-		uvBuffer(device, physicalDevice, 1024),
+		vtxBuffer(device, physicalDevice, 4096),
+		uvBuffer(device, physicalDevice, 4096),
 		descriptorPoolExt(device, 2),
 		descriptorSetExt(device, physicalDevice, textTexture.textureView, renderer.sampler,
 			descriptorPoolExt, renderer.descriptorLayoutExt, 2
 		)
 	{
 
+	}
+
+	template<size_t N>
+	void addHex(TextCache& textCache, const char *leftString, unsigned char (&arr) [N]){
+		char buf[N * 2 + 1];
+		toHex(arr, (char (&) [N*2])buf);
+		buf[N * 2] = '\0';
+
+		left.add(textCache.query(leftString));
+		right.add(textCache.query(buf));
+	}
+
+	//automatic promotion
+	void add(TextCache& textCache, const char *leftString, UINT64 val){
+		char buf[std::numeric_limits<decltype(val)>::digits + 1];
+
+		snprintf(buf, sizeof(buf), "%ld", val);
+
+		left.add(textCache.query(leftString));
+		right.add(textCache.query(buf));
 	}
 
 	void add(TextCache& textCache, const char *leftString, const char *rightString){
@@ -306,20 +339,48 @@ static void glLoop(
 	};
 
 	VulkanTexture textTexture(scaler.device, physicalDevice, scaler.device.graphicsQueue,
-		scaler.device.graphicsFamily, 1024, 1024);
+		scaler.device.graphicsFamily, 4096, 4096);
 
 	TextCache textCache(textTexture, freetypeFace, hbfont);
 
 	Menu menu(scaler.device, scaler.physicalDevice, textTexture, scaler.renderer);
-	menu.add(textCache, "FDD 0:", basename(cfg.fdd[0]));
-	menu.add(textCache, "FDD 1:", basename(cfg.fdd[1]));
-	menu.add(textCache, "FDD 2:", basename(cfg.fdd[2]));
-	menu.add(textCache, "FDD 3:", basename(cfg.fdd[3]));
+	menu.add(textCache, "FDD 0: ", basename(cfg.fdd[0]));
+	menu.add(textCache, "FDD 1: ", basename(cfg.fdd[1]));
+	menu.add(textCache, "FDD 2: ", basename(cfg.fdd[2]));
+	menu.add(textCache, "FDD 3: ", basename(cfg.fdd[3]));
 
-	menu.add(textCache, "HDD 0:", basename(cfg.sasihdd[0]));
-	menu.add(textCache, "HDD 1:", basename(cfg.sasihdd[1]));
+	menu.add(textCache, "HDD 0: ", basename(cfg.sasihdd[0]));
+	menu.add(textCache, "HDD 1: ", basename(cfg.sasihdd[1]));
 
 	menu.add(textCache, "Font: ", basename(cfg.fontfile));
+
+	menu.add(textCache, "BEEP_VOL: ", cfg.BEEP_VOL);
+	menu.add(textCache, "BG_COLOR: ", cfg.BG_COLOR);
+	menu.add(textCache, "FG_COLOR: ", cfg.FG_COLOR);
+	menu.add(textCache, "color16: ",  cfg.color16);
+	menu.add(textCache, "BTN_MODE: ", cfg.BTN_MODE);
+	menu.add(textCache, "LCD_MODE: ", cfg.LCD_MODE);
+	menu.add(textCache, "KEY_MODE: ", cfg.KEY_MODE);
+
+	menu.add(textCache,    "model: ",       cfg.model);
+	menu.add(textCache,    "BTN_RAPID: ",   cfg.BTN_RAPID);
+	menu.add(textCache,    "DISPSYNC: ",    cfg.DISPSYNC);
+	menu.add(textCache,    "EXTMEM: ",      cfg.EXTMEM);
+	menu.add(textCache,    "ITF_WORK: ",    cfg.ITF_WORK);
+	menu.add(textCache,    "MOTOR: ",       cfg.MOTOR);
+	menu.addHex(textCache, "wait: ",        cfg.wait);
+	menu.add(textCache,    "PROTECTMEM: ",  cfg.PROTECTMEM);
+	menu.add(textCache,    "SOUND_SW: ",    cfg.SOUND_SW);
+	menu.add(textCache,    "vol_adpcm",     cfg.vol_adpcm);
+	menu.add(textCache,    "vol_fm",        cfg.vol_fm);
+	menu.add(textCache,    "vol_pcm",       cfg.vol_pcm);
+	menu.add(textCache,    "vol_rhythm",    cfg.vol_rhythm);
+	menu.add(textCache,    "vol_ssg",       cfg.vol_ssg);
+	menu.add(textCache,    "vol_ssg",       cfg.vol_ssg);
+	menu.addHex(textCache, "vol14",         cfg.vol14);
+	menu.add(textCache,    "usefd144",      cfg.usefd144);
+	menu.add(textCache,    "uPD72020",      cfg.uPD72020);
+	menu.add(textCache,    "spbopt",        cfg.spbopt);
 
 	menu.prepare(textTexture);
 
