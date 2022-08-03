@@ -75,8 +75,6 @@ struct tagNP2Config
 	UINT8	RASTER;
 	UINT8	realpal;
 	UINT8	LCD_MODE;
-	UINT8	skipline;
-	UINT16	skiplight;
 
 	UINT8	KEY_MODE;
 	UINT8	XSHIFT;

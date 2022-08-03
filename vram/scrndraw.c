@@ -70,9 +70,7 @@ static UINT8 rasterdraw(SDRAWFN sdrawfn, SDRAW sdraw, int maxy) {
 			else {
 				pal_makeanalog_lcd(pal, 0xffff);
 			}
-			if (np2cfg.skipline) {
-				np2_pal32[0].d = np2_pal32[NP2PAL_SKIP].d;
-			}
+
 			(*sdrawfn)(sdraw, y);
 			nextupdate = y;
 			// お弁当を食べる
@@ -93,9 +91,7 @@ static UINT8 rasterdraw(SDRAWFN sdrawfn, SDRAW sdraw, int maxy) {
 		else {
 			pal_makeanalog_lcd(pal, 0xffff);
 		}
-		if (np2cfg.skipline) {
-			np2_pal32[0].d = np2_pal32[NP2PAL_SKIP].d;
-		}
+
 		(*sdrawfn)(sdraw, maxy);
 	}
 	if (palevent.vsyncpal) {
@@ -180,9 +176,6 @@ const SDRAWFN	*sdrawfn;
 #endif
 		if (gdc.mode1 & 0x10) {
 			sdrawfn += 4;
-			if (np2cfg.skipline) {
-				sdrawfn += 4;
-			}
 		}
 	} while(0);
 	switch(bit & 7) {
