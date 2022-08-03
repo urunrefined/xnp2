@@ -10,13 +10,8 @@
 #include	"strres.h"
 #include	"dosio.h"
 
-#if defined(MACOS)
-#define	CRLITERAL	"\r"
-#elif defined(X11)
 #define	CRLITERAL	"\n"
-#else
-#define	CRLITERAL	"\r\n"
-#endif
+
 static const char s_cr[] = CRLITERAL;
 
 typedef struct {

@@ -9,17 +9,8 @@
 #include	"milstr.h"
 
 
-#if defined(MACOS)
-#define	CRLITERAL	"\r"
-#define	CRCONST		str_cr
-#elif defined(X11)
 #define	CRLITERAL	"\n"
 #define	CRCONST		str_lf
-#else
-#define	CRLITERAL	"\r\n"
-#define	CRCONST		str_crlf
-#endif
-
 
 static const OEMCHAR s_nv[] = OEMTEXT("NV");
 static const OEMCHAR s_ov[] = OEMTEXT("OV");

@@ -42,13 +42,7 @@
 #include "_memory.h"
 #include "milstr.h"
 
-#if defined(MACOS)
-#define	CRCONST		str_cr
-#elif defined(X11)
 #define	CRCONST		str_lf
-#else
-#define	CRCONST		str_crlf
-#endif
 
 typedef struct {
 	char	name[16];
