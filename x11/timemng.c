@@ -1,7 +1,5 @@
 #include	"compiler.h"
-
 #include	<time.h>
-
 #include	"timemng.h"
 
 BRESULT

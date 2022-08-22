@@ -27,15 +27,7 @@
 
 #include "np2.h"
 #include "pccore.h"
-#include "statsave.h"
-#include "dosio.h"
-#include "scrndraw.h"
 #include "timing.h"
-
-#include "commng.h"
-#include "kbdmng.h"
-#include "scrnmng.h"
-#include "soundmng.h"
 
 #include <unistd.h>
 #include <sys/time.h>

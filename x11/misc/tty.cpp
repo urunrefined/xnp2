@@ -3,7 +3,6 @@
  * @brief	シリアル通信クラスの動作の定義を行います
  */
 
-#include "compiler.h"
 #include "tty.h"
 
 #include <stdio.h>

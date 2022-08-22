@@ -25,10 +25,6 @@
 
 #include "compiler.h"
 #include "soundmng.h"
-#include "np2.h"
-#include "pccore.h"
-#include "ini.h"
-#include "dosio.h"
 #include "parts.h"
 #include "sound.h"
 #include "_memory.h"
