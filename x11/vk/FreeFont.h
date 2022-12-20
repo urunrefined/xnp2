@@ -107,14 +107,16 @@ public:
 
 class TextDims {
 public:
-	long startX, startY;
-	long sizeX, sizeY;
+	long startX = 0, startY = 0;
+	long sizeX = 0, sizeY = 0;
 
 	TextDims(long startX_, long startY_,
 		   long sizeX_, long sizeY_) :
 		startX(startX_), startY(startY_),
 		sizeX(sizeX_), sizeY(sizeY_)
 	{}
+
+	TextDims(){}
 
 	TextDims operator += (const TextDims& dims)
 	{

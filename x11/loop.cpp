@@ -1,12 +1,9 @@
-
 #include "vk/VKEngine.h"
 #include "vk/VKPhysicalDeviceEnumerations.h"
 #include "vk/VKDescriptorPoolExt.h"
 #include "vk/FreeFont.h"
 
 #include "np2.h"
-#include "soundmng.h"
-#include "keystat.h"
 #include "loop.h"
 #include "exception.h"
 #include "pccore.h"
@@ -75,95 +72,130 @@ Vec2 posstatic[6] {
 
 class Dimensions {
 public:
-	float x;
-	float y;
+	float x = 0;
+	float y = 0;
 };
 
 class Column {
 public:
-	std::vector<TextDims> elements;
+	std::vector<std::string> elements;
 
 	Column(){}
 
-	Dimensions calculate(VulkanVtxBuffer& vtxBuffer, VulkanVtxBuffer& uvBuffer, size_t offset, Image& image){
-		Dimensions cDims = {0,0};
-
-		VTXs vtxs[elements.size()];
-		UVs uvs[elements.size()];
-
-		float top = 0;
-
-		for(size_t i = 0 ; i < elements.size(); i++){
-			TextDims& dims = elements[i];
-			VTXs& pos = vtxs[i];
-
-			float t = top + dims.sizeY;
-			float b = top;
-			top = t;
-
-			Vec2 ul = {0, t};
-			Vec2 ur = {(float)dims.sizeX, t};
-			Vec2 ll = {0, b};
-			Vec2 lr = {(float)dims.sizeX, b};
-
-			pos = getTriangleList(ul, ur, ll, lr);
-
-			cDims.x = std::max(cDims.x, ul.x);
-			cDims.x = std::max(cDims.x, ur.x);
-			cDims.x = std::max(cDims.x, ll.x);
-			cDims.x = std::max(cDims.x, lr.x);
-
-			cDims.y = std::max(cDims.y, ul.y);
-			cDims.y = std::max(cDims.y, ur.y);
-			cDims.y = std::max(cDims.y, ll.y);
-			cDims.y = std::max(cDims.y, lr.y);
-		}
-
-		for(size_t i = 0 ; i < elements.size(); i++){
-			TextDims& dims = elements[i];
-			UVs& uv = uvs[i];
-			uv = calculateUvs(dims, image);
-		}
-
-		printf("offset: %zu Update Size: %zu\n", offset * sizeof(VTXs), elements.size() * sizeof(VTXs));
-		vtxBuffer.update((char *)vtxs, offset * sizeof(VTXs), elements.size() * sizeof(VTXs));
-		uvBuffer.update((char *)uvs, offset * sizeof(VTXs), elements.size() * sizeof(UVs));
-
-		return cDims;
-	}
-
-	size_t getRenderCount(){ return elements.size() * 6;}
-	size_t getRenderSize(){ return elements.size() * sizeof(VTXs);}
-
-	void add(TextDims element){
+	void add(const std::string& element){
 		elements.push_back(element);
 	}
 };
 
-//Pen pen(drawArray.texture.image, freetypeFace, hbfont);
+//Column
+
+Dimensions calculate(std::vector<TextDims>& elements, VulkanVtxBuffer& vtxBuffer, VulkanVtxBuffer& uvBuffer, size_t offset, Image& image){
+	Dimensions cDims = {0,0};
+
+	VTXs vtxs[elements.size()];
+	UVs uvs[elements.size()];
+
+	float top = 0;
+
+	for(size_t i = 0 ; i < elements.size(); i++){
+		TextDims& dims = elements[i];
+		VTXs& pos = vtxs[i];
+
+		float t = top + dims.sizeY;
+		float b = top;
+		top = t;
+
+		Vec2 ul = {0, t};
+		Vec2 ur = {(float)dims.sizeX, t};
+		Vec2 ll = {0, b};
+		Vec2 lr = {(float)dims.sizeX, b};
+
+		pos = getTriangleList(ul, ur, ll, lr);
+
+		cDims.x = std::max(cDims.x, ul.x);
+		cDims.x = std::max(cDims.x, ur.x);
+		cDims.x = std::max(cDims.x, ll.x);
+		cDims.x = std::max(cDims.x, lr.x);
+
+		cDims.y = std::max(cDims.y, ul.y);
+		cDims.y = std::max(cDims.y, ur.y);
+		cDims.y = std::max(cDims.y, ll.y);
+		cDims.y = std::max(cDims.y, lr.y);
+	}
+
+	for(size_t i = 0 ; i < elements.size(); i++){
+		TextDims& dims = elements[i];
+		UVs& uv = uvs[i];
+		uv = calculateUvs(dims, image);
+	}
+
+	printf("offset: %zu Update Size: %zu\n", offset * sizeof(VTXs), elements.size() * sizeof(VTXs));
+	vtxBuffer.update((char *)vtxs, offset * sizeof(VTXs), elements.size() * sizeof(VTXs));
+	uvBuffer.update((char *)uvs, offset * sizeof(VTXs), elements.size() * sizeof(UVs));
+
+	return cDims;
+}
 
 class Text{
 public:
-	std::string text;
+	std::string str;
+	VulkanTexture *texture;
 	TextDims dims;
 };
 
-class TextCache {
-	Pen pen;
+class Page {
+public:
 	std::vector<Text> texts;
+	VulkanTexture texture;
+	Pen pen;
 
-	TextDims alloc(const char *text){
-		TextDims textDims = pen.draw(text);
-		texts.push_back({text, textDims});
-		return textDims;
+	Page(const VkDevice& device, VulkanPhysicalDevice& physicalDevice,
+		const VkQueue& graphicsQueue, int graphicsFamily, FreetypeFace& face, HarfbuzzFont& font)
+			:
+		texture(device, physicalDevice, graphicsQueue, graphicsFamily, 4096, 4096),
+		pen(texture.image, face, font)
+	{}
+
+	bool alloc(const char *str, Text& text){
+		TextDims textDims = pen.draw(str);
+		texts.push_back({str, &texture, textDims});
+		text = texts.back();
+		return true;
 	}
+
+	bool getText(const char *str, Text& text){
+		for(auto& cachedText : texts){
+			if(cachedText.str == str){
+				text = cachedText;
+				return true;
+			};
+		}
+
+		return false;
+	}
+};
+
+
+
+class TextCache {
+	std::vector<std::unique_ptr<Page>> pages;
+	const VkDevice& device;
+	VulkanPhysicalDevice& physicalDevice;
+	const VkQueue& graphicsQueue;
+	int graphicsFamily;
+	FreetypeFace& face;
+	HarfbuzzFont& font;
+
 
 public:
-	TextCache (VulkanTexture& texture, FreetypeFace& face, HarfbuzzFont& font) :
-		pen(texture.image, face, font){
-	}
+	TextCache (const VkDevice& device_, VulkanPhysicalDevice& physicalDevice_,
+			   const VkQueue& graphicsQueue_, int graphicsFamily_,FreetypeFace& face_, HarfbuzzFont& font_)
 
-	TextDims query(const char *text){
+		: device(device_), physicalDevice(physicalDevice_), graphicsQueue(graphicsQueue_),
+			graphicsFamily(graphicsFamily_), face(face_), font(font_)
+	{}
+
+	Text query(const char *text){
 		std::string str;
 		if(!text || text[0] == '\0'){
 			str = "(empty)";
@@ -172,11 +204,32 @@ public:
 			str = text;
 		}
 
-		for(auto& cachedText : texts){
-			if(cachedText.text == str) return cachedText.dims;
+		for(auto& page : pages){
+			Text t1;
+			if(page->getText(str.c_str(), t1)){
+				return t1;
+			}
+
+			if(page->alloc(str.c_str(), t1)){
+				return t1;
+			}
 		}
 
-		return alloc(str.c_str());
+		{
+			Text t1;
+
+			pages.emplace_back(std::make_unique<Page>(device, physicalDevice,
+				graphicsQueue, graphicsFamily, face, font));
+
+			pages.back()->alloc(str.c_str(), t1);
+			return t1;
+		}
+	}
+
+	void update(){
+		for(auto& page : pages){
+			page->texture.update();
+		}
 	}
 };
 
@@ -207,101 +260,292 @@ static void toHex(unsigned char (&in) [N], char (&out)[N * 2]){
 }
 
 class Menu {
+public:
 	Column left, right;
 
-	VulkanVtxBuffer vtxBuffer;
-	VulkanVtxBuffer uvBuffer;
-	VulkanDescriptorPoolExt descriptorPoolExt;
-	VulkanDescriptorSetExt descriptorSetExt;
-
-public:
-
-	Menu(VulkanDevice& device, VulkanPhysicalDevice& physicalDevice,
-		 VulkanTexture& textTexture, VulkanRenderer& renderer) :
-		vtxBuffer(device, physicalDevice, 4096),
-		uvBuffer(device, physicalDevice, 4096),
-		descriptorPoolExt(device, 2),
-		descriptorSetExt(device, physicalDevice, textTexture.textureView, renderer.sampler,
-			descriptorPoolExt, renderer.descriptorLayoutExt, 2
-		)
-	{
-
+	Menu(){
 	}
 
 	template<size_t N>
-	void addHex(TextCache& textCache, const char *leftString, unsigned char (&arr) [N]){
+	void addHex(const char *leftString, unsigned char (&arr) [N]){
 		char buf[N * 2 + 1];
 		toHex(arr, (char (&) [N*2])buf);
 		buf[N * 2] = '\0';
 
-		left.add(textCache.query(leftString));
-		right.add(textCache.query(buf));
+		left.add(leftString);
+		right.add(buf);
 	}
 
 	//automatic promotion
-	void add(TextCache& textCache, const char *leftString, UINT64 val){
+	void add(const char *leftString, UINT64 val){
 		char buf[std::numeric_limits<decltype(val)>::digits + 1];
 
 		snprintf(buf, sizeof(buf), "%ld", val);
 
-		left.add(textCache.query(leftString));
-		right.add(textCache.query(buf));
+		left.add(leftString);
+		right.add(buf);
 	}
 
-	void add(TextCache& textCache, const char *leftString, const char *rightString){
-		left.add(textCache.query(leftString));
-		right.add(textCache.query(rightString));
+	void add(const char *leftString, const char *rightString){
+		left.add(leftString);
+		right.add(rightString);
+	}
+};
+
+class TextPrep {
+public:
+	VTXs vtxs;
+	UVs uvs;
+	VulkanTexture *texture;
+
+	TextPrep(Text& text, const VTXs& vtxs_) :
+		vtxs(vtxs_),
+		uvs(calculateUvs(text.dims, text.texture->image)),
+		texture(text.texture)
+	{}
+};
+
+class TextPrepMat {
+public:
+	Matrix4x4f model;
+	std::vector<TextPrep> buffer;
+
+	TextPrepMat(std::vector<TextPrep> buffer_, Matrix4x4f model_) :
+		model(model_), buffer(buffer_)
+	{}
+};
+
+class TextBuffer{
+	TextPrep getTextPrep(float& top, TextCache& textCache, const std::string& element){
+		Text text = textCache.query(element.c_str());
+		auto& dims = text.dims;
+
+		float t = top + dims.sizeY;
+		float b = top;
+		top = t;
+
+		Vec2 ul = {0, t};
+		Vec2 ur = {(float)dims.sizeX, t};
+		Vec2 ll = {0, b};
+		Vec2 lr = {(float)dims.sizeX, b};
+
+		return {
+			text,
+			getTriangleList(ul, ur, ll, lr)
+		};
 	}
 
-	void updateUniforms(float scale){
-		Matrix4x4f model = Matrix4x4f::ident();
+public:
+	std::vector<TextPrepMat> buffer;
 
-		model.sx() *= scale;
-		model.sy() *= scale;
+	void add(TextCache& textCache, Menu& menu)
+	{
+		std::vector<TextPrep> left;
+		std::vector<TextPrep> right;
 
-		descriptorSetExt.updateModelMatrix(model, 0);
+		float top = 0;
 
-		model.tx() = 0.5;
+		for(auto & element : menu.left.elements){
+			left.push_back(getTextPrep(top, textCache, element.c_str()));
+		}
 
-		descriptorSetExt.updateModelMatrix(model, 1);
+		top = 0;
+
+		for(auto & element : menu.right.elements){
+			right.push_back(getTextPrep(top, textCache, element.c_str()));
+		}
+
+		assert(menu.left.elements.size() == menu.right.elements.size());
+
+		Dimensions dims;
+
+		for(auto& e : left)
+		{
+			for(auto& vtx : e.vtxs.vtxs){
+				dims.x = std::max(dims.x, vtx.x);
+				dims.y = std::max(dims.y, vtx.y);
+			}
+		}
+
+		for(auto& e : right)
+		{
+			for(auto& vtx : e.vtxs.vtxs){
+				dims.x = std::max(dims.x, vtx.x);
+				dims.y = std::max(dims.y, vtx.y);
+			}
+		}
+
+
+		{
+			float scale = getFittingScale(dims, {0.4, 1.0});
+
+			Matrix4x4f model = Matrix4x4f::ident();
+
+			model.sx() *= scale;
+			model.sy() *= scale;
+
+			buffer.push_back({left, model});
+
+			model.tx() += 0.4;
+
+			buffer.push_back({right, model});
+		}
 
 	}
+};
 
-	void prepare(VulkanTexture& textTexture){
+class Mapping {
+public:
+	VulkanTexture *texture;
+	Matrix4x4f matrix;
 
-		Dimensions lDims = left.calculate(vtxBuffer, uvBuffer, 0, textTexture.image);
-		float lScale = getFittingScale(lDims, {0.4, 1.0});
+	Mapping (VulkanTexture *texture_, Matrix4x4f matrix_)
+		: texture (texture_), matrix(matrix_){
+	}
 
-		Dimensions rDims = right.calculate(vtxBuffer, uvBuffer, left.elements.size(), textTexture.image);
-		float rScale = getFittingScale(rDims, {0.4, 1.0});
+	bool operator==(const Mapping& mapping){
+		return texture == mapping.texture
+			&& memcmp(matrix.getData(), mapping.matrix.getData(), sizeof(float) * 16) == 0;
+	}
+};
 
-		updateUniforms(std::min(lScale, rScale));
 
-		Matrix4x4f world = Matrix4x4f::ortho1To1();
-		descriptorSetExt.updateWorldMatrix(world);
-	};
+class MappingAssoc {
+public:
+	Mapping mapping;
+	std::vector<TextPrepMat> textPreps;
+
+	MappingAssoc(const Mapping& mapping_, const TextPrepMat& textPreps_)
+		: mapping(mapping_)
+	{
+		add(textPreps_);
+	}
+
+	bool operator==(const Mapping& mapping_){
+		return mapping == mapping_;
+	}
+
+	void add(const TextPrepMat& mat){
+		textPreps.push_back(mat);
+	}
+};
+
+class TextDisplayTable {
+public:
+	std::vector<MappingAssoc> map;
+
+	TextDisplayTable(std::vector<TextPrepMat>& buffer){
+		for(auto& e : buffer){
+			for(auto& e2 : e.buffer){
+				Mapping index {e2.texture, e.model};
+				const auto& it = std::find(map.begin(), map.end(), index);
+
+				if(it == map.end()){
+					map.push_back(
+						{{e2.texture, e.model}, e}
+					);
+				}
+				else{
+					it->add(e);
+				}
+			}
+		}
+	}
+};
+
+class RenderResource {
+public:
+	VulkanVtxBuffer vtxs;
+	VulkanVtxBuffer uvs;
+	VulkanDescriptorSetExt& descriptor;
+	int setIdx;
+	int renderCount;
+
+	RenderResource(VulkanDevice& device, VulkanPhysicalDevice& physicalDevice, const std::vector<Vec2>& vtxs_, const std::vector<Vec2>& uvs_, VulkanDescriptorSetExt& descriptor_, int setIdx_) :
+		vtxs(device, physicalDevice, vtxs_.size() * sizeof(Vec2)),
+		uvs(device, physicalDevice, uvs_.size() * sizeof(Vec2)),
+		descriptor(descriptor_),
+		setIdx(setIdx_),
+		renderCount(vtxs_.size())
+	{
+		vtxs.update((char *)vtxs_.data(), 0, vtxs_.size() * sizeof(Vec2));
+		uvs.update((char *)uvs_.data(), 0, uvs_.size() * sizeof(Vec2));
+	}
 
 	void render(VulkanRenderer& renderer, VulkanRenderBuffer& renderBuffer){
-		renderer.pipelineExt1to1->record(
-			renderBuffer, descriptorSetExt.get(0),
-			vtxBuffer, 0,
-			uvBuffer, 0,
-			left.getRenderCount()
-		);
+
 
 		renderer.pipelineExt1to1->record(
-			renderBuffer, descriptorSetExt.get(1),
-			vtxBuffer, left.getRenderSize(),
-			uvBuffer, left.getRenderSize(),
-			right.getRenderCount()
+			renderBuffer, descriptor.get(setIdx),
+			vtxs, 0,
+			uvs, 0,
+			renderCount
 		);
+	}
+};
+
+class TextDisplayList
+{
+	VulkanDescriptorPoolExt pool;
+	std::vector<std::unique_ptr<VulkanDescriptorSetExt>> descriptorSetExts;
+	std::vector<std::unique_ptr<RenderResource>> resources;
+
+public:
+	TextDisplayList(VulkanDevice& device, VulkanPhysicalDevice& physicalDevice,
+		VulkanSampler& sampler, VulkanDescriptorLayoutExt& layout, std::vector<MappingAssoc>& map)
+		: pool(device, map.size())
+	{
+		printf("sz %zu\n", map.size());
+
+		for(size_t i = 0; i < map.size(); i++){
+			auto& e = map[i];
+
+			descriptorSetExts.push_back(std::make_unique<VulkanDescriptorSetExt>(
+				device, physicalDevice, e.mapping.texture->textureView, sampler,
+				pool, layout, 1
+			));
+
+			auto& set = descriptorSetExts.back();
+			set->updateModelMatrix(e.mapping.matrix, 0);
+			set->updateWorldMatrix(Matrix4x4f::ortho1To1());
+
+			std::vector<Vec2> vtxs;
+			std::vector<Vec2> uvs;
+
+			for(size_t j = 0; j < e.textPreps.size(); j++){
+				for(auto& res : e.textPreps[j].buffer){
+					for (auto& vtxs_ : res.vtxs.vtxs) {
+						vtxs.push_back(vtxs_);
+					}
+
+					for (auto& uvs_ : res.uvs.uvs) {
+						uvs.push_back(uvs_);
+					}
+				}
+			}
+
+			resources.push_back(std::make_unique<RenderResource>(
+				device, physicalDevice, vtxs, uvs, *set, 0
+			));
+		}
 	}
 
 	void chainBuffers(std::vector<VulkanCmbBuffer *>& cmbBuffers){
-		cmbBuffers.push_back(&vtxBuffer);
-		cmbBuffers.push_back(&uvBuffer);
-		cmbBuffers.push_back(&descriptorSetExt.uniformBuffer);
+		for(auto & res : resources){
+			cmbBuffers.push_back(&(res->uvs));
+			cmbBuffers.push_back(&(res->vtxs));
+		}
+
+		for(auto & des : descriptorSetExts){
+			cmbBuffers.push_back(&(des->uniformBuffer));
+		}
 	};
+
+	void render(VulkanRenderer& renderer, VulkanRenderBuffer& renderBuffer){
+		for(auto & res : resources){
+			res->render(renderer, renderBuffer);
+		}
+	}
 };
 
 static void glLoop(
@@ -338,65 +582,72 @@ static void glLoop(
 		&scaler.context.glfwCtx.input
 	};
 
-	VulkanTexture textTexture(scaler.device, physicalDevice, scaler.device.graphicsQueue,
-		scaler.device.graphicsFamily, 4096, 4096);
+	TextCache textCache(scaler.device, physicalDevice, scaler.device.graphicsQueue,
+						scaler.device.graphicsFamily, freetypeFace, hbfont);
 
-	TextCache textCache(textTexture, freetypeFace, hbfont);
+	Menu menu;
 
-	Menu menu(scaler.device, scaler.physicalDevice, textTexture, scaler.renderer);
-	menu.add(textCache, "FDD 0: ", basename(cfg.fdd[0]));
-	menu.add(textCache, "FDD 1: ", basename(cfg.fdd[1]));
-	menu.add(textCache, "FDD 2: ", basename(cfg.fdd[2]));
-	menu.add(textCache, "FDD 3: ", basename(cfg.fdd[3]));
+	menu.add("FDD 0: ", basename(cfg.fdd[0]));
+	menu.add("FDD 1: ", basename(cfg.fdd[1]));
+	menu.add("FDD 2: ", basename(cfg.fdd[2]));
+	menu.add("FDD 3: ", basename(cfg.fdd[3]));
 
-	menu.add(textCache, "HDD 0: ", basename(cfg.sasihdd[0]));
-	menu.add(textCache, "HDD 1: ", basename(cfg.sasihdd[1]));
+	menu.add("HDD 0: ", basename(cfg.sasihdd[0]));
+	menu.add("HDD 1: ", basename(cfg.sasihdd[1]));
 
-	menu.add(textCache, "Font: ", basename(cfg.fontfile));
+	menu.add("Font: ", basename(cfg.fontfile));
 
-	menu.add(textCache, "BEEP_VOL: ", cfg.BEEP_VOL);
-	menu.add(textCache, "BG_COLOR: ", cfg.BG_COLOR);
-	menu.add(textCache, "FG_COLOR: ", cfg.FG_COLOR);
-	menu.add(textCache, "color16: ",  cfg.color16);
-	menu.add(textCache, "BTN_MODE: ", cfg.BTN_MODE);
-	menu.add(textCache, "LCD_MODE: ", cfg.LCD_MODE);
-	menu.add(textCache, "KEY_MODE: ", cfg.KEY_MODE);
+	menu.add("BEEP_VOL: ", cfg.BEEP_VOL);
+	menu.add("BG_COLOR: ", cfg.BG_COLOR);
+	menu.add("FG_COLOR: ", cfg.FG_COLOR);
+	menu.add("color16: ",  cfg.color16);
+	menu.add("BTN_MODE: ", cfg.BTN_MODE);
+	menu.add("LCD_MODE: ", cfg.LCD_MODE);
+	menu.add("KEY_MODE: ", cfg.KEY_MODE);
 
-	menu.add(textCache,    "model: ",       cfg.model);
-	menu.add(textCache,    "BTN_RAPID: ",   cfg.BTN_RAPID);
-	menu.add(textCache,    "DISPSYNC: ",    cfg.DISPSYNC);
-	menu.add(textCache,    "EXTMEM: ",      cfg.EXTMEM);
-	menu.add(textCache,    "ITF_WORK: ",    cfg.ITF_WORK);
-	menu.add(textCache,    "MOTOR: ",       cfg.MOTOR);
-	menu.addHex(textCache, "wait: ",        cfg.wait);
-	menu.add(textCache,    "PROTECTMEM: ",  cfg.PROTECTMEM);
-	menu.add(textCache,    "SOUND_SW: ",    cfg.SOUND_SW);
-	menu.add(textCache,    "vol_adpcm",     cfg.vol_adpcm);
-	menu.add(textCache,    "vol_fm",        cfg.vol_fm);
-	menu.add(textCache,    "vol_pcm",       cfg.vol_pcm);
-	menu.add(textCache,    "vol_rhythm",    cfg.vol_rhythm);
-	menu.add(textCache,    "vol_ssg",       cfg.vol_ssg);
-	menu.add(textCache,    "vol_ssg",       cfg.vol_ssg);
-	menu.addHex(textCache, "vol14",         cfg.vol14);
-	menu.add(textCache,    "usefd144",      cfg.usefd144);
-	menu.add(textCache,    "uPD72020",      cfg.uPD72020);
-	menu.add(textCache,    "spbopt",        cfg.spbopt);
+	menu.add("model: ",       cfg.model);
+	menu.add("BTN_RAPID: ",   cfg.BTN_RAPID);
+	menu.add("DISPSYNC: ",    cfg.DISPSYNC);
+	menu.add("EXTMEM: ",      cfg.EXTMEM);
+	menu.add("ITF_WORK: ",    cfg.ITF_WORK);
+	menu.add("MOTOR: ",       cfg.MOTOR);
+	menu.addHex("wait: ",     cfg.wait);
+	menu.add("PROTECTMEM: ",  cfg.PROTECTMEM);
+	menu.add("SOUND_SW: ",    cfg.SOUND_SW);
+	menu.add("vol_adpcm",     cfg.vol_adpcm);
+	menu.add("vol_fm",        cfg.vol_fm);
+	menu.add("vol_pcm",       cfg.vol_pcm);
+	menu.add("vol_rhythm",    cfg.vol_rhythm);
+	menu.add("vol_ssg",       cfg.vol_ssg);
+	menu.add("vol_ssg",       cfg.vol_ssg);
+	menu.addHex("vol14",      cfg.vol14);
+	menu.add("usefd144",      cfg.usefd144);
+	menu.add("uPD72020",      cfg.uPD72020);
+	menu.add("spbopt",        cfg.spbopt);
 
-	menu.prepare(textTexture);
+	TextBuffer textBuffer;
+	textBuffer.add(textCache, menu);
 
-	textTexture.textureDirty = true;
+	TextDisplayTable displayTable(textBuffer.buffer);
+
+	TextDisplayList displayList(
+		scaler.device, physicalDevice,
+		scaler.renderer.sampler,
+		scaler.renderer.descriptorLayoutExt,
+		displayTable.map
+	);
 
 	ViewPortMode mode = ViewPortMode::INTEGER;
 
 	std::vector<VulkanCmbBuffer *> cmbBuffers;
-	menu.chainBuffers(cmbBuffers);
+	displayList.chainBuffers(cmbBuffers);
+	textCache.update();
 
 	while(scaler.getWindowState() != WindowState::SHOULDCLOSE && !sfd.isTriggered()){
 		mainloop(&ctx);
 
 		if(scaler.renderingComplete()){
 			mainTexture.update();
-			textTexture.update();
 
 			renderBuffer = scaler.newRenderBuffer();
 			scaler.pollWindowEvents();
@@ -404,7 +655,7 @@ static void glLoop(
 			renderBuffer->begin(scaler.getRenderPass(), scaler.swapchain);
 
 			if(visualScreen == VisualScreen::CFG){
-				menu.render(scaler.renderer, *renderBuffer);
+				displayList.render(scaler.renderer, *renderBuffer);
 			}
 			else {
 				if(mode == ViewPortMode::ASPECT){
