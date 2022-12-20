@@ -1,10 +1,11 @@
 #include "vk/VKEngine.h"
 #include "vk/VKPhysicalDeviceEnumerations.h"
-#include "vk/VKDescriptorPoolExt.h"
 #include "vk/FreeFont.h"
+#include "vk/Displaylist.h"
 
 #include "np2.h"
 #include "loop.h"
+#include "text.h"
 #include "exception.h"
 #include "pccore.h"
 #include "Vertex.h"
@@ -31,35 +32,6 @@ static VulkanPhysicalDevice glPhysicalDeviceSelection(VulkanContext& engine){
 static const unsigned int pc98Width = 640;
 static const unsigned int pc98Height = 400;
 
-struct UVs {
-	Vec2 uvs[6];
-};
-
-struct VTXs{
-	Vec2 vtxs[6];
-};
-
-//TODO Change ll to bl // --
-UVs calculateUvs(TextDims& dims, Image& image){
-	Vec2 ll{(float)dims.startX / (float)image.width,
-			((float)dims.startY + (float)dims.sizeY) / (float)image.height};
-
-	Vec2 ul{(float)dims.startX / (float)image.width,
-			(float)dims.startY / (float)image.height};
-
-	Vec2 ur{((float)dims.startX + (float)dims.sizeX) / (float)image.width,
-			(float)dims.startY / (float)image.height};
-
-	Vec2 lr{((float)dims.startX + (float)dims.sizeX) / (float)image.width,
-			((float)dims.startY + (float)dims.sizeY) / (float)image.height};
-
-	return UVs {ll, ul, ur, ll, ur, lr};
-}
-
-VTXs getTriangleList(Vec2& ul, Vec2& ur, Vec2& ll, Vec2& lr){
-	return VTXs {ll, ul, ur, ll, ur, lr};
-}
-
 Vec2 posstatic[6] {
 	{-1.0, 1.0},  // lower left
 	{-1.0,-1.0},  // upper left
@@ -68,12 +40,6 @@ Vec2 posstatic[6] {
 	{-1.0, 1.0},  // lower left
 	{ 1.0,-1.0},  // upper right
 	{ 1.0, 1.0}   // lower right
-};
-
-class Dimensions {
-public:
-	float x = 0;
-	float y = 0;
 };
 
 class Column {
@@ -89,149 +55,7 @@ public:
 
 //Column
 
-Dimensions calculate(std::vector<TextDims>& elements, VulkanVtxBuffer& vtxBuffer, VulkanVtxBuffer& uvBuffer, size_t offset, Image& image){
-	Dimensions cDims = {0,0};
 
-	VTXs vtxs[elements.size()];
-	UVs uvs[elements.size()];
-
-	float top = 0;
-
-	for(size_t i = 0 ; i < elements.size(); i++){
-		TextDims& dims = elements[i];
-		VTXs& pos = vtxs[i];
-
-		float t = top + dims.sizeY;
-		float b = top;
-		top = t;
-
-		Vec2 ul = {0, t};
-		Vec2 ur = {(float)dims.sizeX, t};
-		Vec2 ll = {0, b};
-		Vec2 lr = {(float)dims.sizeX, b};
-
-		pos = getTriangleList(ul, ur, ll, lr);
-
-		cDims.x = std::max(cDims.x, ul.x);
-		cDims.x = std::max(cDims.x, ur.x);
-		cDims.x = std::max(cDims.x, ll.x);
-		cDims.x = std::max(cDims.x, lr.x);
-
-		cDims.y = std::max(cDims.y, ul.y);
-		cDims.y = std::max(cDims.y, ur.y);
-		cDims.y = std::max(cDims.y, ll.y);
-		cDims.y = std::max(cDims.y, lr.y);
-	}
-
-	for(size_t i = 0 ; i < elements.size(); i++){
-		TextDims& dims = elements[i];
-		UVs& uv = uvs[i];
-		uv = calculateUvs(dims, image);
-	}
-
-	printf("offset: %zu Update Size: %zu\n", offset * sizeof(VTXs), elements.size() * sizeof(VTXs));
-	vtxBuffer.update((char *)vtxs, offset * sizeof(VTXs), elements.size() * sizeof(VTXs));
-	uvBuffer.update((char *)uvs, offset * sizeof(VTXs), elements.size() * sizeof(UVs));
-
-	return cDims;
-}
-
-class Text{
-public:
-	std::string str;
-	VulkanTexture *texture;
-	TextDims dims;
-};
-
-class Page {
-public:
-	std::vector<Text> texts;
-	VulkanTexture texture;
-	Pen pen;
-
-	Page(const VkDevice& device, VulkanPhysicalDevice& physicalDevice,
-		const VkQueue& graphicsQueue, int graphicsFamily, FreetypeFace& face, HarfbuzzFont& font)
-			:
-		texture(device, physicalDevice, graphicsQueue, graphicsFamily, 4096, 4096),
-		pen(texture.image, face, font)
-	{}
-
-	bool alloc(const char *str, Text& text){
-		TextDims textDims = pen.draw(str);
-		texts.push_back({str, &texture, textDims});
-		text = texts.back();
-		return true;
-	}
-
-	bool getText(const char *str, Text& text){
-		for(auto& cachedText : texts){
-			if(cachedText.str == str){
-				text = cachedText;
-				return true;
-			};
-		}
-
-		return false;
-	}
-};
-
-
-
-class TextCache {
-	std::vector<std::unique_ptr<Page>> pages;
-	const VkDevice& device;
-	VulkanPhysicalDevice& physicalDevice;
-	const VkQueue& graphicsQueue;
-	int graphicsFamily;
-	FreetypeFace& face;
-	HarfbuzzFont& font;
-
-
-public:
-	TextCache (const VkDevice& device_, VulkanPhysicalDevice& physicalDevice_,
-			   const VkQueue& graphicsQueue_, int graphicsFamily_,FreetypeFace& face_, HarfbuzzFont& font_)
-
-		: device(device_), physicalDevice(physicalDevice_), graphicsQueue(graphicsQueue_),
-			graphicsFamily(graphicsFamily_), face(face_), font(font_)
-	{}
-
-	Text query(const char *text){
-		std::string str;
-		if(!text || text[0] == '\0'){
-			str = "(empty)";
-		}
-		else {
-			str = text;
-		}
-
-		for(auto& page : pages){
-			Text t1;
-			if(page->getText(str.c_str(), t1)){
-				return t1;
-			}
-
-			if(page->alloc(str.c_str(), t1)){
-				return t1;
-			}
-		}
-
-		{
-			Text t1;
-
-			pages.emplace_back(std::make_unique<Page>(device, physicalDevice,
-				graphicsQueue, graphicsFamily, face, font));
-
-			pages.back()->alloc(str.c_str(), t1);
-			return t1;
-		}
-	}
-
-	void update(){
-		for(auto& page : pages){
-			page->texture.update();
-		}
-	}
-};
 
 static float getFittingScale(const Dimensions& in, const Dimensions& limits){
 
@@ -292,29 +116,6 @@ public:
 	}
 };
 
-class TextPrep {
-public:
-	VTXs vtxs;
-	UVs uvs;
-	VulkanTexture *texture;
-
-	TextPrep(Text& text, const VTXs& vtxs_) :
-		vtxs(vtxs_),
-		uvs(calculateUvs(text.dims, text.texture->image)),
-		texture(text.texture)
-	{}
-};
-
-class TextPrepMat {
-public:
-	Matrix4x4f model;
-	std::vector<TextPrep> buffer;
-
-	TextPrepMat(std::vector<TextPrep> buffer_, Matrix4x4f model_) :
-		model(model_), buffer(buffer_)
-	{}
-};
-
 class TextBuffer{
 	TextPrep getTextPrep(float& top, TextCache& textCache, const std::string& element){
 		Text text = textCache.query(element.c_str());
@@ -330,7 +131,8 @@ class TextBuffer{
 		Vec2 lr = {(float)dims.sizeX, b};
 
 		return {
-			text,
+			text.texture,
+			text.dims,
 			getTriangleList(ul, ur, ll, lr)
 		};
 	}
@@ -391,160 +193,6 @@ public:
 			buffer.push_back({right, model});
 		}
 
-	}
-};
-
-class Mapping {
-public:
-	VulkanTexture *texture;
-	Matrix4x4f matrix;
-
-	Mapping (VulkanTexture *texture_, Matrix4x4f matrix_)
-		: texture (texture_), matrix(matrix_){
-	}
-
-	bool operator==(const Mapping& mapping){
-		return texture == mapping.texture
-			&& memcmp(matrix.getData(), mapping.matrix.getData(), sizeof(float) * 16) == 0;
-	}
-};
-
-
-class MappingAssoc {
-public:
-	Mapping mapping;
-	std::vector<TextPrepMat> textPreps;
-
-	MappingAssoc(const Mapping& mapping_, const TextPrepMat& textPreps_)
-		: mapping(mapping_)
-	{
-		add(textPreps_);
-	}
-
-	bool operator==(const Mapping& mapping_){
-		return mapping == mapping_;
-	}
-
-	void add(const TextPrepMat& mat){
-		textPreps.push_back(mat);
-	}
-};
-
-class TextDisplayTable {
-public:
-	std::vector<MappingAssoc> map;
-
-	TextDisplayTable(std::vector<TextPrepMat>& buffer){
-		for(auto& e : buffer){
-			for(auto& e2 : e.buffer){
-				Mapping index {e2.texture, e.model};
-				const auto& it = std::find(map.begin(), map.end(), index);
-
-				if(it == map.end()){
-					map.push_back(
-						{{e2.texture, e.model}, e}
-					);
-				}
-				else{
-					it->add(e);
-				}
-			}
-		}
-	}
-};
-
-class RenderResource {
-public:
-	VulkanVtxBuffer vtxs;
-	VulkanVtxBuffer uvs;
-	VulkanDescriptorSetExt& descriptor;
-	int setIdx;
-	int renderCount;
-
-	RenderResource(VulkanDevice& device, VulkanPhysicalDevice& physicalDevice, const std::vector<Vec2>& vtxs_, const std::vector<Vec2>& uvs_, VulkanDescriptorSetExt& descriptor_, int setIdx_) :
-		vtxs(device, physicalDevice, vtxs_.size() * sizeof(Vec2)),
-		uvs(device, physicalDevice, uvs_.size() * sizeof(Vec2)),
-		descriptor(descriptor_),
-		setIdx(setIdx_),
-		renderCount(vtxs_.size())
-	{
-		vtxs.update((char *)vtxs_.data(), 0, vtxs_.size() * sizeof(Vec2));
-		uvs.update((char *)uvs_.data(), 0, uvs_.size() * sizeof(Vec2));
-	}
-
-	void render(VulkanRenderer& renderer, VulkanRenderBuffer& renderBuffer){
-
-
-		renderer.pipelineExt1to1->record(
-			renderBuffer, descriptor.get(setIdx),
-			vtxs, 0,
-			uvs, 0,
-			renderCount
-		);
-	}
-};
-
-class TextDisplayList
-{
-	VulkanDescriptorPoolExt pool;
-	std::vector<std::unique_ptr<VulkanDescriptorSetExt>> descriptorSetExts;
-	std::vector<std::unique_ptr<RenderResource>> resources;
-
-public:
-	TextDisplayList(VulkanDevice& device, VulkanPhysicalDevice& physicalDevice,
-		VulkanSampler& sampler, VulkanDescriptorLayoutExt& layout, std::vector<MappingAssoc>& map)
-		: pool(device, map.size())
-	{
-		printf("sz %zu\n", map.size());
-
-		for(size_t i = 0; i < map.size(); i++){
-			auto& e = map[i];
-
-			descriptorSetExts.push_back(std::make_unique<VulkanDescriptorSetExt>(
-				device, physicalDevice, e.mapping.texture->textureView, sampler,
-				pool, layout, 1
-			));
-
-			auto& set = descriptorSetExts.back();
-			set->updateModelMatrix(e.mapping.matrix, 0);
-			set->updateWorldMatrix(Matrix4x4f::ortho1To1());
-
-			std::vector<Vec2> vtxs;
-			std::vector<Vec2> uvs;
-
-			for(size_t j = 0; j < e.textPreps.size(); j++){
-				for(auto& res : e.textPreps[j].buffer){
-					for (auto& vtxs_ : res.vtxs.vtxs) {
-						vtxs.push_back(vtxs_);
-					}
-
-					for (auto& uvs_ : res.uvs.uvs) {
-						uvs.push_back(uvs_);
-					}
-				}
-			}
-
-			resources.push_back(std::make_unique<RenderResource>(
-				device, physicalDevice, vtxs, uvs, *set, 0
-			));
-		}
-	}
-
-	void chainBuffers(std::vector<VulkanCmbBuffer *>& cmbBuffers){
-		for(auto & res : resources){
-			cmbBuffers.push_back(&(res->uvs));
-			cmbBuffers.push_back(&(res->vtxs));
-		}
-
-		for(auto & des : descriptorSetExts){
-			cmbBuffers.push_back(&(des->uniformBuffer));
-		}
-	};
-
-	void render(VulkanRenderer& renderer, VulkanRenderBuffer& renderBuffer){
-		for(auto & res : resources){
-			res->render(renderer, renderBuffer);
-		}
 	}
 };
 

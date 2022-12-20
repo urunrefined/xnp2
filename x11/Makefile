@@ -205,6 +205,7 @@ SRC_C = \
 SRC_CPP = \
                 ./../x11/main.cpp                                   \
 		./../x11/loop.cpp                                   \
+		./../x11/text.cpp                                   \
 		./../x11/inicfg.cpp                                 \
 		./../x11/exception.cpp                              \
 		./../x11/pccorecallbacks.cpp                        \
@@ -263,6 +264,7 @@ SRC_CPP = \
 		./../x11/vk/VKDescriptorPoolExt.cpp                 \
 		./../x11/vk/VKCommandBuffer.cpp                     \
 		./../x11/vk/VKTexture.cpp                           \
+		./../x11/vk/Displaylist.cpp                         \
 		./../x11/vk/FreeFont.cpp                            \
 		./../x11/vk/Image.cpp                               \
 		./../x11/vk/Vertex.cpp                              \
