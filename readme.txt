@@ -60,3 +60,13 @@ However, please note because of a hen/egg problem
 you need to use the commit _after_ the release tag, as the archive on
 github is only created (and the sha only calculated) after the git tag has
 already been placed, due to the PKGBUILD file being inside the repo itself.
+
+
+The config locations have changed.
+~.np2/res/ will be used if an artifact has a relative filename
+~.np2/config contains all config files which can be given at the cmdline as a relative path
+~.np2/config will also contain all other stuff pertaining to this config,
+such as savestates (not working yet)
+
+To show which configs are available use "xnp2 -l" or "xnp2 --listconfig"
+To create a new config use "xnp2 -n" or "xnp2 --newconfig" (can't contain '/')
