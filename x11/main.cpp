@@ -213,9 +213,9 @@ static void go(int argc, char *argv[]){
 	std::string configDir = discoverConfigDir(xnp2Dir);
 	std::string artifactDir = discoverArtifactDir(xnp2Dir);
 
-	printf("xnp2dir: %s\n", xnp2Dir.c_str());
-	printf("configdir: %s\n", configDir.c_str());
-	printf("artifactDir: %s\n", artifactDir.c_str());
+	printf("xnp2 directory:     %s\n", xnp2Dir.c_str());
+	printf("config directory:   %s\n", configDir.c_str());
+	printf("artifact directory: %s\n", artifactDir.c_str());
 
 	createIfNoExist(xnp2Dir);
 	createIfNoExist(configDir);
@@ -282,7 +282,7 @@ static void go(int argc, char *argv[]){
 		return;
 	}
 
-	file_setcd(artifactDir.c_str());
+	file_setcd((artifactDir + "/") .c_str());
 
 	rand_setseed((SINT32)time(NULL));
 	keystat_initialize();
