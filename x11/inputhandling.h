@@ -17,7 +17,7 @@ enum class VisualScreen : uint8_t {
 };
 
 namespace BR {
-	void handleInput(Input& input, ViewPortMode& mode, VisualScreen& showLog);
+	void handleInput(Input& input, ViewPortMode& mode, VisualScreen& showLog, void *soundRef);
 }
 
 #endif // INPUTHANDLING_H

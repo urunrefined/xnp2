@@ -3,6 +3,8 @@
 #include "vk/FreeFont.h"
 #include "vk/Displaylist.h"
 
+#include "pulse/PulseSoundEngine.h"
+
 #include "np2.h"
 #include "loop.h"
 #include "text.h"
@@ -202,6 +204,7 @@ static void glLoop(
 		VulkanPhysicalDevice& physicalDevice,
 		HarfbuzzFont& hbfont,
 		FreetypeFace& freetypeFace,
+		Sfx::PulseSoundEngine& soundEngine,
 		NP2CFG& cfg,
 		NP2OSCFG& oscfg)
 {
@@ -292,7 +295,7 @@ static void glLoop(
 	textCache.update();
 
 	while(scaler.getWindowState() != WindowState::SHOULDCLOSE && !sfd.isTriggered()){
-		mainloop(&ctx);
+		mainloop(&ctx, &soundEngine);
 
 		if(scaler.renderingComplete()){
 			mainTexture.update();
@@ -326,7 +329,7 @@ static void glLoop(
 
 		GLFWInput& input = engine.glfwCtx.getInput();
 
-		handleInput(input, mode, visualScreen);
+		handleInput(input, mode, visualScreen, &soundEngine);
 
 		input.reset();
 	}
@@ -339,7 +342,8 @@ static void glLoop(
 void loop(
 		SignalFD& sfd,
 		NP2CFG& cfg,
-		NP2OSCFG& oscfg
+		NP2OSCFG& oscfg,
+		Sfx::PulseSoundEngine& soundEngine
 ){
 	FontconfigLib lib;
 	FontList fontlist(lib);
@@ -358,7 +362,7 @@ void loop(
 #endif
 	VulkanPhysicalDevice physicalDevice = glPhysicalDeviceSelection(engine);
 
-	glLoop(sfd, engine, physicalDevice, hbfont, freetypeFace, cfg, oscfg);
+	glLoop(sfd, engine, physicalDevice, hbfont, freetypeFace, soundEngine, cfg, oscfg);
 }
 
 }

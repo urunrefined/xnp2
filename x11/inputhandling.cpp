@@ -145,7 +145,7 @@ T1 next(const T1& t1){
 	return (T1)((((int)t1) + 1)% (int)T1::END);
 }
 
-void handleInput(Input& input, ViewPortMode& viewPortMode, VisualScreen& visualScreen){
+void handleInput(Input& input, ViewPortMode& viewPortMode, VisualScreen& visualScreen, void *soundRef){
 	if(input.getButton(KeyButtons::KEY_SUPER)){
 		for(auto& keyEvent : input.keyEvents){
 			if(keyEvent.key == KeyButtons::KEY_E && keyEvent.state == PRESSED){
@@ -165,7 +165,7 @@ void handleInput(Input& input, ViewPortMode& viewPortMode, VisualScreen& visualS
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_I && keyEvent.state == PRESSED){
-				pccore_reset();
+				pccore_reset(soundRef);
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_K && keyEvent.state == PRESSED){

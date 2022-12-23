@@ -58,7 +58,7 @@ enum {
 
 void framereset();
 void processwait(UINT cnt);
-int mainloop(void *);
+int mainloop(void *graphics, void *soundRef);
 
 #ifdef __cplusplus
 }

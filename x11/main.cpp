@@ -23,6 +23,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "pulse/PulseSoundEngine.h"
 #include "compiler.h"
 
 #include "np2.h"
@@ -282,9 +283,12 @@ static void go(int argc, char *argv[]){
 	soundmng_initialize();
 	commng_initialize();
 
-	pccore_init();
+	BR::Sfx::PulseSoundEngine pulseEngine(np2cfg.samplingrate);
+
+	pccore_init(&pulseEngine);
+	pccore_reset(&pulseEngine);
+
 	S98_init();
-	pccore_reset();
 
 	for (int i = 0; i < 4; i++) {
 		if(strlen(np2cfg.fdd[i])){
@@ -293,7 +297,7 @@ static void go(int argc, char *argv[]){
 		}
 	}
 
-	BR::loop(sfd, np2cfg, np2oscfg);
+	BR::loop(sfd, np2cfg, np2oscfg, pulseEngine);
 
 	printf("Normal exit\n");
 

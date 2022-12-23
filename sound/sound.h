@@ -22,6 +22,7 @@ typedef struct {
 	UINT32	minclock;
 	UINT32	lastclock;
 	UINT	writecount;
+	void    *soundRef;
 } SOUNDCFG;
 
 
@@ -31,7 +32,7 @@ extern "C" {
 
 extern	SOUNDCFG	soundcfg;
 
-BRESULT sound_create(UINT rate, UINT ms);
+BRESULT sound_create(void *soundRef);
 void sound_destroy(void);
 
 void sound_reset(void);
@@ -39,9 +40,6 @@ void sound_changeclock(void);
 void sound_streamregist(void *hdl, SOUNDCB cbfn);
 
 void sound_sync(void);
-
-const SINT32 *sound_pcmlock(void);
-void sound_pcmunlock(const SINT32 *hdl);
 
 #if defined(SUPPORT_WAVEREC)
 BRESULT sound_recstart(const OEMCHAR *filename);

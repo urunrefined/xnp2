@@ -1,7 +1,7 @@
 INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I./../i386c
 INCEXT=-I/usr/include/SDL2 -I/usr/include/fontconfig -I/usr/include/freetype2 -I/usr/include/harfbuzz
 
-LDLIBS = -pthread -lSDL2 -lm -lglfw -lvulkan -lfontconfig -lharfbuzz -lfreetype
+LDLIBS = -pthread -lSDL2 -lm -lglfw -lvulkan -lfontconfig -lharfbuzz -lfreetype -lpulse
 
 #General flags
 CXXFLAGS = -Wall -Wextra -std=gnu++17 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
@@ -150,7 +150,6 @@ SRC_C = \
 		./../sound/psggenc.c                                \
 		./../sound/psggeng.c                                \
 		./../sound/rhythmc.c                                \
-		./../sound/sndcsec.c                                \
 		./../sound/tms3631c.c                               \
 		./../sound/tms3631g.c                               \
 		./../sound/vermouth/midiout.c                       \
@@ -210,6 +209,7 @@ SRC_CPP = \
 		./../x11/inputhandling.cpp                          \
 		./../x11/signalFD.cpp                               \
 		./../x11/soundmng.cpp                               \
+		./../x11/pulse/PulseSoundEngine.cpp                 \
 		./../x11/misc/threadbase.cpp                        \
 		./../x11/misc/tty.cpp                               \
 		./../x11/misc/usbdev.cpp                            \

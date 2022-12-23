@@ -78,12 +78,12 @@ processwait(UINT cnt)
 }
 
 int
-mainloop(void *graphics)
+mainloop(void *graphics, void *soundRef)
 {
 	/* auto skip */
 	if (waitcnt == 0) {
 		UINT cnt;
-		pccore_exec(graphics, framecnt == 0);
+		pccore_exec(graphics, framecnt == 0, soundRef);
 		framecnt++;
 		cnt = timing_getcount();
 		if (framecnt > cnt) {

@@ -8,12 +8,9 @@ extern "C" {
 #include "compiler.h"
 #include "common.h"
 
-UINT soundmng_create(UINT rate, UINT ms);
-void soundmng_destroy(void);
-void soundmng_reset(void);
-void soundmng_play(void);
-void soundmng_stop(void);
-void soundmng_sync(void);
+void soundmng_sync(void *soundRef, const SINT32 *pcm, size_t sz);
+void soundmng_tick(void *soundRef);
+UINT soundmng_getRate(void *soundRef);
 
 /*incr decr / should be between 0 and 1*/
 void soundmng_increaseVol(double incr);

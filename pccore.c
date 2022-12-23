@@ -30,7 +30,6 @@
 #include	"maketgrp.h"
 #include	"makegrph.h"
 #include	"makegrex.h"
-#include	"sound/sndcsec.h"
 #include	"sound.h"
 #include	"fmboard.h"
 #include	"beep.h"
@@ -157,15 +156,11 @@ static void pccore_set(const NP2CFG *pConfig)
 // --------------------------------------------------------------------------
 
 #if !defined(DISABLE_SOUND)
-static void sound_init(void)
+static void sound_init(void *soundRef)
 {
-	UINT rate;
+	UINT rate = soundmng_getRate(soundRef);
+	sound_create(soundRef);
 
-	rate = np2cfg.samplingrate;
-	if (sound_create(rate, np2cfg.delayms) != SUCCESS)
-	{
-		rate = 0;
-	}
 	fddmtrsnd_initialize(rate);
 	beep_initialize(rate);
 	beep_setvol(np2cfg.BEEP_VOL);
@@ -188,8 +183,6 @@ static void sound_init(void)
 }
 
 static void sound_term(void) {
-
-	soundmng_stop();
 	amd98_deinitialize();
 	rhythm_deinitialize();
 	beep_deinitialize();
@@ -201,12 +194,9 @@ static void sound_term(void) {
 /**
  * Initialize
  */
-void pccore_init(void)
+void pccore_init(void *soundRef)
 {
 	CPU_INITIALIZE();
-
-	SNDCSEC_INIT;
-	SNDCSEC_ENTER;
 
 	pal_initlcdtable();
 	pal_makelcdpal();
@@ -223,7 +213,7 @@ void pccore_init(void)
 
 #if !defined(DISABLE_SOUND)
 	fmboard_construct();
-	sound_init();
+	sound_init(soundRef);
 #endif	/* !defined(DISABLE_SOUND) */
 
 	rs232c_construct();
@@ -236,7 +226,6 @@ void pccore_init(void)
 	hostdrv_initialize();
 #endif
 
-	SNDCSEC_LEAVE;
 }
 
 /**
@@ -244,7 +233,6 @@ void pccore_init(void)
  */
 void pccore_term(void)
 {
-	SNDCSEC_ENTER;
 
 #if defined(SUPPORT_HOSTDRV)
 	hostdrv_deinitialize();
@@ -270,8 +258,6 @@ void pccore_term(void)
 
 	CPU_DEINITIALIZE();
 
-	SNDCSEC_LEAVE;
-	SNDCSEC_TERM;
 }
 
 
@@ -302,19 +288,16 @@ void pccore_cfgupdate(void) {
 /**
  * Reset the virtual machine
  */
-void pccore_reset(void) {
+void pccore_reset(void *soundRef) {
 
 	int		i;
 	BOOL	epson;
 
-	SNDCSEC_ENTER;
-
-	soundmng_stop();
 #if !defined(DISABLE_SOUND)
 	if (soundrenewal) {
 		soundrenewal = 0;
 		sound_term();
-		sound_init();
+		sound_init(soundRef);
 	}
 #endif
 	ZeroMemory(mem, 0x110000);
@@ -400,9 +383,6 @@ void pccore_reset(void) {
 #endif
 
 	timing_reset();
-	soundmng_play();
-
-	SNDCSEC_LEAVE;
 }
 
 static void drawscreen(void *graphics) {
@@ -591,15 +571,12 @@ void pccore_postevent(UINT32 event) {	// yet!
 	(void)event;
 }
 
-void pccore_exec(void *graphics, BOOL draw) {
+void pccore_exec(void *graphics, BOOL draw, void *soundRef) {
 
 	pcstat.drawframe = (UINT8)draw;
 //	keystat_sync();
-	soundmng_sync();
 	mouseif_sync(graphics);
 	pal_eventclear();
-
-	SNDCSEC_ENTER;
 
 	gdc.vsync = 0;
 	pcstat.screendispflag = 1;
@@ -641,13 +618,12 @@ void pccore_exec(void *graphics, BOOL draw) {
 	calendar_inc();
 	S98_sync();
 	sound_sync();
-
-	SNDCSEC_LEAVE;
+	soundmng_tick(soundRef);
 
 	if (pcstat.hardwarereset) {
 		pcstat.hardwarereset = FALSE;
 		pccore_cfgupdate();
-		pccore_reset();
+		pccore_reset(soundRef);
 	}
 
 	pccore.frames++;
