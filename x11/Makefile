@@ -14,8 +14,6 @@ SRC_C = \
 		./../x11/trace.c                                    \
 		./../x11/cmmidi.c                                   \
 		./../x11/cmserial.c                                 \
-		./../x11/drawmng.c                                  \
-		./../x11/fontmng.c                                  \
 		./../x11/commng.c                                   \
 		./../x11/timemng.c                                  \
 		./../pccore.c                                       \

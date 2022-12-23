@@ -50,12 +50,8 @@
 
 #include <stdexcept>
 
-static const char appname[] = "np2";
 static const char ini_title[] = "NekoProjectII_Katze";
 
-/*
- * option
- */
 static struct option longopts[] = {
 	{ "config",     required_argument, 0,  'c' },
 	{ "newconfig",  required_argument, 0,  'n' },
@@ -268,9 +264,6 @@ static void go(int argc, char *argv[]){
 		usage(progName.c_str());
 		return;
 	}
-
-	//discoverSavFile(modulefile, statpath);
-	//Config should have been selected
 
 	printf("Use config %s\n", configFile.c_str());
 
