@@ -337,6 +337,8 @@ static void glLoop(
 	while(!scaler.renderingComplete()){
 		usleep(1000);
 	}
+
+	vkDeviceWaitIdle(scaler.device);
 }
 
 void loop(
