@@ -8,8 +8,8 @@ extern "C" {
 #include "compiler.h"
 #include "common.h"
 
-void soundmng_sync(void *soundRef, const SINT32 *pcm, size_t sz);
-void soundmng_tick(void *soundRef);
+void soundmng_sync(void *soundRef, int index, const SINT32 *pcm, size_t sz);
+void soundmng_addStream(const void *soundRef, const char *name, int index);
 UINT soundmng_getRate(void *soundRef);
 
 /*incr decr / should be between 0 and 1*/
@@ -19,6 +19,7 @@ void soundmng_toggleMute(void);
 
 BRESULT soundmng_initialize(void);
 void soundmng_deinitialize(void);
+void soundmng_reset(void *soundRef);
 
 
 #ifdef __cplusplus

@@ -284,6 +284,7 @@ static void go(int argc, char *argv[]){
 	commng_initialize();
 
 	BR::Sfx::PulseSoundEngine pulseEngine(np2cfg.samplingrate);
+	Thread thread(pulseEngine);
 
 	pccore_init(&pulseEngine);
 	pccore_reset(&pulseEngine);
@@ -328,6 +329,9 @@ main(int argc, char *argv[])
 	catch(BR::CException& ex){
 		printf("np2 C lib exception thrown [%s] errno [%d, %s]\n",
 			ex.msg, ex.osErrno, strerror(ex.osErrno));
+	}
+	catch(const char *ex){
+		printf("np2 exception thrown [%s]\n", ex);
 	}
 
 	catch(std::exception& ex){

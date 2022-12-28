@@ -21,7 +21,6 @@ typedef struct {
 	UINT32	clockbase;
 	UINT32	minclock;
 	UINT32	lastclock;
-	UINT	writecount;
 	void    *soundRef;
 } SOUNDCFG;
 

@@ -1,53 +1,9 @@
 #include "PulseSoundEngine.h"
-#include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
 
 namespace BR {
 namespace Sfx {
-
-/* This is called whenever new data may be written to the stream */
-static void stream_write_callback(pa_stream *s, size_t length, void *userdata)
-{
-	assert(userdata);
-	(void) s;
-
-	PulseSoundEngine *pa = (PulseSoundEngine *) userdata;
-
-	pa->samplesPossibleToWrite = length / sizeof(int16_t);
-}
-
-/* This routine is called whenever the stream state changes */
-static void stream_state_callback(pa_stream *s, void *userdata)
-{
-	assert(userdata);
-	PulseStream *pa = (PulseStream *) userdata;
-
-	switch (pa_stream_get_state(s)) {
-		case PA_STREAM_CREATING:
-			printf("PA_STREAM_CREATING\n");
-			break;
-
-		case PA_STREAM_TERMINATED:
-			pa->streamState = PulseStream::StreamState::STATE_STREAM_FINISHED;
-			printf("PA_STREAM_TERMINATED\n");
-			break;
-
-		case PA_STREAM_READY:
-			pa->streamState = PulseStream::StreamState::STATE_STREAM_CONNECTED;
-			printf("PA_STREAM_READY\n");
-			break;
-
-		case PA_STREAM_FAILED:
-			pa->streamState = PulseStream::StreamState::STATE_STREAM_FAILED;
-			printf("PA_STREAM_FAILED\n");
-			break;
-
-		default:
-			printf("PA_STREAM_UNKNOWN\n");
-			break;
-	}
-}
 
 static void context_state_cb(pa_context* c, void* userdata)
 {
@@ -70,15 +26,6 @@ static void context_state_cb(pa_context* c, void* userdata)
 
 		case PA_CONTEXT_READY: {
             printf("PA_CONTEXT_READY\n");
-
-			pa_sample_spec sample_spec = {PA_SAMPLE_S16LE, pa->sampleRate, 2};
-			pa_buffer_attr buffer_attr = {4096 * sizeof(int16_t), (uint32_t)-1, 1, (uint32_t)-1, (uint32_t)-1};
-
-			pa->pulseStream.stream = pa_stream_new(pa->context, "Audio", &sample_spec, nullptr);
-
-			pa_stream_set_state_callback(pa->pulseStream.stream, stream_state_callback, pa->pulseStream.stream);
-			pa_stream_set_write_callback(pa->pulseStream.stream, stream_write_callback, userdata);
-			pa_stream_connect_playback(pa->pulseStream.stream, nullptr, &buffer_attr, PA_STREAM_NOFLAGS, nullptr, nullptr);
 
 			pa->serverState = PulseSoundEngine::ServerState::STATE_SERVER_CONNECTED;
             }
@@ -127,7 +74,7 @@ PulseSoundEngine::PulseSoundEngine(u_int32_t sampleRate_) : sampleRate(sampleRat
 
 	//Init Server
 	while(1){
-		if(pa_mainloop_prepare(m, 100) < 0) break;
+		if(pa_mainloop_prepare(m, 1) < 0) break;
 		if(pa_mainloop_poll(m) < 0) break;
 		if(pa_mainloop_dispatch(m) < 0) break;
 
@@ -139,36 +86,176 @@ PulseSoundEngine::PulseSoundEngine(u_int32_t sampleRate_) : sampleRate(sampleRat
 	}
 }
 
-bool PulseSoundEngine::tick(){
-	if(pa_mainloop_prepare(m, 0) < 0) return false;
-	if(pa_mainloop_poll(m) < 0) return false;
-	if(pa_mainloop_dispatch(m) < 0) return false;
+size_t PulseSoundEngine::add(int index, int16_t *buf, size_t count){
+	LockGuard guard(mutex);
+	for(auto& stream : streams){
+		if(stream->index == index){
+			return stream->add(buf, count);
+		}
+	}
 
-	return true;
+	return 0;
 }
 
-size_t PulseSoundEngine::add(int16_t *buf, size_t count){
-	//printf("Count %zu, Possible %zu", count, samplesPossibleToWrite);
+void PulseSoundEngine::reset(){
+	LockGuard guard(mutex);
+	streams.clear();
+}
 
-	if(count > samplesPossibleToWrite){
-		count = samplesPossibleToWrite;
+void PulseSoundEngine::addStream(const char *name, int index){
+	LockGuard guard(mutex);
+	streams.push_back(std::make_unique<PulseStream>(m, name, index, sampleRate, context));
+}
+
+void PulseSoundEngine::run() {
+	while(1){
+		{
+			if(finished) break;
+
+			LockGuard guard(mutex);
+
+			pa_mainloop_prepare(m, 0);
+			pa_mainloop_poll(m);
+			pa_mainloop_dispatch(m);
+
+			for(auto &stream : streams){
+				LockGuard guard(stream->mutex);
+
+				int16_t buf [stream->samplesPossibleToWrite];
+				int count = stream->circleBuffer.getData(buf, stream->samplesPossibleToWrite);
+
+				if(count){
+					stream->samplesPossibleToWrite -= count;
+					pa_stream_write(stream->stream, buf, count * sizeof(int16_t), nullptr, 0, PA_SEEK_RELATIVE);
+				}
+			}
+
+		}
+
+		usleep(10000);
 	}
+}
 
-	if(count){
-		samplesPossibleToWrite -= count;
-		pa_stream_write(pulseStream.stream, buf, count * sizeof(int16_t), nullptr, 0, PA_SEEK_RELATIVE);
-	}
-
-	return count;
+void PulseSoundEngine::finish() {
+	LockGuard guard(mutex);
+	finished = 1;
 }
 
 PulseSoundEngine::~PulseSoundEngine()
 {
+	streams.clear();
+
 	pa_mainloop_quit(m, 0);
 	pa_mainloop_run(m, 0);
 	pa_mainloop_free(m);
 
 	printf("Pulse exit\n");
+}
+
+/* This is called whenever new data may be written to the stream */
+static void stream_write_callback(pa_stream *s, size_t length, void *userdata)
+{
+	assert(userdata);
+	(void) s;
+
+	PulseStream *ps = (PulseStream *) userdata;
+
+	LockGuard guard(ps->mutex);
+
+	ps->samplesPossibleToWrite = length / sizeof(int16_t);
+}
+
+/* This routine is called whenever the stream state changes */
+static void stream_state_callback(pa_stream *s, void *userdata)
+{
+	assert(userdata);
+	PulseStream *pa = (PulseStream *) userdata;
+
+	LockGuard guard(pa->mutex);
+
+	switch (pa_stream_get_state(s)) {
+		case PA_STREAM_CREATING:
+			printf("PA_STREAM_CREATING\n");
+			break;
+
+		case PA_STREAM_TERMINATED:
+			pa->streamState = PulseStream::StreamState::STATE_STREAM_FINISHED;
+			printf("PA_STREAM_TERMINATED\n");
+			break;
+
+		case PA_STREAM_READY:
+			pa->streamState = PulseStream::StreamState::STATE_STREAM_CONNECTED;
+			printf("PA_STREAM_READY\n");
+			break;
+
+		case PA_STREAM_FAILED:
+			pa->streamState = PulseStream::StreamState::STATE_STREAM_FAILED;
+			printf("PA_STREAM_FAILED\n");
+			break;
+
+		default:
+			printf("PA_STREAM_UNKNOWN\n");
+			break;
+	}
+}
+
+
+size_t PulseStream::add(int16_t *buf, size_t count){
+	LockGuard guard (mutex);
+	return circleBuffer.addData(buf, count);
+}
+
+PulseStream::PulseStream(pa_mainloop* m_, const char *name_, int index_, uint32_t sampleRate, pa_context *context)
+	: m(m_), circleBuffer(sampleRate), name(name_), index(index_){
+
+	pa_sample_spec sample_spec = {PA_SAMPLE_S16LE, sampleRate, 2};
+
+	double latency = 0.2;
+	double maxSamples = latency * (double) sampleRate;
+
+	printf("Samples %u, %s, latency: %fs maxSamples: %f\n", sampleRate, name.c_str(), latency, maxSamples);
+
+	pa_buffer_attr buffer_attr = {(uint32_t) maxSamples, (uint32_t)maxSamples, (uint32_t)-1, (uint32_t)-1, (uint32_t)-1};
+
+	stream = pa_stream_new(context, name.c_str(), &sample_spec, nullptr);
+	pa_stream_set_state_callback(stream, stream_state_callback, this);
+	pa_stream_set_write_callback(stream, stream_write_callback, this);
+	pa_stream_connect_playback(stream, nullptr, &buffer_attr, PA_STREAM_NOFLAGS, nullptr, nullptr);
+
+	//Wait for connect
+	while(1){
+		if(pa_mainloop_prepare(m, 1) < 0) break;
+		if(pa_mainloop_poll(m) < 0) break;
+		if(pa_mainloop_dispatch(m) < 0) break;
+
+		if(streamState != StreamState::STATE_STREAM_INIT && streamState != StreamState::STATE_STREAM_NONE) {
+			break;
+		}
+	}
+
+	if(streamState != StreamState::STATE_STREAM_CONNECTED){
+		printf("Could not init PA Stream\n");
+		throw "Could not init PA Stream";
+	}
+
+	printf("Pulse created\n");
+}
+
+PulseStream::~PulseStream(){
+	pa_stream_disconnect(stream);
+
+	while(1){
+		{
+			if(pa_mainloop_prepare(m, 1) < 0) break;
+			if(pa_mainloop_poll(m) < 0) break;
+			if(pa_mainloop_dispatch(m) < 0) break;
+
+			LockGuard guard(mutex);
+			if(streamState == StreamState::STATE_STREAM_FINISHED) break;
+		}
+
+		sched_yield();
+	}
 }
 
 } //Sfx

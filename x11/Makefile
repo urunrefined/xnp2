@@ -210,6 +210,7 @@ SRC_CPP = \
 		./../x11/signalFD.cpp                               \
 		./../x11/soundmng.cpp                               \
 		./../x11/pulse/PulseSoundEngine.cpp                 \
+		./../x11/pulse/Thread.cpp                           \
 		./../x11/misc/threadbase.cpp                        \
 		./../x11/misc/tty.cpp                               \
 		./../x11/misc/usbdev.cpp                            \

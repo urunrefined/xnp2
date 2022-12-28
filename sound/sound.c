@@ -11,7 +11,6 @@
 #include "beep.h"
 #include "soundmng.h"
 #include "trace.h"
-#include "_memory.h"
 
 SOUNDCFG	soundcfg;
 
@@ -32,62 +31,44 @@ typedef struct tagSndCallback CBTBL;			/*!< Define */
  */
 struct tagSndStream
 {
-	SINT32	*buffer;
-	SINT32	*ptr;
-	UINT	samples;
-	UINT	reserve;
-	UINT	remain;
-	CBTBL	*cbreg;
+	size_t  cur;
 	CBTBL	cb[STREAM_CBMAX];
 };
 typedef struct tagSndStream SNDSTREAM;			/*!< Define */
-typedef struct tagSndStream *PSNDSTREAM;		/*!< Define */
 
 static	SNDSTREAM	s_sndstream;
-
-/**
- * Reset
- * @param[in] sndstream The instance
- */
-static void streamreset(PSNDSTREAM sndstream)
-{
-	sndstream->ptr = sndstream->buffer;
-	sndstream->remain = sndstream->samples + sndstream->reserve;
-	sndstream->cbreg = sndstream->cb;
-}
 
 /**
  * Prepare
  * @param[in] sndstream The instance
  * @param[in] samples The samples
  */
-static UINT streamprepare(PSNDSTREAM sndstream, UINT samples)
+void streamprepare(const SNDSTREAM sndstream, UINT samples)
 {
-	CBTBL	*cb;
-	UINT	count;
+	UINT count = min(44100, samples);
 
-	count = min(sndstream->remain, samples);
-	if (count)
-	{
-		memset(sndstream->ptr, 0, count * 2 * sizeof(SINT32));
-		for (cb = sndstream->cb; cb < sndstream->cbreg; cb++)
-		{
-			cb->cbfn(cb->hdl, sndstream->ptr, count);
+	if (count){
+		for (size_t i = 0; i < sndstream.cur; i++){
+			SINT32 buffer [count * 2];
+			memset(buffer, 0, count * 2 * sizeof(SINT32));
+			sndstream.cb[i].cbfn(sndstream.cb[i].hdl, buffer, count);
+			soundmng_sync(soundcfg.soundRef, i, buffer, count * 2);
 		}
-		sndstream->ptr += count * 2;
-		sndstream->remain -= count;
-	}
 
-	return count * 2;
+		//SINT32 buffer [count * 2];
+		//memset(buffer, 0, count * 2 * sizeof(SINT32));
+		//for (size_t i = 0; i < sndstream.cur; i++){
+		//	sndstream.cb[i].cbfn(sndstream.cb[i].hdl, buffer, count);
+		//}
+
+		//soundmng_sync(soundcfg.soundRef, 0, buffer, count * 2);
+	}
 }
 
 /* ---- */
 
 BRESULT sound_create(void *soundRef)
 {
-	UINT	samples;
-	UINT	reserve;
-
 	memset(&s_sndstream, 0, sizeof(s_sndstream));
 
 	UINT rate = soundmng_getRate(soundRef);
@@ -109,61 +90,23 @@ BRESULT sound_create(void *soundRef)
 	}
 
 	soundcfg.soundRef = soundRef;
-
-	samples = rate;
-
-	if (samples == 0)
-	{
-		goto scre_err1;
-	}
-
 	soundcfg.rate = rate;
 	sound_changeclock();
 
-#if defined(SOUNDRESERVE)
-	reserve = rate * SOUNDRESERVE / 1000;
-#else
-	reserve = 0;
-#endif
-
-	s_sndstream.buffer = (SINT32 *)_MALLOC((samples + reserve) * 2 * sizeof(SINT32), "stream");
-	if (s_sndstream.buffer == NULL)
-	{
-		goto scre_err2;
-	}
-
-	s_sndstream.samples = samples;
-	s_sndstream.reserve = reserve;
-
-	streamreset(&s_sndstream);
-
 	return SUCCESS;
-
-scre_err2:
-scre_err1:
-	return FAILURE;
 }
 
 void sound_destroy(void)
 {
-	if (s_sndstream.buffer)
-	{
-		streamreset(&s_sndstream);
-		_MFREE(s_sndstream.buffer);
-		s_sndstream.buffer = NULL;
-	}
-
 	soundcfg.rate = 0;
 }
 
 void sound_reset(void)
 {
-	if (s_sndstream.buffer)
-	{
-		streamreset(&s_sndstream);
-		soundcfg.lastclock = CPU_CLOCK;
-		beep_eventreset();
-	}
+	soundcfg.lastclock = CPU_CLOCK;
+	beep_eventreset();
+	soundmng_reset(soundcfg.soundRef);
+	s_sndstream.cur = 0;
 }
 
 void sound_changeclock(void)
@@ -171,11 +114,6 @@ void sound_changeclock(void)
 	UINT32	clk;
 	UINT	hz;
 	UINT	hzmax;
-
-	if (s_sndstream.buffer == NULL)
-	{
-		return;
-	}
 
 	/* とりあえず 25で割り切れる。 */
 	clk = pccore.realclock / 25;
@@ -197,49 +135,29 @@ void sound_changeclock(void)
 
 void sound_streamregist(void *hdl, SOUNDCB cbfn)
 {
-	if (s_sndstream.buffer)
-	{
-		if ((cbfn) && (s_sndstream.cbreg < (s_sndstream.cb + STREAM_CBMAX)))
-		{
-			s_sndstream.cbreg->hdl = hdl;
-			s_sndstream.cbreg->cbfn = cbfn;
-			s_sndstream.cbreg++;
-		}
+	if (cbfn && s_sndstream.cur < STREAM_CBMAX){
+		s_sndstream.cb[s_sndstream.cur].hdl = hdl;
+		s_sndstream.cb[s_sndstream.cur].cbfn = cbfn;
+
+		soundmng_addStream(soundcfg.soundRef, "Stream", s_sndstream.cur);
+
+		s_sndstream.cur++;
 	}
 }
-
 
 /* ---- */
 
 void sound_sync(void)
 {
-	UINT32	length;
+	UINT32	length = CPU_CLOCK + CPU_BASECLOCK - CPU_REMCLOCK - soundcfg.lastclock;
 
-	if (s_sndstream.buffer == NULL)
-	{
-		return;
-	}
-
-	length = CPU_CLOCK + CPU_BASECLOCK - CPU_REMCLOCK - soundcfg.lastclock;
-
-	if (length < soundcfg.minclock){
-		return;
-	}
+	if (length < soundcfg.minclock) return;
 
 	length = (length * soundcfg.hzbase) / soundcfg.clockbase;
 
-	if (!length){
-		return;
-	}
+	if (!length) return;
 
-	UINT count = streamprepare(&s_sndstream, length);
+	streamprepare(s_sndstream, length);
 	soundcfg.lastclock += length * soundcfg.clockbase / soundcfg.hzbase;
 	beep_eventreset();
-
-	soundcfg.writecount += length;
-
-	soundmng_sync(soundcfg.soundRef, s_sndstream.buffer, count);
-	s_sndstream.ptr = s_sndstream.buffer;
-	s_sndstream.remain = s_sndstream.samples + s_sndstream.reserve;
-	soundcfg.writecount = 0;
 }

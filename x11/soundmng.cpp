@@ -54,6 +54,16 @@ soundmng_initialize(void)
 void
 soundmng_deinitialize(void)
 {
+
+}
+
+void soundmng_reset(void *soundRef){
+
+	if(!soundRef) return;
+
+	BR::Sfx::PulseSoundEngine& engine = *((BR::Sfx::PulseSoundEngine *)soundRef);
+
+	engine.reset();
 }
 
 void PARTSCALL saturation_s16_2(SINT16 *dst, const SINT32 *src, UINT size) {
@@ -73,7 +83,7 @@ void PARTSCALL saturation_s16_2(SINT16 *dst, const SINT32 *src, UINT size) {
 }
 
 void
-soundmng_sync(void *soundRef, const SINT32 *pcm, size_t sz)
+soundmng_sync(void *soundRef, int index, const SINT32 *pcm, size_t sz)
 {
 	if(!soundRef || !pcm || !sz) return;
 
@@ -82,14 +92,14 @@ soundmng_sync(void *soundRef, const SINT32 *pcm, size_t sz)
 	SINT16 buffer[sz];
 	saturation_s16_2(buffer, pcm, sz);
 
-	engine.add(buffer, sz);
+	engine.add(index, buffer, sz);
 }
 
-void soundmng_tick(void *soundRef){
-	if(!soundRef) return;
+void soundmng_addStream(const void *soundRef, const char *name, int index){
+	if(!soundRef || !name) return;
 
 	BR::Sfx::PulseSoundEngine& engine = *((BR::Sfx::PulseSoundEngine *)soundRef);
-	engine.tick();
+	engine.addStream(name, index);
 }
 
 void soundmng_increaseVol(double incr){

@@ -618,7 +618,6 @@ void pccore_exec(void *graphics, BOOL draw, void *soundRef) {
 	calendar_inc();
 	S98_sync();
 	sound_sync();
-	soundmng_tick(soundRef);
 
 	if (pcstat.hardwarereset) {
 		pcstat.hardwarereset = FALSE;
