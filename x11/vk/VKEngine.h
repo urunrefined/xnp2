@@ -52,11 +52,28 @@ enum class RenderState {
 	WAITING
 };
 
+class RenderSemaphores {
+	RenderSemaphores(RenderSemaphores&) = delete;
+
+public:
+	VulkanSemaphore imageAvailableSemaphore;
+	VulkanSemaphore renderFinishedSemaphore;
+	VulkanSemaphore vboUpdatedSemaphore;
+
+	RenderSemaphores(VulkanDevice& device)
+		:
+			imageAvailableSemaphore(device),
+			renderFinishedSemaphore(device),
+			vboUpdatedSemaphore(device){
+	}
+};
+
 class VulkanScaler {
 public:
 	VulkanContext& context;
 	VulkanPhysicalDevice physicalDevice;
 	VulkanDevice device;
+
 
 	VulkanSwapchainImages swapchainImages;
 	VulkanRenderPass renderpass;
@@ -70,9 +87,7 @@ public:
 	Sitter imageSitter;
 	Sitter queueSitter;
 
-	VulkanSemaphore imageAvailableSemaphore;
-	VulkanSemaphore renderFinishedSemaphore;
-	VulkanSemaphore vboUpdatedSemaphore;
+	std::unique_ptr<RenderSemaphores> renderSemaphores;
 
 	uint32_t imageIndex;
 
@@ -95,9 +110,7 @@ public:
 		imageSitter(device),
 		queueSitter(device),
 
-		imageAvailableSemaphore(device),
-		renderFinishedSemaphore(device),
-		vboUpdatedSemaphore(device)
+		renderSemaphores(std::make_unique<RenderSemaphores>(device))
 	{
 	}
 
@@ -143,6 +156,12 @@ public:
 			swapchainImages.reCreate(width, height);
 			swapchain.reCreate(swapchainImages.swapChainImages, swapchainImages.swapChainImageFormat, swapchainImages.swapChainExtent);
 			renderer.reCreatePipeline(swapchainImages.swapChainExtent);
+
+			// We recreate the sems here, as otherwise, when vkAcquireNextImageKHR returns suboptimal and
+			// the swapchain is recreated, the next time vkAcquireNextImageKHR is called the aquireImage
+			// sem is still signaled.
+
+			renderSemaphores = std::make_unique<RenderSemaphores>(device);
 
 			return true;
 		}

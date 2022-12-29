@@ -9,6 +9,8 @@
 namespace BR {
 
 class VulkanDevice {
+	VulkanDevice(VulkanDevice&) = delete;
+
 public:
 	VkDevice device;
 	VkQueue graphicsQueue;

@@ -56,7 +56,7 @@ static RenderState aquireImage(
 		//   but there are some circumstances in which
 		//   the fence will never be signaled (Therefore this
 		//   will block forver)
-
+		printf("VK_SUBOPTIMAL_KHR\n");
 		imageSitter.block();
 
 		return RenderState::NEEDSSWAPCHAINUPDATE;
@@ -106,7 +106,8 @@ RenderState VulkanScaler::drawAndPresent(
 	assert(queueSitter.done());
 	assert(imageSitter.done());
 
-	RenderState renderState = aquireImage(device, swapchainImages, imageSitter, imageAvailableSemaphore, imageIndex);
+	RenderState renderState = aquireImage(device, swapchainImages, imageSitter,
+		renderSemaphores->imageAvailableSemaphore, imageIndex);
 
 	if(renderState != RenderState::OK) return renderState;
 
@@ -153,11 +154,11 @@ RenderState VulkanScaler::drawAndPresent(
 		updateSubmitInfo.pCommandBuffers = &commandBuffer;
 
 		updateSubmitInfo.waitSemaphoreCount = 1;
-		updateSubmitInfo.pWaitSemaphores = imageAvailableSemaphore;
+		updateSubmitInfo.pWaitSemaphores = renderSemaphores->imageAvailableSemaphore;
 		updateSubmitInfo.pWaitDstStageMask = &flagsWaitForImage;
 
 		updateSubmitInfo.signalSemaphoreCount = 1;
-		updateSubmitInfo.pSignalSemaphores = vboUpdatedSemaphore;
+		updateSubmitInfo.pSignalSemaphores = renderSemaphores->vboUpdatedSemaphore;
 	}
 
 	VkPipelineStageFlags flagsWaitForVBOUpdate = VK_PIPELINE_STAGE_TRANSFER_BIT;
@@ -168,7 +169,7 @@ RenderState VulkanScaler::drawAndPresent(
 
 
 		drawSubmitInfo.waitSemaphoreCount = 1;
-		drawSubmitInfo.pWaitSemaphores = vboUpdatedSemaphore;
+		drawSubmitInfo.pWaitSemaphores = renderSemaphores->vboUpdatedSemaphore;
 		drawSubmitInfo.pWaitDstStageMask = &flagsWaitForVBOUpdate;
 
 		drawSubmitInfo.commandBufferCount = 1;
@@ -176,7 +177,7 @@ RenderState VulkanScaler::drawAndPresent(
 		drawSubmitInfo.pCommandBuffers = &commandBuffers[imageIndex];
 
 		drawSubmitInfo.signalSemaphoreCount = 1;
-		drawSubmitInfo.pSignalSemaphores = renderFinishedSemaphore;
+		drawSubmitInfo.pSignalSemaphores = renderSemaphores->renderFinishedSemaphore;
 
 	}
 
@@ -195,7 +196,7 @@ RenderState VulkanScaler::drawAndPresent(
 
 	//printf("Aquir 3 "); (Time() - ref).print();
 
-	present(renderFinishedSemaphore, swapchainImages, imageIndex, device.presentQueue);
+	present(renderSemaphores->renderFinishedSemaphore, swapchainImages, imageIndex, device.presentQueue);
 
 	imageSitter.block();
 	return RenderState::OK;
