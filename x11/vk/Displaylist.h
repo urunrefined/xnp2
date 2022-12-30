@@ -100,60 +100,11 @@ class TextDisplayList
 
 public:
 	TextDisplayList(VulkanDevice& device, VulkanPhysicalDevice& physicalDevice,
-		VulkanSampler& sampler, VulkanDescriptorLayoutExt& layout, std::vector<MappingAssoc>& map)
-		: pool(device, map.size())
-	{
-		printf("sz %zu\n", map.size());
+		VulkanSampler& sampler, VulkanDescriptorLayoutExt& layout, std::vector<MappingAssoc>& map);
 
-		for(size_t i = 0; i < map.size(); i++){
-			auto& e = map[i];
+	void chainBuffers(std::vector<VulkanCmbBuffer *>& cmbBuffers);;
 
-			descriptorSetExts.push_back(std::make_unique<VulkanDescriptorSetExt>(
-				device, physicalDevice, e.mapping.texture->textureView, sampler,
-				pool, layout, 1
-			));
-
-			auto& set = descriptorSetExts.back();
-			set->updateModelMatrix(e.mapping.matrix, 0);
-			set->updateWorldMatrix(Matrix4x4f::ortho1To1());
-
-			std::vector<Vec2> vtxs;
-			std::vector<Vec2> uvs;
-
-			for(size_t j = 0; j < e.textPreps.size(); j++){
-				for(auto& res : e.textPreps[j].buffer){
-					for (auto& vtxs_ : res.vtxs.vtxs) {
-						vtxs.push_back(vtxs_);
-					}
-
-					for (auto& uvs_ : res.uvs.uvs) {
-						uvs.push_back(uvs_);
-					}
-				}
-			}
-
-			resources.push_back(std::make_unique<RenderResource>(
-				device, physicalDevice, vtxs, uvs, *set, 0
-			));
-		}
-	}
-
-	void chainBuffers(std::vector<VulkanCmbBuffer *>& cmbBuffers){
-		for(auto & res : resources){
-			cmbBuffers.push_back(&(res->uvs));
-			cmbBuffers.push_back(&(res->vtxs));
-		}
-
-		for(auto & des : descriptorSetExts){
-			cmbBuffers.push_back(&(des->uniformBuffer));
-		}
-	};
-
-	void render(VulkanRenderer& renderer, VulkanRenderBuffer& renderBuffer){
-		for(auto & res : resources){
-			res->render(renderer, renderBuffer);
-		}
-	}
+	void render(VulkanRenderer& renderer, VulkanRenderBuffer& renderBuffer);
 };
 
 

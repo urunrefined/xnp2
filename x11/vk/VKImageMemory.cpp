@@ -1,4 +1,5 @@
 #include "VKImageMemory.h"
+#include "vk/VKUtil.h"
 
 namespace BR {
 

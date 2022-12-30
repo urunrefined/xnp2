@@ -673,7 +673,6 @@ cmmidi_create(const char *midiout, const char *midiin, const char *module)
 	int hmidiout;
 	int hmidiin;
 	MIDIHDL vermouth = NULL;
-
 	int opened = 0;
 
 	/* MIDI-IN */

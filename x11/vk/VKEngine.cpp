@@ -1,4 +1,5 @@
 #include "VKEngine.h"
+#include <assert.h>
 
 namespace BR {
 

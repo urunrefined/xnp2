@@ -3,7 +3,6 @@
 
 #include <vulkan/vulkan.h>
 
-#include "Array.h"
 #include <vector>
 
 namespace BR {

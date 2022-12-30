@@ -7,7 +7,6 @@
 #include <fstream>
 #include <algorithm>
 
-#include "VKGLFW.h"
 #include "VKUtil.h"
 
 namespace BR {

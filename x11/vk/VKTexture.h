@@ -5,9 +5,6 @@
 #include "VKImageMemory.h"
 #include "VKCommandPool.h"
 #include "VKImageView.h"
-#include "VKDescriptorSet.h"
-#include "VKSampler.h"
-#include "VKDescriptorPool.h"
 #include "Image.h"
 
 #include <vector>

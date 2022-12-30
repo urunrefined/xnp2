@@ -2,6 +2,7 @@
 #include "vk/VKPhysicalDeviceEnumerations.h"
 #include "vk/FreeFont.h"
 #include "vk/Displaylist.h"
+#include "vk/VKDescriptorPool.h"
 
 #include "pulse/PulseSoundEngine.h"
 
@@ -14,6 +15,8 @@
 #include "Matrix4x4.h"
 #include "pccorecallbacks.h"
 #include "inputhandling.h"
+
+
 
 namespace BR {
 
@@ -56,8 +59,6 @@ public:
 };
 
 //Column
-
-
 
 static float getFittingScale(const Dimensions& in, const Dimensions& limits){
 

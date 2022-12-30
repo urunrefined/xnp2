@@ -2,7 +2,6 @@
 #define VKIMAGEMEMORY_H
 
 #include <vulkan/vulkan.h>
-#include "VKUtil.h"
 
 #include <stdexcept>
 

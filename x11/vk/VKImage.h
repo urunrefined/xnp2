@@ -1,7 +1,7 @@
 #ifndef VKIMAGE_H
 #define VKIMAGE_H
 
-#include "vulkan/vulkan.h"
+#include <vulkan/vulkan.h>
 
 namespace BR {
 

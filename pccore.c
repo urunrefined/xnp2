@@ -155,7 +155,6 @@ static void pccore_set(const NP2CFG *pConfig)
 
 // --------------------------------------------------------------------------
 
-#if !defined(DISABLE_SOUND)
 static void sound_init(void *soundRef)
 {
 	UINT rate = soundmng_getRate(soundRef);
@@ -189,7 +188,6 @@ static void sound_term(void) {
 	fddmtrsnd_deinitialize();
 	sound_destroy();
 }
-#endif
 
 /**
  * Initialize
@@ -211,10 +209,8 @@ void pccore_init(void *soundRef)
 	gdcsub_initialize();
 	fddfile_initialize();
 
-#if !defined(DISABLE_SOUND)
 	fmboard_construct();
 	sound_init(soundRef);
-#endif	/* !defined(DISABLE_SOUND) */
 
 	rs232c_construct();
 	mpu98ii_construct();
@@ -238,10 +234,8 @@ void pccore_term(void)
 	hostdrv_deinitialize();
 #endif
 
-#if !defined(DISABLE_SOUND)
 	sound_term();
 	fmboard_destruct();
-#endif	/* !defined(DISABLE_SOUND) */
 
 	fdd_eject(0);
 	fdd_eject(1);
@@ -263,16 +257,13 @@ void pccore_term(void)
 
 void pccore_cfgupdate(void) {
 
-	BOOL	renewal;
 	int		i;
 
-	renewal = FALSE;
 	for (i=0; i<8; i++)
 	{
 		if (np2cfg.memsw[i] != mem[MEMX_MSW + i*4])
 		{
 			np2cfg.memsw[i] = mem[MEMX_MSW + i*4];
-			renewal = TRUE;
 		}
 	}
 	for (i=0; i<3; i++)
@@ -280,7 +271,6 @@ void pccore_cfgupdate(void) {
 		if (np2cfg.dipsw[i] != pccore.dipsw[i])
 		{
 			np2cfg.dipsw[i] = pccore.dipsw[i];
-			renewal = TRUE;
 		}
 	}
 }
@@ -293,13 +283,12 @@ void pccore_reset(void *soundRef) {
 	int		i;
 	BOOL	epson;
 
-#if !defined(DISABLE_SOUND)
 	if (soundrenewal) {
 		soundrenewal = 0;
 		sound_term();
 		sound_init(soundRef);
 	}
-#endif
+
 	ZeroMemory(mem, 0x110000);
 	ZeroMemory(mem + VRAM1_B, 0x18000);
 	ZeroMemory(mem + VRAM1_E, 0x08000);

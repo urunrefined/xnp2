@@ -1,10 +1,8 @@
 #ifndef VKPIPELINETEXEXT_H
 #define VKPIPELINETEXEXT_H
 
-#include "VKUtil.h"
 #include "VKShaders.h"
 #include "VKRenderBuffer.h"
-#include "VKPipeline.h"
 
 namespace BR {
 

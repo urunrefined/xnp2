@@ -32,6 +32,7 @@ static void setsystimerevent(UINT32 cnt, NEVENTPOSITION absolute) {
 }
 
 void systimer(NEVENTITEM item) {
+	(void) item;
 
 	PITCH	pitch;
 
@@ -81,6 +82,7 @@ static void setbeepevent(UINT32 cnt, NEVENTPOSITION absolute) {
 }
 
 void beeponeshot(NEVENTITEM item) {
+	(void) item;
 
 	PITCH	pitch;
 
@@ -179,10 +181,8 @@ static UINT getcount(const _PITCH *pitch) {
 			clk = nevent_getremain(NEVENT_RS232C);
 			break;
 
-#if !defined(DISABLE_SOUND)
 		case 3:
 			return(board14_pitcount());
-#endif
 
 		default:
 			clk = 0;
@@ -421,12 +421,10 @@ void itimer_reset(const NP2CFG *pConfig) {
 	pit.ch[1].value = beepcnt;
 	pit.ch[2].ctrl = 0xb6 & 0x3f;
 	pit.ch[2].ch = 2;
-#if !defined(DISABLE_SOUND)
 	pit.ch[3].ctrl = 0x36;
 	pit.ch[3].ch = 3;
 	pit.ch[4].ctrl = 0x36;
 	pit.ch[4].ch = 4;
-#endif
 	setsystimerevent(0, NEVENT_ABSOLUTE);
 	beep_lheventset(1);												// ver0.79
 	beep_hzset(beepcnt);

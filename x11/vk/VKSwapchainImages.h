@@ -1,7 +1,7 @@
 #ifndef VKSWAPCHAINIMAGES_H
 #define VKSWAPCHAINIMAGES_H
 
-#include "vulkan/vulkan.h"
+#include <vulkan/vulkan.h>
 
 #include <vector>
 

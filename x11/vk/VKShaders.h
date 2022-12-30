@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "VKUtil.h"
+#include <vulkan/vulkan.h>
 
 namespace BR {
 

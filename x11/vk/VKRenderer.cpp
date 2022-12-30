@@ -1,6 +1,4 @@
 #include "VKRenderer.h"
-#include "VKBuffers.h"
-#include "VKCommandBuffer.h"
 
 #include <string.h>
 

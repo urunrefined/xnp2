@@ -20,14 +20,12 @@ static const PROCTBL evtproc[] = {
 			{PROCID('e','f','i','w'), fdc_intwait},
 			{PROCID('e','m','d','0'), midiwaitout},
 			{PROCID('e','m','d','1'), midiint},
-#if !defined(DISABLE_SOUND)
 			{PROCID('e','m','g','n'), musicgenint},
 			{PROCID('e','f','m','a'), fmport_a},
 			{PROCID('e','f','m','b'), fmport_b},
 			{PROCID('e','c','s','d'), cs4231_dma},
 			{PROCID('e','p','8','6'), pcm86_cb},
 			{PROCID('e','a','m','d'), amd98int},
-#endif
 #if defined(SUPPORT_SASI)
 			{PROCID('e','s','a','s'), sasiioint},
 #endif
@@ -73,9 +71,7 @@ static const PROCTBL dmaproc[] = {
 			{PROCID('d','o','f','d'), fdc_dataread},
 			{PROCID('d','i','f','d'), fdc_datawrite},
 			{PROCID('d','e','f','d'), fdc_dmafunc},
-#if !defined(DISABLE_SOUND)
 			{PROCID('d','e','c','s'), cs4231dmafunc},
-#endif
 #if defined(SUPPORT_SASI)
 			{PROCID('d','o','s','a'), sasi_dataread},
 			{PROCID('d','i','s','a'), sasi_datawrite},
@@ -127,10 +123,8 @@ static const SFENTRY np2tbl[] = {
 	{"CMRS232C",	0,	STATFLAG_COM,	(void *)1,		0},
 	{"FDD",			0,	STATFLAG_FDD,	NULL,			0},
 	{"SXSI",		0,	STATFLAG_SXSI,	NULL,			0},
-#if !defined(DISABLE_SOUND)
 	{"FMBOARD",		0,	STATFLAG_FM,	NULL,			0},
 	{"BEEP",		0,	STATFLAG_BIN,	&g_beep,		sizeof(g_beep)},
-#endif
 #if defined(SUPPORT_IDEIO)
 	{"IDE",			0,	STATFLAG_BIN,	&ideio,			sizeof(ideio)},
 #endif

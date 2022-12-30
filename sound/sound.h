@@ -7,12 +7,6 @@
 
 #include "common.h"
 
-#ifndef SOUNDCALL
-#define	SOUNDCALL
-#endif
-
-#if !defined(DISABLE_SOUND)
-
 typedef void (SOUNDCALL * SOUNDCB)(void *hdl, SINT32 *pcm, UINT count);
 
 typedef struct {
@@ -40,23 +34,6 @@ void sound_streamregist(void *hdl, SOUNDCB cbfn);
 
 void sound_sync(void);
 
-#if defined(SUPPORT_WAVEREC)
-BRESULT sound_recstart(const OEMCHAR *filename);
-void sound_recstop(void);
-BOOL sound_isrecording(void);
-#endif
-
 #ifdef __cplusplus
 }
 #endif
-
-#else
-
-#define sound_pcmlock()		(NULL)
-#define sound_pcmunlock(h)
-#define sound_reset()
-#define sound_changeclock()
-#define sound_sync()
-
-#endif
-

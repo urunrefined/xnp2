@@ -5,7 +5,6 @@
  * @brief	Interface of The board manager
  */
 
-#if !defined(DISABLE_SOUND)
 
 #include "cs4231.h"
 #include "opl3.h"
@@ -43,11 +42,4 @@ void fmboard_bind(void);
 
 #ifdef __cplusplus
 }
-#endif
-
-#else
-
-#define	fmboard_reset(c, t)
-#define	fmboard_bind()
-
 #endif

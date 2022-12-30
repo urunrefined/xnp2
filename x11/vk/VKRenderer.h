@@ -11,11 +11,6 @@
 #include "VKDescriptorSet.h"
 #include "VKDescriptorSetExt.h"
 #include "VKSampler.h"
-#include "VKCommandPool.h"
-#include "VKTexture.h"
-#include "VKImage.h"
-#include "VKImageMemory.h"
-#include "VKTexture.h"
 
 namespace BR {
 

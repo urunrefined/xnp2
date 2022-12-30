@@ -16,11 +16,7 @@
 #include "VKRenderBuffer.h"
 #include "VKRenderer.h"
 #include "VKSync.h"
-#include "VKImage.h"
-#include "VKImageMemory.h"
-#include "VKSampler.h"
 #include "VKBuffers.h"
-#include "VKDescriptorSet.h"
 
 #include <memory>
 

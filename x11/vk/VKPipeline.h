@@ -1,11 +1,11 @@
 #ifndef VKPIPELINE_H_
 #define VKPIPELINE_H_
 
-#include "VKUtil.h"
-#include "VKShaders.h"
-#include "VKRenderBuffer.h"
 #include "Array.h"
-#include "stdexcept"
+#include <stdexcept>
+#include <array>
+
+#include <vulkan/vulkan.h>
 
 namespace BR {
 

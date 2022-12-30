@@ -2,7 +2,6 @@
 #define VKDEVICE_H
 
 #include <vulkan/vulkan.h>
-#include "Array.h"
 
 #include <vector>
 

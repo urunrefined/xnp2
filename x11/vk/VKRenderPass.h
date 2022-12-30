@@ -1,7 +1,7 @@
 #ifndef VULKANRENDERPASS_H
 #define VULKANRENDERPASS_H
 
-#include "VKUtil.h"
+#include <vulkan/vulkan.h>
 
 namespace BR {
 

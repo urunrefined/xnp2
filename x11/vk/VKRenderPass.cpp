@@ -1,4 +1,5 @@
 #include "VKRenderPass.h"
+#include "vk/VKUtil.h"
 
 #include <stdexcept>
 #include <array>

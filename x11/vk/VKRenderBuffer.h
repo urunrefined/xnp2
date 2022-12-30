@@ -1,9 +1,6 @@
 #ifndef VKRENDERBUFFER2_H
 #define VKRENDERBUFFER2_H
 
-#include "VKUtil.h"
-
-#include "VKShaders.h"
 #include "VKRenderPass.h"
 #include "VKDevice.h"
 #include "VKCommandPool.h"

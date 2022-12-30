@@ -1,5 +1,5 @@
 #include "VKPipelineTex.h"
-#include "Core.h"
+#include <stdexcept>
 
 namespace BR {
 
