@@ -330,7 +330,7 @@ static void glLoop(
 
 		GLFWInput& input = engine.glfwCtx.getInput();
 
-		handleInput(input, mode, visualScreen, &soundEngine);
+		handleInput(input, mode, visualScreen, soundEngine);
 
 		input.reset();
 	}

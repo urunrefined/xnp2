@@ -102,6 +102,32 @@ void PulseSoundEngine::reset(){
 	streams.clear();
 }
 
+void PulseSoundEngine::decreaseVol(float val){
+	LockGuard guard(mutex);
+
+}
+
+void PulseSoundEngine::increaseVol(float val){
+	LockGuard guard(mutex);
+
+}
+
+void PulseSoundEngine::toggleMute(){
+	LockGuard guard(mutex);
+
+	for(auto &stream : streams){
+		LockGuard guard(stream->mutex);
+		if(muted){
+			stream->unMute(context);
+		}
+		else{
+			stream->mute(context);
+		}
+	}
+
+	muted = !muted;
+}
+
 void PulseSoundEngine::addStream(const char *name, int index){
 	LockGuard guard(mutex);
 	streams.push_back(std::make_unique<PulseStream>(m, name, index, sampleRate, context));
@@ -199,6 +225,40 @@ static void stream_state_callback(pa_stream *s, void *userdata)
 	}
 }
 
+void context_streaminfo_callback (pa_context *c, const pa_sink_input_info *i, int eol, void *userdata){
+	assert(userdata);
+	PulseStream *ps = (PulseStream *) userdata;
+
+	printf("streaminfo\n");
+}
+
+void context_success_callback (pa_context *c, int success, void *userdata){
+	(void) c;
+	(void) success;
+
+	assert(userdata);
+	PulseStream *ps = (PulseStream *) userdata;
+
+	pa_operation_unref(pa_context_get_sink_input_info(c, pa_stream_get_index(ps->stream), context_streaminfo_callback, ps));
+
+	printf("context success cb success %d\n", success);
+}
+
+void PulseStream::decreaseVol(pa_context *context, float val){
+
+}
+
+void PulseStream::increaseVol(pa_context *context, float val){
+
+}
+
+void PulseStream::mute(pa_context *context){
+	pa_operation_unref(pa_context_set_sink_input_mute(context, pa_stream_get_index(stream), 1, context_success_callback, this));
+}
+
+void PulseStream::unMute(pa_context *context){
+	pa_operation_unref(pa_context_set_sink_input_mute(context, pa_stream_get_index(stream), 0, context_success_callback, this));
+}
 
 size_t PulseStream::add(int16_t *buf, size_t count){
 	LockGuard guard (mutex);

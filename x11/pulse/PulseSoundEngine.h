@@ -51,6 +51,11 @@ public:
 
 	size_t add(int16_t *buf, size_t count);
 
+	void decreaseVol(pa_context *context, float val);
+	void increaseVol(pa_context *context, float val);
+	void mute(pa_context *context);
+	void unMute(pa_context *context);
+
 	PulseStream(pa_mainloop* m_, const char *name_, int index_, uint32_t sampleRate, pa_context *context);
 	~PulseStream();
 };
@@ -61,6 +66,7 @@ public:
 	std::vector<std::unique_ptr<PulseStream>> streams;
 	Mutex mutex;
 	int finished = 0;
+	bool muted = false;
 
 	enum class ServerState {
 		STATE_SERVER_NONE = 0,
@@ -81,6 +87,10 @@ public:
 	void addStream(const char *name, int index);
 	size_t add(int index, int16_t *buf, size_t count);
 	void reset();
+
+	void decreaseVol(float val);
+	void increaseVol(float val);
+	void toggleMute();
 
 	virtual void run() override;
 	virtual void finish() override;

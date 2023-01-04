@@ -2,6 +2,7 @@
 #define INPUTHANDLING_H
 
 #include "vk/Input.h"
+#include "pulse/PulseSoundEngine.h"
 
 enum class ViewPortMode : uint8_t {
 	ASPECT = 0,
@@ -17,7 +18,7 @@ enum class VisualScreen : uint8_t {
 };
 
 namespace BR {
-	void handleInput(Input& input, ViewPortMode& mode, VisualScreen& showLog, void *soundRef);
+	void handleInput(Input& input, ViewPortMode& mode, VisualScreen& showLog, Sfx::PulseSoundEngine& soundRef);
 }
 
 #endif // INPUTHANDLING_H

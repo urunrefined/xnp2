@@ -102,15 +102,3 @@ void soundmng_addStream(const void *soundRef, const char *name, int index){
 	engine.addStream(name, index);
 }
 
-void soundmng_increaseVol(double incr){
-
-}
-
-void soundmng_decreaseVol(double decr){
-
-}
-
-void soundmng_toggleMute(){
-
-}
-

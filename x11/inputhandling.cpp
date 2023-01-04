@@ -145,7 +145,7 @@ T1 next(const T1& t1){
 	return (T1)((((int)t1) + 1)% (int)T1::END);
 }
 
-void handleInput(Input& input, ViewPortMode& viewPortMode, VisualScreen& visualScreen, void *soundRef){
+void handleInput(Input& input, ViewPortMode& viewPortMode, VisualScreen& visualScreen, Sfx::PulseSoundEngine& soundRef){
 	if(input.getButton(KeyButtons::KEY_SUPER)){
 		for(auto& keyEvent : input.keyEvents){
 			if(keyEvent.key == KeyButtons::KEY_E && keyEvent.state == PRESSED){
@@ -153,19 +153,19 @@ void handleInput(Input& input, ViewPortMode& viewPortMode, VisualScreen& visualS
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_NUMPAD_DIV && keyEvent.state == PRESSED){
-				soundmng_decreaseVol(0.05);
+				soundRef.decreaseVol(0.05);
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_NUMPAD_MULT && keyEvent.state == PRESSED){
-				soundmng_increaseVol(0.05);
+				soundRef.increaseVol(0.05);
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_M && keyEvent.state == PRESSED){
-				soundmng_toggleMute();
+				soundRef.toggleMute();
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_I && keyEvent.state == PRESSED){
-				pccore_reset(soundRef);
+				pccore_reset(&soundRef);
 			}
 
 			if(keyEvent.key == KeyButtons::KEY_K && keyEvent.state == PRESSED){
