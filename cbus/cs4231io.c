@@ -94,7 +94,7 @@ void cs4231io_reset(void) {
 
 void cs4231io_bind(void) {
 
-	sound_streamregist(&cs4231, (SOUNDCB)cs4231_getpcm);
+	sound_streamregist("cs4231", &cs4231, (SOUNDCB)cs4231_getpcm);
 	iocore_attachout(0xc24, csctrl_oc24);
 	iocore_attachout(0xc2b, csctrl_oc2b);
 	iocore_attachout(0xc2d, csctrl_oc2d);

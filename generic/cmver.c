@@ -431,7 +431,7 @@ COMMNG cmvermouth_create(void) {
 	midi = (CMMIDI)(ret + 1);
 	ZeroMemory(midi, sizeof(_CMMIDI));
 	midi->midihdl = midihdl;
-	sound_streamregist((void *)midihdl, (SOUNDCB)vermouth_getpcm);
+	sound_streamregist("midi cm", (void *)midihdl, (SOUNDCB)vermouth_getpcm);
 	midi->midictrl = MIDICTRL_READY;
 //	midi->midisyscnt = 0;
 //	midi->mpos = 0;

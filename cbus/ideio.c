@@ -1046,7 +1046,7 @@ void ideio_bind(void) {
 
 	if (pccore.hddif & PCHDD_IDE) {
 #if 1
-		sound_streamregist(NULL, (SOUNDCB)playaudio);
+		sound_streamregist("ideio", NULL, (SOUNDCB)playaudio);
 #endif
 		iocore_attachout(0x0430, ideio_o430);
 		iocore_attachout(0x0432, ideio_o430);

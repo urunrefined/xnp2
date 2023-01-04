@@ -228,7 +228,7 @@ void board14_reset(const NP2CFG *pConfig, BOOL bEnable)
  */
 void board14_bind(void)
 {
-	sound_streamregist(&s_tms3631, (SOUNDCB)tms3631_getpcm);
+	sound_streamregist("s_tms3631", &s_tms3631, (SOUNDCB)tms3631_getpcm);
 	cbuscore_attachsndex(0x088, musicgen_o0, musicgen_i0);
 	cbuscore_attachsndex(0x188, musicgen_o1, musicgen_i1);
 }

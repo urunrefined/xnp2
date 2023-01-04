@@ -722,7 +722,7 @@ cmmidi_create(const char *midiout, const char *midiin, const char *module)
 
 	midi->vermouth = vermouth;
 	if (opened & CMMIDI_VERMOUTH) {
-		sound_streamregist((void *)vermouth, (SOUNDCB)vermouth_getpcm);
+		sound_streamregist("vermouth", (void *)vermouth, (SOUNDCB)vermouth_getpcm);
 	}
 
 	midi->midilast = 0x80;

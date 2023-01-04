@@ -232,7 +232,7 @@ void pcm86io_setopt(REG8 cDipSw)
 
 void pcm86io_bind(void)
 {
-	sound_streamregist(&g_pcm86, (SOUNDCB)pcm86gen_getpcm);
+	sound_streamregist("g_pcm86", &g_pcm86, (SOUNDCB)pcm86gen_getpcm);
 
 	iocore_attachout(0xa460, pcm86_oa460);
 	iocore_attachout(0xa466, pcm86_oa466);

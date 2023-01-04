@@ -30,7 +30,7 @@ void sound_destroy(void);
 
 void sound_reset(void);
 void sound_changeclock(void);
-void sound_streamregist(void *hdl, SOUNDCB cbfn);
+void sound_streamregist(const char *name, void *hdl, SOUNDCB cbfn);
 
 void sound_sync(void);
 

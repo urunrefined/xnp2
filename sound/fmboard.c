@@ -285,5 +285,5 @@ void fmboard_bind(void) {
 			break;
 	}
 
-	sound_streamregist(&g_beep, (SOUNDCB)beep_getpcm);
+	sound_streamregist("beep", &g_beep, (SOUNDCB)beep_getpcm);
 }

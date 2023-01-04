@@ -133,13 +133,13 @@ void sound_changeclock(void)
 	soundcfg.lastclock = CPU_CLOCK;
 }
 
-void sound_streamregist(void *hdl, SOUNDCB cbfn)
+void sound_streamregist(const char *name, void *hdl, SOUNDCB cbfn)
 {
 	if (cbfn && s_sndstream.cur < STREAM_CBMAX){
 		s_sndstream.cb[s_sndstream.cur].hdl = hdl;
 		s_sndstream.cb[s_sndstream.cur].cbfn = cbfn;
 
-		soundmng_addStream(soundcfg.soundRef, "Stream", s_sndstream.cur);
+		soundmng_addStream(soundcfg.soundRef, name, s_sndstream.cur);
 
 		s_sndstream.cur++;
 	}

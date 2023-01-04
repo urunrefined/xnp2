@@ -146,15 +146,15 @@ void opna_bind(POPNA opna)
 
 	if (cCaps & OPNA_HAS_PSG)
 	{
-		sound_streamregist(&opna->psg, (SOUNDCB)psggen_getpcm);
+		sound_streamregist("opna psg", &opna->psg, (SOUNDCB)psggen_getpcm);
 	}
 	if (cCaps & OPNA_HAS_VR)
 	{
-		sound_streamregist(&opna->opngen, (SOUNDCB)opngen_getpcmvr);
+		sound_streamregist("opna vr", &opna->opngen, (SOUNDCB)opngen_getpcmvr);
 	}
 	else
 	{
-		sound_streamregist(&opna->opngen, (SOUNDCB)opngen_getpcm);
+		sound_streamregist("opna gen", &opna->opngen, (SOUNDCB)opngen_getpcm);
 	}
 	if (cCaps & OPNA_HAS_RHYTHM)
 	{
@@ -162,7 +162,7 @@ void opna_bind(POPNA opna)
 	}
 	if (cCaps & OPNA_HAS_ADPCM)
 	{
-		sound_streamregist(&opna->adpcm, (SOUNDCB)adpcm_getpcm);
+		sound_streamregist("opna adpcm", &opna->adpcm, (SOUNDCB)adpcm_getpcm);
 	}
 }
 

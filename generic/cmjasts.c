@@ -140,7 +140,7 @@ COMMNG cmjasts_create(void) {
 	ret->release = jsrelease;
 	js = (CMJAST)(ret + 1);
 	ZeroMemory(js, sizeof(_CMJAST));
-	sound_streamregist((void *)js, (SOUNDCB)js_getpcm);
+	sound_streamregist("js", (void *)js, (SOUNDCB)js_getpcm);
 	return(ret);
 
 cmjscre_err:

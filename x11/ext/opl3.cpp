@@ -140,7 +140,7 @@ void opl3_bind(POPL3 opl3)
 
 	if (pExt == NULL)
 	{
-		sound_streamregist(&opl3->oplgen, (SOUNDCB)oplgen_getpcm);
+		sound_streamregist("oplgen", &opl3->oplgen, (SOUNDCB)oplgen_getpcm);
 	}
 
 }

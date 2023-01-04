@@ -195,22 +195,22 @@ void opna_bind(POPNA opna)
 		}
 		if ((cCaps & OPNA_HAS_ADPCM) && (pExt->HasADPCM()))
 		{
-			sound_streamregist(&opna->adpcm, (SOUNDCB)adpcm_getpcm_dummy);
+			sound_streamregist("opn adpcm", &opna->adpcm, (SOUNDCB)adpcm_getpcm_dummy);
 			cCaps &= ~OPNA_HAS_ADPCM;
 		}
 	}
 
 	if (cCaps & OPNA_HAS_PSG)
 	{
-		sound_streamregist(&opna->psg, (SOUNDCB)psggen_getpcm);
+		sound_streamregist("opn psg", &opna->psg, (SOUNDCB)psggen_getpcm);
 	}
 	if (cCaps & OPNA_HAS_VR)
 	{
-		sound_streamregist(&opna->opngen, (SOUNDCB)opngen_getpcmvr);
+		sound_streamregist("opn pcmvr", &opna->opngen, (SOUNDCB)opngen_getpcmvr);
 	}
 	else
 	{
-		sound_streamregist(&opna->opngen, (SOUNDCB)opngen_getpcm);
+		sound_streamregist("opn pcmstd", &opna->opngen, (SOUNDCB)opngen_getpcm);
 	}
 	if (cCaps & OPNA_HAS_RHYTHM)
 	{
@@ -218,7 +218,7 @@ void opna_bind(POPNA opna)
 	}
 	if (cCaps & OPNA_HAS_ADPCM)
 	{
-		sound_streamregist(&opna->adpcm, (SOUNDCB)adpcm_getpcm);
+		sound_streamregist("opn adpcm", &opna->adpcm, (SOUNDCB)adpcm_getpcm);
 	}
 }
 

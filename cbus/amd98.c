@@ -418,9 +418,15 @@ void amd98_bind(void)
 	{
 		psgpanset(&g_amd98.psg[i]);
 		psggen_restore(&g_amd98.psg[i]);
-		sound_streamregist(&g_amd98.psg[i], (SOUNDCB)psggen_getpcm);
+
+		char streamname[64];
+		bzero(streamname, sizeof(streamname));
+		snprintf(streamname, sizeof(streamname), "%s%d", "g_amd98 psg", i);
+
+		sound_streamregist(streamname, &g_amd98.psg[i], (SOUNDCB)psggen_getpcm);
 	}
-	sound_streamregist(&amd98r, (SOUNDCB)pcmmix_getpcm);
+
+	sound_streamregist("amd98r", &amd98r, (SOUNDCB)pcmmix_getpcm);
 	iocore_attachout(0xd8, amd_od8);
 	iocore_attachout(0xd9, amd_od9);
 	iocore_attachout(0xda, amd_oda);

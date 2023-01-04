@@ -94,7 +94,7 @@ void opl3_bind(POPL3 opl3)
 	nBaseClock = (cCaps & OPL3_HAS_OPL3) ? 3579545 : 3993600;
 
 	oplgen_reset(&opl3->oplgen, nBaseClock);
-	sound_streamregist(&opl3->oplgen, (SOUNDCB)oplgen_getpcm);
+	sound_streamregist("oplgen", &opl3->oplgen, (SOUNDCB)oplgen_getpcm);
 
 	restore(opl3);
 
