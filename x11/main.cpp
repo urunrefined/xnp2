@@ -279,6 +279,12 @@ static void go(int argc, char *argv[]){
 		return;
 	}
 
+	if(access(configFile.c_str(), F_OK) != 0){
+		printf("No config named %s\n", configFile.c_str());
+		return;
+	}
+
+
 	printf("Use config %s\n", configFile.c_str());
 
 	IniCfg iniCfg(np2oscfg, np2cfg);
