@@ -188,6 +188,11 @@ static void createIfNoExist(const std::string& dirName){
 	}
 }
 
+std::string getFddFilename(const std::string& fddDir, const std::string& file){
+	if(file.size() && file[0] == '/') return file;
+	return fddDir + "/" + file;
+}
+
 static void go(int argc, char *argv[]){
 	BR::SignalFD sfd;
 
@@ -210,9 +215,11 @@ static void go(int argc, char *argv[]){
 	std::string configDir = discoverConfigDir(xnp2Dir);
 	std::string artifactDir = discoverArtifactDir(xnp2Dir);
 
+
 	printf("xnp2 directory:     %s\n", xnp2Dir.c_str());
 	printf("config directory:   %s\n", configDir.c_str());
 	printf("artifact directory: %s\n", artifactDir.c_str());
+
 
 	createIfNoExist(xnp2Dir);
 	createIfNoExist(configDir);
@@ -240,10 +247,16 @@ static void go(int argc, char *argv[]){
 
 	std::string configSetDir = configDir + "/" + configName;
 	std::string configFile = configSetDir + "/config";
+	std::string fddDir = configSetDir + "/fdd";
+
+	printf("fdd directory: %s\n", fddDir.c_str());
 
 	if(newConfig){
 		createIfNoExist(configSetDir);
+
 		printf("Create new config %s\n", configFile.c_str());
+
+		createIfNoExist(fddDir);
 
 		IniCfg iniCfg(np2oscfg, np2cfg);
 		initload(configFile.c_str(), ini_title, iniCfg.config.data(), iniCfg.config.size());
@@ -293,8 +306,15 @@ static void go(int argc, char *argv[]){
 
 	for (int i = 0; i < 4; i++) {
 		if(strlen(np2cfg.fdd[i])){
-			printf("Ready Disk %s\n", np2cfg.fdd[i]);
-			diskdrv_readyfdd(i, np2cfg.fdd[i], 0);
+			std::string diskname = getFddFilename(fddDir, np2cfg.fdd[i]);
+
+			if(access(diskname.c_str(), F_OK) != 0){
+				printf("Cannot ready disk %s\n", diskname.c_str());
+			}{
+				printf("Ready Disk %s\n", diskname.c_str());
+			}
+
+			diskdrv_readyfdd(i, diskname.c_str(), 0);
 		}
 	}
 
