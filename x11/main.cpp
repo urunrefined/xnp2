@@ -316,6 +316,7 @@ static void go(int argc, char *argv[]){
 
 			if(access(diskname.c_str(), F_OK) != 0){
 				printf("Cannot ready disk %s\n", diskname.c_str());
+				return;
 			}{
 				printf("Ready Disk %s\n", diskname.c_str());
 			}
