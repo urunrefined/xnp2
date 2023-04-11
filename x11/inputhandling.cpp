@@ -105,6 +105,17 @@ static KeyMapping keyTable [] {
 	{KeyButtons::KEY_NUM_0,        0x4e},
 	{KeyButtons::KEY_NUMPAD_COMMA, 0x4f},
 
+	{KeyButtons::KEY_F1,           0x62},
+	{KeyButtons::KEY_F2,           0x63},
+	{KeyButtons::KEY_F3,           0x64},
+	{KeyButtons::KEY_F4,           0x65},
+	{KeyButtons::KEY_F5,           0x66},
+	{KeyButtons::KEY_F6,           0x67},
+	{KeyButtons::KEY_F7,           0x68},
+	{KeyButtons::KEY_F8,           0x69},
+	{KeyButtons::KEY_F9,           0x6a},
+	{KeyButtons::KEY_F10,          0x6b},
+
 	{KeyButtons::KEY_LEFT_SHIFT,   0x70},
 	{KeyButtons::KEY_LEFT_CTRL,    0x74},
 };
