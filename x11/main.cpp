@@ -24,6 +24,8 @@
  */
 
 #include "pulse/PulseSoundEngine.h"
+#include "inputhandling.h"
+
 #include "compiler.h"
 
 #include "np2.h"
@@ -247,6 +249,7 @@ static void go(int argc, char *argv[]){
 
 	std::string configSetDir = configDir + "/" + configName;
 	std::string configFile = configSetDir + "/config";
+	std::string keymapFile = configSetDir + "/keymap";
 	std::string fddDir = configSetDir + "/fdd";
 
 	printf("fdd directory: %s\n", fddDir.c_str());
@@ -284,8 +287,17 @@ static void go(int argc, char *argv[]){
 		return;
 	}
 
+	if(access(keymapFile.c_str(), F_OK) != 0){
+		BR::saveKeyMap(keymapFile.c_str(), BR::getDefaultKeyMap());
+	}
+	else {
+		printf("Keymap %s already exists\n", keymapFile.c_str());
+	}
 
 	printf("Use config %s\n", configFile.c_str());
+	printf("Use keymap %s\n", keymapFile.c_str());
+
+	BR::InputMapper inputMapper(BR::readKeyMap(keymapFile.c_str()));
 
 	IniCfg iniCfg(np2oscfg, np2cfg);
 	initload(configFile.c_str(), ini_title, iniCfg.config.data(), iniCfg.config.size());
@@ -325,7 +337,7 @@ static void go(int argc, char *argv[]){
 		}
 	}
 
-	BR::loop(sfd, np2cfg, np2oscfg, pulseEngine);
+	BR::loop(sfd, inputMapper, np2cfg, np2oscfg, pulseEngine);
 
 	printf("Normal exit\n");
 

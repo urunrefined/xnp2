@@ -9,7 +9,7 @@
 
 namespace BR {
 
-enum class KeyButtons {
+enum class KeyButtons : uint8_t {
 	KEY_LEFT_SHIFT = 0, KEY_LEFT_CTRL, KEY_LEFT_ALT, KEY_RIGHT_ALT, KEY_TAB,
 	
 	KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F,
@@ -34,6 +34,8 @@ enum class KeyButtons {
 	KEY_EQUAL, KEY_MINUS, KEY_PERIOD, KEY_SUPER,
 
 	KEY_SIZE,
+    
+    KEY_NONE = 0xff
 };
 
 enum class MouseButtons {

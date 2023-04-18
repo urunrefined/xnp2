@@ -4,8 +4,7 @@
 #include "compiler.h"
 #include "common.h"
 
-#if 0
-enum {
+enum PC98Key {
 	NKEY_ESC			= 0x00,
 	NKEY_1				= 0x01,
 	NKEY_2				= 0x02,
@@ -122,9 +121,9 @@ enum {
 	NKEY_CAPS			= 0x71,
 	NKEY_KANA			= 0x72,
 	NKEY_GRPH			= 0x73,
-	NKEY_CTRL			= 0x74
+	NKEY_CTRL			= 0x74,
+    NKEY_NONE           = 0xff
 };
-#endif
 
 enum {
 	NKEY_SYSTEM			= 0x90,

@@ -201,6 +201,7 @@ public:
 
 static void glLoop(
 		SignalFD& sfd,
+		InputMapper& inputMapper,
 		VulkanContext& engine,
 		VulkanPhysicalDevice& physicalDevice,
 		HarfbuzzFont& hbfont,
@@ -330,7 +331,7 @@ static void glLoop(
 
 		GLFWInput& input = engine.glfwCtx.getInput();
 
-		handleInput(input, mode, visualScreen, soundEngine);
+		inputMapper.handleInput(input, mode, visualScreen, soundEngine);
 
 		input.reset();
 	}
@@ -344,6 +345,7 @@ static void glLoop(
 
 void loop(
 		SignalFD& sfd,
+		InputMapper& inputMapper,
 		NP2CFG& cfg,
 		NP2OSCFG& oscfg,
 		Sfx::PulseSoundEngine& soundEngine
@@ -365,7 +367,7 @@ void loop(
 #endif
 	VulkanPhysicalDevice physicalDevice = glPhysicalDeviceSelection(engine);
 
-	glLoop(sfd, engine, physicalDevice, hbfont, freetypeFace, soundEngine, cfg, oscfg);
+	glLoop(sfd, inputMapper, engine, physicalDevice, hbfont, freetypeFace, soundEngine, cfg, oscfg);
 }
 
 }
