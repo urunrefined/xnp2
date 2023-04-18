@@ -190,9 +190,9 @@ static void createIfNoExist(const std::string& dirName){
 	}
 }
 
-std::string getFddFilename(const std::string& fddDir, const std::string& file){
+std::string getDiskFilename(const std::string& diskDir, const std::string& file){
 	if(file.size() && file[0] == '/') return file;
-	return fddDir + "/" + file;
+	return diskDir + "/" + file;
 }
 
 static void go(int argc, char *argv[]){
@@ -250,16 +250,16 @@ static void go(int argc, char *argv[]){
 	std::string configSetDir = configDir + "/" + configName;
 	std::string configFile = configSetDir + "/config";
 	std::string keymapFile = configSetDir + "/keymap";
-	std::string fddDir = configSetDir + "/fdd";
+	std::string diskDir = configSetDir + "/disk";
 
-	printf("fdd directory: %s\n", fddDir.c_str());
+	printf("disk directory: %s\n", diskDir.c_str());
 
 	if(newConfig){
 		createIfNoExist(configSetDir);
 
 		printf("Create new config %s\n", configFile.c_str());
 
-		createIfNoExist(fddDir);
+		createIfNoExist(diskDir);
 
 		IniCfg iniCfg(np2oscfg, np2cfg);
 		initload(configFile.c_str(), ini_title, iniCfg.config.data(), iniCfg.config.size());
@@ -324,7 +324,7 @@ static void go(int argc, char *argv[]){
 
 	for (int i = 0; i < 4; i++) {
 		if(strlen(np2cfg.fdd[i])){
-			std::string diskname = getFddFilename(fddDir, np2cfg.fdd[i]);
+			std::string diskname = getDiskFilename(diskDir, np2cfg.fdd[i]);
 
 			if(access(diskname.c_str(), F_OK) != 0){
 				printf("Cannot ready disk %s\n", diskname.c_str());
