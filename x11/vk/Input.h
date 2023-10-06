@@ -1,137 +1,203 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <string>
-#include <vector>
+#include <algorithm>
 #include <array>
 #include <iostream>
-#include <algorithm>
+#include <stdint.h>
+#include <string>
+#include <vector>
 
 namespace BR {
 
 enum class KeyButtons : uint8_t {
-	KEY_LEFT_SHIFT = 0, KEY_LEFT_CTRL, KEY_LEFT_ALT, KEY_RIGHT_ALT, KEY_TAB,
-	
-	KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F,
-	KEY_G, KEY_H, KEY_I, KEY_J, KEY_K, KEY_L,
-	KEY_M, KEY_N, KEY_O, KEY_P, KEY_Q, KEY_R,
-	KEY_S, KEY_T, KEY_U, KEY_V, KEY_W, KEY_X,
-	KEY_Y, KEY_Z,
-	
-	KEY_1, KEY_2, KEY_3, KEY_4, KEY_5,
-	KEY_6, KEY_7, KEY_8, KEY_9, KEY_0,
-	
-	KEY_NUM_1, KEY_NUM_2, KEY_NUM_3, KEY_NUM_4, KEY_NUM_5,
-	KEY_NUM_6, KEY_NUM_7, KEY_NUM_8, KEY_NUM_9, KEY_NUM_0,
-	
-	KEY_BACKSPACE, KEY_DELETE, KEY_ENTER, KEY_SPACE, KEY_ESC, KEY_HOME, KEY_END, KEY_INSERT,
-	KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12,
-	
-	KEY_NUMPAD_PLUS, KEY_NUMPAD_MINUS, KEY_NUMPAD_DIV, KEY_NUMPAD_MULT, KEY_NUMPAD_NUM,
-	KEY_NUMPAD_ENTER, KEY_NUMPAD_COMMA,
+    KEY_LEFT_SHIFT = 0,
+    KEY_LEFT_CTRL,
+    KEY_LEFT_ALT,
+    KEY_RIGHT_ALT,
+    KEY_TAB,
 
-	KEY_ARROW_LEFT, KEY_ARROW_UP, KEY_ARROW_RIGHT, KEY_ARROW_DOWN,
-	KEY_EQUAL, KEY_MINUS, KEY_PERIOD, KEY_SUPER,
+    KEY_A,
+    KEY_B,
+    KEY_C,
+    KEY_D,
+    KEY_E,
+    KEY_F,
+    KEY_G,
+    KEY_H,
+    KEY_I,
+    KEY_J,
+    KEY_K,
+    KEY_L,
+    KEY_M,
+    KEY_N,
+    KEY_O,
+    KEY_P,
+    KEY_Q,
+    KEY_R,
+    KEY_S,
+    KEY_T,
+    KEY_U,
+    KEY_V,
+    KEY_W,
+    KEY_X,
+    KEY_Y,
+    KEY_Z,
 
-	KEY_SIZE,
-    
+    KEY_1,
+    KEY_2,
+    KEY_3,
+    KEY_4,
+    KEY_5,
+    KEY_6,
+    KEY_7,
+    KEY_8,
+    KEY_9,
+    KEY_0,
+
+    KEY_NUM_1,
+    KEY_NUM_2,
+    KEY_NUM_3,
+    KEY_NUM_4,
+    KEY_NUM_5,
+    KEY_NUM_6,
+    KEY_NUM_7,
+    KEY_NUM_8,
+    KEY_NUM_9,
+    KEY_NUM_0,
+
+    KEY_BACKSPACE,
+    KEY_DELETE,
+    KEY_ENTER,
+    KEY_SPACE,
+    KEY_ESC,
+    KEY_HOME,
+    KEY_END,
+    KEY_INSERT,
+    KEY_F1,
+    KEY_F2,
+    KEY_F3,
+    KEY_F4,
+    KEY_F5,
+    KEY_F6,
+    KEY_F7,
+    KEY_F8,
+    KEY_F9,
+    KEY_F10,
+    KEY_F11,
+    KEY_F12,
+
+    KEY_NUMPAD_PLUS,
+    KEY_NUMPAD_MINUS,
+    KEY_NUMPAD_DIV,
+    KEY_NUMPAD_MULT,
+    KEY_NUMPAD_NUM,
+    KEY_NUMPAD_ENTER,
+    KEY_NUMPAD_COMMA,
+
+    KEY_ARROW_LEFT,
+    KEY_ARROW_UP,
+    KEY_ARROW_RIGHT,
+    KEY_ARROW_DOWN,
+    KEY_EQUAL,
+    KEY_MINUS,
+    KEY_PERIOD,
+    KEY_SUPER,
+
+    KEY_SIZE,
+
     KEY_NONE = 0xff
 };
 
 enum class MouseButtons {
-	BUTTON_LEFT = 0, BUTTON_RIGHT, BUTTON_MIDDLE, SCROLL_UP, SCROLL_DOWN, BUTTON_SIZE
+    BUTTON_LEFT = 0,
+    BUTTON_RIGHT,
+    BUTTON_MIDDLE,
+    SCROLL_UP,
+    SCROLL_DOWN,
+    BUTTON_SIZE
 };
 
-enum HIDAction {
-	RELEASED = 0,
-	PRESSED
-};
+enum HIDAction { RELEASED = 0, PRESSED };
 
 class KeyEvent {
-public:
-	KeyButtons key;
-	HIDAction state;
+  public:
+    KeyButtons key;
+    HIDAction state;
 
-	KeyEvent(KeyButtons key_,
-	HIDAction state_) : key(key_), state(state_)
-	{}
+    KeyEvent(KeyButtons key_, HIDAction state_) : key(key_), state(state_) {}
 };
 
-template <class T1>
-struct HIDInput{
-	bool pressed;
-	bool triggered;
+template <class T1> struct HIDInput {
+    bool pressed;
+    bool triggered;
 
-	HIDInput() : pressed(false), triggered(false){
-	}
+    HIDInput() : pressed(false), triggered(false) {}
 
-	void push(){
-		pressed = true;
-		triggered = true;
-	}
+    void push() {
+        pressed = true;
+        triggered = true;
+    }
 
-	void release(){
-		pressed = false;
-		triggered = false;
-	}
+    void release() {
+        pressed = false;
+        triggered = false;
+    }
 
-	void resetTriggered(){
-		triggered = false;
-	}
+    void resetTriggered() { triggered = false; }
 };
 
-//TODO: Split into input and devices (Keyboard / Mouse / Ctrl etc)
+// TODO: Split into input and devices (Keyboard / Mouse / Ctrl etc)
 
 class Input {
 
-private:	
-	Input(const Input& input) = delete;
-	std::array <HIDInput<MouseButtons>, (size_t)MouseButtons::BUTTON_SIZE> mouseButtons;
-	std::array <HIDInput<KeyButtons>, (size_t)KeyButtons::KEY_SIZE> keyButtons;
-	
-public:
-	std::vector<KeyEvent> keyEvents;
+  private:
+    Input(const Input &input) = delete;
+    std::array<HIDInput<MouseButtons>, (size_t)MouseButtons::BUTTON_SIZE>
+        mouseButtons;
+    std::array<HIDInput<KeyButtons>, (size_t)KeyButtons::KEY_SIZE> keyButtons;
 
-	float mouse_x = 0;
-	float mouse_y = 0;
+  public:
+    std::vector<KeyEvent> keyEvents;
 
-	float mouse_move_x = 0;
-	float mouse_move_y = 0;
+    float mouse_x = 0;
+    float mouse_y = 0;
 
+    float mouse_move_x = 0;
+    float mouse_move_y = 0;
 
+    Input();
 
-	Input();
-	
-	void pressKey(KeyButtons key);
-	
-	//rename to releaseKey
-	void letgoKey(KeyButtons key);
+    void pressKey(KeyButtons key);
 
-	/*Current status of the key*/
-	bool getButton(KeyButtons key) const;
-	
-	/*************************MOUSE***********************************/
+    // rename to releaseKey
+    void letgoKey(KeyButtons key);
 
-	void pressButton(MouseButtons key);
-	
-	//rename to releaseKey
-	void letgoButton(MouseButtons key);
+    /*Current status of the key*/
+    bool getButton(KeyButtons key) const;
 
-	/*One-time key-press (gets reset each frame)*/
-	bool getTriggeredButton(MouseButtons key) const;
-	
-	/*Current status of the key*/
-	bool getButton(MouseButtons key) const;
-	
-	void reset();
-	void moveMouse(float x, float y);
+    /*************************MOUSE***********************************/
 
-	void getMouseCoords(unsigned int& x, unsigned int& y) const;
-	void getMouseMove(short& x, short& y) const;
-	
-	bool mouseHasMoved();
+    void pressButton(MouseButtons key);
+
+    // rename to releaseKey
+    void letgoButton(MouseButtons key);
+
+    /*One-time key-press (gets reset each frame)*/
+    bool getTriggeredButton(MouseButtons key) const;
+
+    /*Current status of the key*/
+    bool getButton(MouseButtons key) const;
+
+    void reset();
+    void moveMouse(float x, float y);
+
+    void getMouseCoords(unsigned int &x, unsigned int &y) const;
+    void getMouseMove(short &x, short &y) const;
+
+    bool mouseHasMoved();
 };
 
-}
+} // namespace BR
 
 #endif // INPUT_H
