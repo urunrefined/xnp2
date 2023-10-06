@@ -23,82 +23,77 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "compiler.h"
 #include "soundmng.h"
+#include "compiler.h"
 #include "parts.h"
 
-#include <sys/stat.h>
 #include <strings.h>
+#include <sys/stat.h>
 
 #include "sound/vermouth/vermouth.h"
 
 #include "pulse/PulseSoundEngine.h"
-
 
 #include <memory>
 
 extern "C" MIDIMOD vermouth_module;
 MIDIMOD vermouth_module = NULL;
 
-UINT soundmng_getRate(void *soundRef){
-	BR::Sfx::PulseSoundEngine& engine = *((BR::Sfx::PulseSoundEngine *)soundRef);
-	return engine.sampleRate;
+UINT soundmng_getRate(void *soundRef) {
+    BR::Sfx::PulseSoundEngine &engine =
+        *((BR::Sfx::PulseSoundEngine *)soundRef);
+    return engine.sampleRate;
 }
 
 BRESULT
-soundmng_initialize(void)
-{
-	return 0;
-}
+soundmng_initialize(void) { return 0; }
 
-void
-soundmng_deinitialize(void)
-{
+void soundmng_deinitialize(void) {}
 
-}
+void soundmng_reset(void *soundRef) {
 
-void soundmng_reset(void *soundRef){
+    if (!soundRef)
+        return;
 
-	if(!soundRef) return;
+    BR::Sfx::PulseSoundEngine &engine =
+        *((BR::Sfx::PulseSoundEngine *)soundRef);
 
-	BR::Sfx::PulseSoundEngine& engine = *((BR::Sfx::PulseSoundEngine *)soundRef);
-
-	engine.reset();
+    engine.reset();
 }
 
 void PARTSCALL saturation_s16_2(SINT16 *dst, const SINT32 *src, UINT size) {
 
-	SINT32	data;
+    SINT32 data;
 
-	while(size--) {
-		data = *src++;
-		if (data > 32767) {
-			data = 32767;
-		}
-		else if (data < -32768) {
-			data = -32768;
-		}
-		*dst++ = (SINT16)data;
-	}
+    while (size--) {
+        data = *src++;
+        if (data > 32767) {
+            data = 32767;
+        } else if (data < -32768) {
+            data = -32768;
+        }
+        *dst++ = (SINT16)data;
+    }
 }
 
-void
-soundmng_sync(void *soundRef, int index, const SINT32 *pcm, size_t sz)
-{
-	if(!soundRef || !pcm || !sz) return;
+void soundmng_sync(void *soundRef, int index, const SINT32 *pcm, size_t sz) {
+    if (!soundRef || !pcm || !sz)
+        return;
 
-	BR::Sfx::PulseSoundEngine& engine = *((BR::Sfx::PulseSoundEngine *)soundRef);
+    BR::Sfx::PulseSoundEngine &engine =
+        *((BR::Sfx::PulseSoundEngine *)soundRef);
 
-	SINT16 buffer[sz];
-	saturation_s16_2(buffer, pcm, sz);
+    SINT16 buffer[sz];
+    saturation_s16_2(buffer, pcm, sz);
 
-	engine.add(index, buffer, sz);
+    engine.add(index, buffer, sz);
 }
 
-void soundmng_addStream(const void *soundRef, const char *name, int index){
-	if(!soundRef || !name) return;
+void soundmng_addStream(const void *soundRef, const char *name, int index) {
+    if (!soundRef || !name)
+        return;
 
-	BR::Sfx::PulseSoundEngine& engine = *((BR::Sfx::PulseSoundEngine *)soundRef);
-	engine.addStream(name, index);
+    BR::Sfx::PulseSoundEngine &engine =
+        *((BR::Sfx::PulseSoundEngine *)soundRef);
+    engine.addStream(name, index);
 }
-

@@ -23,362 +23,352 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "pulse/PulseSoundEngine.h"
 #include "inputhandling.h"
+#include "pulse/PulseSoundEngine.h"
 
 #include "compiler.h"
 
-#include "np2.h"
-#include "fdd/diskdrv.h"
+#include "commng.h"
 #include "dosio.h"
+#include "exception.h"
+#include "fdd/diskdrv.h"
+#include "global.h"
 #include "ini.h"
+#include "inicfg.h"
+#include "keystat.h"
+#include "loop.h"
+#include "np2.h"
 #include "parts.h"
 #include "pccore.h"
 #include "s98.h"
-#include "commng.h"
-#include "soundmng.h"
 #include "signalFD.h"
-#include "loop.h"
-#include "exception.h"
-#include "keystat.h"
-#include "inicfg.h"
-#include "global.h"
+#include "soundmng.h"
 
-#include <sys/stat.h>
 #include <getopt.h>
 #include <locale.h>
 #include <signal.h>
-#include <unistd.h>
+#include <sys/stat.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <stdexcept>
 
 static const char ini_title[] = "NekoProjectII_Katze";
 
 static struct option longopts[] = {
-	{ "config",     required_argument, 0,  'c' },
-	{ "newconfig",  required_argument, 0,  'n' },
-	{ "listconfig", no_argument,       0,  'l' },
-	{ "help",       no_argument,       0,  'h' },
-	{ 0,            0,                 0,   0  },
+    {"config", required_argument, 0, 'c'},
+    {"newconfig", required_argument, 0, 'n'},
+    {"listconfig", no_argument, 0, 'l'},
+    {"help", no_argument, 0, 'h'},
+    {0, 0, 0, 0},
 };
 
-static void
-usage(const char *progname)
-{
-	printf("Usage: %s [options]\n\n", progname);
-	printf("options:\n");
-	printf("  --help            [-h]              : print this message\n");
-	printf("  --config          [-c] <configname> : specify config file\n");
-	printf("  --newconfig       [-n] <configname> : specify config name\n");
-	printf("  --listconfig      [-l]              : list available configs\n");
+static void usage(const char *progname) {
+    printf("Usage: %s [options]\n\n", progname);
+    printf("options:\n");
+    printf("  --help            [-h]              : print this message\n");
+    printf("  --config          [-c] <configname> : specify config file\n");
+    printf("  --newconfig       [-n] <configname> : specify config name\n");
+    printf("  --listconfig      [-l]              : list available configs\n");
 
-	exit(1);
+    exit(1);
 }
 
-static void parseArguments(int argc, char *argv[],
-		std::string& progname, std::string& configName, bool& help, bool& newConfig, bool& listConfig, bool& useConfig){
+static void parseArguments(int argc, char *argv[], std::string &progname,
+                           std::string &configName, bool &help, bool &newConfig,
+                           bool &listConfig, bool &useConfig) {
 
-	int ch;
+    int ch;
 
-	if(argc < 1){
-		printf("Shell error -- No program name");
-		exit(56);
-	}
+    if (argc < 1) {
+        printf("Shell error -- No program name");
+        exit(56);
+    }
 
-	progname = argv[0];
+    progname = argv[0];
 
-	while ((ch = getopt_long(argc, argv, "hlc:n:", longopts, NULL)) != -1) {
-		switch (ch) {
-		case 'c':
-		{
-			useConfig = true;
-			configName = optarg;
-			break;
-		}
-		case 'n':
-		{
-			newConfig = true;
-			configName = optarg;
-			break;
-		}
-		case 'l':
-		{
-			listConfig = true;
-			break;
-		}
+    while ((ch = getopt_long(argc, argv, "hlc:n:", longopts, NULL)) != -1) {
+        switch (ch) {
+        case 'c': {
+            useConfig = true;
+            configName = optarg;
+            break;
+        }
+        case 'n': {
+            newConfig = true;
+            configName = optarg;
+            break;
+        }
+        case 'l': {
+            listConfig = true;
+            break;
+        }
 
-		case 'h':
-		default:
-			help = true;
-			break;
-		}
-	}
+        case 'h':
+        default:
+            help = true;
+            break;
+        }
+    }
 }
 
-class Directory{
-public:
-	DIR *dir;
+class Directory {
+  public:
+    DIR *dir;
 
-	Directory(const char *name){
-		dir = opendir(name);
-		if(!dir){
-			throw std::string ("Cannot open directory ") + name;
-		}
-	}
+    Directory(const char *name) {
+        dir = opendir(name);
+        if (!dir) {
+            throw std::string("Cannot open directory ") + name;
+        }
+    }
 
-	~Directory(){
-		closedir(dir);
-	}
+    ~Directory() { closedir(dir); }
 };
 
-std::vector<std::string> getDirFiles(const char* name){
-	Directory directory(name);
+std::vector<std::string> getDirFiles(const char *name) {
+    Directory directory(name);
 
-	std::vector<std::string> filenames;
+    std::vector<std::string> filenames;
 
-	struct dirent *dir;
+    struct dirent *dir;
 
-	while((dir = readdir(directory.dir)) != 0){
-		if(strcmp(dir->d_name, ".") == 0) continue;
-		if(strcmp(dir->d_name, "..") == 0) continue;
-		filenames.push_back(dir->d_name);
-	}
+    while ((dir = readdir(directory.dir)) != 0) {
+        if (strcmp(dir->d_name, ".") == 0)
+            continue;
+        if (strcmp(dir->d_name, "..") == 0)
+            continue;
+        filenames.push_back(dir->d_name);
+    }
 
-	return filenames;
+    return filenames;
 }
 
-static std::vector<std::string> discoverConfigFiles(const std::string& configDir){
-	return getDirFiles(configDir.c_str());
+static std::vector<std::string>
+discoverConfigFiles(const std::string &configDir) {
+    return getDirFiles(configDir.c_str());
 }
 
-static std::string discoverHomeDir(){
-	char *env = getenv("HOME");
+static std::string discoverHomeDir() {
+    char *env = getenv("HOME");
 
-	if(!env){
-		printf("No home environment variable set. Please set it\n");
-		exit(2);
-	}
+    if (!env) {
+        printf("No home environment variable set. Please set it\n");
+        exit(2);
+    }
 
-	return env;
+    return env;
 }
 
-static std::string discoverXnp2Dir(const std::string& homeDir){
-	return homeDir + "/.np2";
+static std::string discoverXnp2Dir(const std::string &homeDir) {
+    return homeDir + "/.np2";
 }
 
-static std::string discoverConfigDir(const std::string& xnp2Dir){
-	return xnp2Dir + "/config";
+static std::string discoverConfigDir(const std::string &xnp2Dir) {
+    return xnp2Dir + "/config";
 }
 
-static std::string discoverArtifactDir(const std::string& xnp2Dir){
-	return xnp2Dir + "/res";
+static std::string discoverArtifactDir(const std::string &xnp2Dir) {
+    return xnp2Dir + "/res";
 }
 
-static void createIfNoExist(const std::string& dirName){
-	struct stat sb;
+static void createIfNoExist(const std::string &dirName) {
+    struct stat sb;
 
-	if (stat(dirName.c_str(), &sb) < 0) {
-		if (mkdir(dirName.c_str(), 0700) < 0) {
-			perror(dirName.c_str());
-			exit(1);
-		}
-	} else if (!S_ISDIR(sb.st_mode)) {
-		printf("%s isn't directory.\n",
-			dirName.c_str());
-		exit(1);
-	}
+    if (stat(dirName.c_str(), &sb) < 0) {
+        if (mkdir(dirName.c_str(), 0700) < 0) {
+            perror(dirName.c_str());
+            exit(1);
+        }
+    } else if (!S_ISDIR(sb.st_mode)) {
+        printf("%s isn't directory.\n", dirName.c_str());
+        exit(1);
+    }
 }
 
-std::string getDiskFilename(const std::string& diskDir, const std::string& file){
-	if(file.size() && file[0] == '/') return file;
-	return diskDir + "/" + file;
+std::string getDiskFilename(const std::string &diskDir,
+                            const std::string &file) {
+    if (file.size() && file[0] == '/')
+        return file;
+    return diskDir + "/" + file;
 }
 
-static void go(int argc, char *argv[]){
-	BR::SignalFD sfd;
+static void go(int argc, char *argv[]) {
+    BR::SignalFD sfd;
 
-	bool listConfig = false;
-	bool newConfig = false;
-	bool useConfig = false;
-	bool help = false;
+    bool listConfig = false;
+    bool newConfig = false;
+    bool useConfig = false;
+    bool help = false;
 
-	std::string progName;
-	std::string configName;
+    std::string progName;
+    std::string configName;
 
-	parseArguments(argc, argv, progName, configName, help, newConfig, listConfig, useConfig);
+    parseArguments(argc, argv, progName, configName, help, newConfig,
+                   listConfig, useConfig);
 
-	if(help){
-		usage(progName.c_str());
-	}
+    if (help) {
+        usage(progName.c_str());
+    }
 
-	std::string homeDir = discoverHomeDir();
-	std::string xnp2Dir = discoverXnp2Dir(homeDir);
-	std::string configDir = discoverConfigDir(xnp2Dir);
-	std::string artifactDir = discoverArtifactDir(xnp2Dir);
+    std::string homeDir = discoverHomeDir();
+    std::string xnp2Dir = discoverXnp2Dir(homeDir);
+    std::string configDir = discoverConfigDir(xnp2Dir);
+    std::string artifactDir = discoverArtifactDir(xnp2Dir);
 
+    printf("xnp2 directory:     %s\n", xnp2Dir.c_str());
+    printf("config directory:   %s\n", configDir.c_str());
+    printf("artifact directory: %s\n", artifactDir.c_str());
 
-	printf("xnp2 directory:     %s\n", xnp2Dir.c_str());
-	printf("config directory:   %s\n", configDir.c_str());
-	printf("artifact directory: %s\n", artifactDir.c_str());
+    createIfNoExist(xnp2Dir);
+    createIfNoExist(configDir);
+    createIfNoExist(artifactDir);
 
+    std::vector<std::string> configs = discoverConfigFiles(configDir);
 
-	createIfNoExist(xnp2Dir);
-	createIfNoExist(configDir);
-	createIfNoExist(artifactDir);
+    // TODO Statfile
+    std::string statFile;
 
-	std::vector<std::string> configs = discoverConfigFiles(configDir);
+    if (listConfig) {
+        if (configs.empty()) {
+            printf("No available configs");
+            usage(progName.c_str());
+        }
 
-	//TODO Statfile
-	std::string statFile;
+        printf("Available configs:\n");
 
-	if(listConfig){
-		if(configs.empty()){
-			printf("No available configs");
-			usage(progName.c_str());
-		}
+        for (const auto &config : configs) {
+            printf("-- %s\n", config.c_str());
+        }
 
-		printf("Available configs:\n");
+        return;
+    }
 
-		for(const auto& config : configs){
-			printf("-- %s\n", config.c_str());
-		}
+    std::string configSetDir = configDir + "/" + configName;
+    std::string configFile = configSetDir + "/config";
+    std::string keymapFile = configSetDir + "/keymap";
+    std::string diskDir = configSetDir + "/disk";
 
-		return;
-	}
+    printf("disk directory: %s\n", diskDir.c_str());
 
-	std::string configSetDir = configDir + "/" + configName;
-	std::string configFile = configSetDir + "/config";
-	std::string keymapFile = configSetDir + "/keymap";
-	std::string diskDir = configSetDir + "/disk";
+    if (newConfig) {
+        createIfNoExist(configSetDir);
 
-	printf("disk directory: %s\n", diskDir.c_str());
+        printf("Create new config %s\n", configFile.c_str());
 
-	if(newConfig){
-		createIfNoExist(configSetDir);
+        createIfNoExist(diskDir);
 
-		printf("Create new config %s\n", configFile.c_str());
+        IniCfg iniCfg(np2oscfg, np2cfg);
+        initload(configFile.c_str(), ini_title, iniCfg.config.data(),
+                 iniCfg.config.size());
 
-		createIfNoExist(diskDir);
+        if (access(configFile.c_str(), F_OK) != 0) {
+            initsave(configFile.c_str(), ini_title, iniCfg.config.data(),
+                     iniCfg.config.size());
+            printf("Config created, set font file in %s\n", configFile.c_str());
+            return;
+        } else {
+            printf("Config already exists. Stop.\n");
+            return;
+        }
+    }
 
-		IniCfg iniCfg(np2oscfg, np2cfg);
-		initload(configFile.c_str(), ini_title, iniCfg.config.data(), iniCfg.config.size());
+    if (!useConfig) {
+        printf("No config selected\n");
+        usage(progName.c_str());
+        return;
+    }
 
-		if(access(configFile.c_str(), F_OK) != 0){
-			initsave(configFile.c_str(), ini_title, iniCfg.config.data(), iniCfg.config.size());
-			printf("Config created, set font file in %s\n", configFile.c_str());
-			return;
-		}
-		else
-		{
-			printf("Config already exists. Stop.\n");
-			return;
-		}
-	}
+    if (access(configFile.c_str(), F_OK) != 0) {
+        printf("No config named %s\n", configFile.c_str());
+        return;
+    }
 
-	if(!useConfig){
-		printf("No config selected\n");
-		usage(progName.c_str());
-		return;
-	}
+    if (access(keymapFile.c_str(), F_OK) != 0) {
+        BR::saveKeyMap(keymapFile.c_str(), BR::getDefaultKeyMap());
+    } else {
+        printf("Keymap %s already exists\n", keymapFile.c_str());
+    }
 
-	if(access(configFile.c_str(), F_OK) != 0){
-		printf("No config named %s\n", configFile.c_str());
-		return;
-	}
+    printf("Use config %s\n", configFile.c_str());
+    printf("Use keymap %s\n", keymapFile.c_str());
 
-	if(access(keymapFile.c_str(), F_OK) != 0){
-		BR::saveKeyMap(keymapFile.c_str(), BR::getDefaultKeyMap());
-	}
-	else {
-		printf("Keymap %s already exists\n", keymapFile.c_str());
-	}
+    BR::InputMapper inputMapper(BR::readKeyMap(keymapFile.c_str()));
 
-	printf("Use config %s\n", configFile.c_str());
-	printf("Use keymap %s\n", keymapFile.c_str());
+    IniCfg iniCfg(np2oscfg, np2cfg);
+    initload(configFile.c_str(), ini_title, iniCfg.config.data(),
+             iniCfg.config.size());
 
-	BR::InputMapper inputMapper(BR::readKeyMap(keymapFile.c_str()));
+    if (np2cfg.fontfile[0] == '\0') {
+        printf("Set font file in %s", configFile.c_str());
+        return;
+    }
 
-	IniCfg iniCfg(np2oscfg, np2cfg);
-	initload(configFile.c_str(), ini_title, iniCfg.config.data(), iniCfg.config.size());
+    file_setcd((artifactDir + "/").c_str());
 
-	if(np2cfg.fontfile[0] == '\0'){
-		printf("Set font file in %s", configFile.c_str());
-		return;
-	}
+    rand_setseed((SINT32)time(NULL));
+    keystat_initialize();
+    soundmng_initialize();
+    commng_initialize();
 
-	file_setcd((artifactDir + "/") .c_str());
+    BR::Sfx::PulseSoundEngine pulseEngine(np2cfg.samplingrate);
+    Thread thread(pulseEngine);
 
-	rand_setseed((SINT32)time(NULL));
-	keystat_initialize();
-	soundmng_initialize();
-	commng_initialize();
+    pccore_init(&pulseEngine);
+    pccore_reset(&pulseEngine);
 
-	BR::Sfx::PulseSoundEngine pulseEngine(np2cfg.samplingrate);
-	Thread thread(pulseEngine);
+    S98_init();
 
-	pccore_init(&pulseEngine);
-	pccore_reset(&pulseEngine);
+    for (int i = 0; i < 4; i++) {
+        if (strlen(np2cfg.fdd[i])) {
+            std::string diskname = getDiskFilename(diskDir, np2cfg.fdd[i]);
 
-	S98_init();
+            if (access(diskname.c_str(), F_OK) != 0) {
+                printf("Cannot ready disk %s\n", diskname.c_str());
+                return;
+            }
+            { printf("Ready Disk %s\n", diskname.c_str()); }
 
-	for (int i = 0; i < 4; i++) {
-		if(strlen(np2cfg.fdd[i])){
-			std::string diskname = getDiskFilename(diskDir, np2cfg.fdd[i]);
+            diskdrv_readyfdd(i, diskname.c_str(), 0);
+        }
+    }
 
-			if(access(diskname.c_str(), F_OK) != 0){
-				printf("Cannot ready disk %s\n", diskname.c_str());
-				return;
-			}{
-				printf("Ready Disk %s\n", diskname.c_str());
-			}
+    BR::loop(sfd, inputMapper, np2cfg, np2oscfg, pulseEngine);
 
-			diskdrv_readyfdd(i, diskname.c_str(), 0);
-		}
-	}
+    printf("Normal exit\n");
 
-	BR::loop(sfd, inputMapper, np2cfg, np2oscfg, pulseEngine);
+    pccore_cfgupdate();
+    S98_trash();
 
-	printf("Normal exit\n");
+    pccore_term();
+    soundmng_deinitialize();
 
-	pccore_cfgupdate();
-	S98_trash();
-
-	pccore_term();
-	soundmng_deinitialize();
-
-	initsave(configFile.c_str(), ini_title, iniCfg.config.data(), iniCfg.config.size());
+    initsave(configFile.c_str(), ini_title, iniCfg.config.data(),
+             iniCfg.config.size());
 }
 
 /*
  * main
  */
-int
-main(int argc, char *argv[])
-{
-	try {
-		go(argc, argv);
-	}
-	catch(BR::Exception& ex){
-		printf("np2 exception thrown [%s]\n", ex.msg);
-	}
-	catch(const std::string& ex){
-		printf("np2 exception thrown [%s]\n", ex.c_str());
-	}
-	catch(BR::CException& ex){
-		printf("np2 C lib exception thrown [%s] errno [%d, %s]\n",
-			ex.msg, ex.osErrno, strerror(ex.osErrno));
-	}
-	catch(const char *ex){
-		printf("np2 exception thrown [%s]\n", ex);
-	}
+int main(int argc, char *argv[]) {
+    try {
+        go(argc, argv);
+    } catch (BR::Exception &ex) {
+        printf("np2 exception thrown [%s]\n", ex.msg);
+    } catch (const std::string &ex) {
+        printf("np2 exception thrown [%s]\n", ex.c_str());
+    } catch (BR::CException &ex) {
+        printf("np2 C lib exception thrown [%s] errno [%d, %s]\n", ex.msg,
+               ex.osErrno, strerror(ex.osErrno));
+    } catch (const char *ex) {
+        printf("np2 exception thrown [%s]\n", ex);
+    }
 
-	catch(std::exception& ex){
-		printf("stdlib exception thrown [%s]\n", ex.what());
-	}
-	catch(...){
-		printf("Unknown exception thrown\n");
-	}
+    catch (std::exception &ex) {
+        printf("stdlib exception thrown [%s]\n", ex.what());
+    } catch (...) {
+        printf("Unknown exception thrown\n");
+    }
 
-	return 0;
+    return 0;
 }

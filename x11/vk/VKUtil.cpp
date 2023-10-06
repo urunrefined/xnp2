@@ -1,230 +1,271 @@
-#include <vector>
+#include <algorithm>
 #include <array>
-#include <set>
+#include <fstream>
 #include <memory>
 #include <new>
+#include <set>
 #include <stdexcept>
-#include <fstream>
-#include <algorithm>
+#include <vector>
 
 #include "VKUtil.h"
 
 namespace BR {
 
-uint32_t findMemoryType(const VkPhysicalDevice& physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties) {
-	VkPhysicalDeviceMemoryProperties memProperties;
-	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+uint32_t findMemoryType(const VkPhysicalDevice &physicalDevice,
+                        uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
 
-	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-		if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
-			return i;
-		}
-	}
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+        if ((typeFilter & (1 << i)) &&
+            (memProperties.memoryTypes[i].propertyFlags & properties) ==
+                properties) {
+            return i;
+        }
+    }
 
-	throw std::runtime_error("failed to find suitable memory type!");
+    throw std::runtime_error("failed to find suitable memory type!");
 }
 
-VkRect2D getIntegerScissor(unsigned int multipleX, unsigned int multipleY, unsigned int width, unsigned int height){
-	unsigned int divX = width / multipleX;
-	unsigned int divY = height / multipleY;
+VkRect2D getIntegerScissor(unsigned int multipleX, unsigned int multipleY,
+                           unsigned int width, unsigned int height) {
+    unsigned int divX = width / multipleX;
+    unsigned int divY = height / multipleY;
 
-	if(divX == 0 || divY == 0) return {{0,0}, {width, height}};
+    if (divX == 0 || divY == 0)
+        return {{0, 0}, {width, height}};
 
-	unsigned int leastCommonDenominator = std::min(divX, divY);
+    unsigned int leastCommonDenominator = std::min(divX, divY);
 
-	uint32_t extentX = leastCommonDenominator * multipleX;
-	uint32_t extentY = leastCommonDenominator * multipleY;
+    uint32_t extentX = leastCommonDenominator * multipleX;
+    uint32_t extentY = leastCommonDenominator * multipleY;
 
-	int32_t offsetX = (width - extentX)  / 2;
-	int32_t offsetY = (height - extentY) / 2;
+    int32_t offsetX = (width - extentX) / 2;
+    int32_t offsetY = (height - extentY) / 2;
 
-	return {{offsetX, offsetY}, {extentX, extentY}};
+    return {{offsetX, offsetY}, {extentX, extentY}};
 }
 
-VkRect2D getAspectScissor(double ideal, unsigned int width, unsigned int height){
-	unsigned int xOffset = 0;
-	unsigned int yOffset = 0;
+VkRect2D getAspectScissor(double ideal, unsigned int width,
+                          unsigned int height) {
+    unsigned int xOffset = 0;
+    unsigned int yOffset = 0;
 
-	double ratio = (double)width / (double)height;
+    double ratio = (double)width / (double)height;
 
-	if(ratio > ideal){
-		xOffset = (width - (unsigned int)((double) width / (ratio / ideal)));
-	}
-	else if(ratio < ideal){
-		yOffset = (height - (unsigned int)((double) height / (1 / (ratio / ideal))));
-	}
+    if (ratio > ideal) {
+        xOffset = (width - (unsigned int)((double)width / (ratio / ideal)));
+    } else if (ratio < ideal) {
+        yOffset =
+            (height - (unsigned int)((double)height / (1 / (ratio / ideal))));
+    }
 
-	if(xOffset > width) xOffset = width;
-	if(yOffset > height) yOffset = height;
+    if (xOffset > width)
+        xOffset = width;
+    if (yOffset > height)
+        yOffset = height;
 
-	//printf("%u, %u | %u, %u | %u, %u\n", width, height, xOffset/2, yOffset / 2, width - xOffset, height - yOffset);
-	VkRect2D scissor;
+    // printf("%u, %u | %u, %u | %u, %u\n", width, height, xOffset/2, yOffset /
+    // 2, width - xOffset, height - yOffset);
+    VkRect2D scissor;
 
-	scissor.offset = VkOffset2D {(int32_t)(xOffset / 2), (int32_t)(yOffset / 2)};
-	scissor.extent = VkExtent2D {width - xOffset, height - yOffset};
+    scissor.offset = VkOffset2D{(int32_t)(xOffset / 2), (int32_t)(yOffset / 2)};
+    scissor.extent = VkExtent2D{width - xOffset, height - yOffset};
 
-	if(scissor.extent.width < 1) scissor.extent.width = 1;
-	if(scissor.extent.height < 1) scissor.extent.height = 1;
+    if (scissor.extent.width < 1)
+        scissor.extent.width = 1;
+    if (scissor.extent.height < 1)
+        scissor.extent.height = 1;
 
-	return scissor;
+    return scissor;
 }
 
-//Same thing, just ignore the aspect
-VkRect2D get1to1Scissor(unsigned int width, unsigned int height){
-	unsigned int xOffset = 0;
-	unsigned int yOffset = 0;
+// Same thing, just ignore the aspect
+VkRect2D get1to1Scissor(unsigned int width, unsigned int height) {
+    unsigned int xOffset = 0;
+    unsigned int yOffset = 0;
 
-	if(width > height){
-		xOffset = width - height;
-	}
-	else if(height > width){
-		yOffset = height - width;
-	}
+    if (width > height) {
+        xOffset = width - height;
+    } else if (height > width) {
+        yOffset = height - width;
+    }
 
-	VkRect2D scissor;
+    VkRect2D scissor;
 
-	scissor.offset = VkOffset2D {(int32_t)(xOffset / 2), (int32_t)(yOffset / 2)};
-	scissor.extent = VkExtent2D {width - xOffset, height - yOffset};
+    scissor.offset = VkOffset2D{(int32_t)(xOffset / 2), (int32_t)(yOffset / 2)};
+    scissor.extent = VkExtent2D{width - xOffset, height - yOffset};
 
-	if(scissor.extent.width < 1) scissor.extent.width = 1;
-	if(scissor.extent.height < 1) scissor.extent.height = 1;
+    if (scissor.extent.width < 1)
+        scissor.extent.width = 1;
+    if (scissor.extent.height < 1)
+        scissor.extent.height = 1;
 
-	return scissor;
+    return scissor;
 }
 
-SwapChainSupportDetails::SwapChainSupportDetails(const VkPhysicalDevice& device, const VkSurfaceKHR& surface) {
+SwapChainSupportDetails::SwapChainSupportDetails(const VkPhysicalDevice &device,
+                                                 const VkSurfaceKHR &surface) {
 
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &capabilities);
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &capabilities);
 
-	uint32_t formatCount;
-	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount,
+                                         nullptr);
 
-	if (formatCount != 0) {
-		formats.resize(formatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, formats.data());
-	}
+    if (formatCount != 0) {
+        formats.resize(formatCount);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount,
+                                             formats.data());
+    }
 
-	uint32_t presentModeCount;
-	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
+                                              &presentModeCount, nullptr);
 
-	if (presentModeCount != 0) {
-		presentModes.resize(presentModeCount);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, presentModes.data());
-	}
+    if (presentModeCount != 0) {
+        presentModes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(
+            device, surface, &presentModeCount, presentModes.data());
+    }
 }
 
-static VkFormat findSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
-	for (VkFormat format : candidates) {
-		VkFormatProperties props;
-		vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
+static VkFormat findSupportedFormat(const VkPhysicalDevice &physicalDevice,
+                                    const std::vector<VkFormat> &candidates,
+                                    VkImageTiling tiling,
+                                    VkFormatFeatureFlags features) {
+    for (VkFormat format : candidates) {
+        VkFormatProperties props;
+        vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 
-		if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
-			return format;
-		} else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
-			return format;
-		}
-	}
+        if (tiling == VK_IMAGE_TILING_LINEAR &&
+            (props.linearTilingFeatures & features) == features) {
+            return format;
+        } else if (tiling == VK_IMAGE_TILING_OPTIMAL &&
+                   (props.optimalTilingFeatures & features) == features) {
+            return format;
+        }
+    }
 
-	throw std::runtime_error("failed to find supported format!");
+    throw std::runtime_error("failed to find supported format!");
 }
 
-VkFormat findDepthFormat(const VkPhysicalDevice& physicalDevice) {
-	return findSupportedFormat(physicalDevice,
-		{VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
-			VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
-	);
+VkFormat findDepthFormat(const VkPhysicalDevice &physicalDevice) {
+    return findSupportedFormat(physicalDevice,
+                               {VK_FORMAT_D32_SFLOAT,
+                                VK_FORMAT_D32_SFLOAT_S8_UINT,
+                                VK_FORMAT_D24_UNORM_S8_UINT},
+                               VK_IMAGE_TILING_OPTIMAL,
+                               VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
 
-bool hasGraphicsQueue(VkPhysicalDevice physicalDevice, VkSurfaceKHR& surface,
-		const std::vector<VkQueueFamilyProperties>& queueFamilies) {
+bool hasGraphicsQueue(
+    VkPhysicalDevice physicalDevice, VkSurfaceKHR &surface,
+    const std::vector<VkQueueFamilyProperties> &queueFamilies) {
 
-	uint32_t i = 0;
+    uint32_t i = 0;
 
-	for (const auto& queueFamily : queueFamilies) {
-		VkBool32 presentSupport;
+    for (const auto &queueFamily : queueFamilies) {
+        VkBool32 presentSupport;
 
-		vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
-		if(queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT){
-			return true;
-		}
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface,
+                                             &presentSupport);
+        if (queueFamily.queueCount > 0 &&
+            queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            return true;
+        }
 
-		i++;
-	}
+        i++;
+    }
 
-	return false;
+    return false;
 }
 
-bool hasPresentQueue(VkPhysicalDevice physicalDevice, VkSurfaceKHR& surface,
-		const std::vector<VkQueueFamilyProperties>& queueFamilies) {
+bool hasPresentQueue(
+    VkPhysicalDevice physicalDevice, VkSurfaceKHR &surface,
+    const std::vector<VkQueueFamilyProperties> &queueFamilies) {
 
-	uint32_t i = 0;
+    uint32_t i = 0;
 
-	for (const auto& queueFamily : queueFamilies) {
-		VkBool32 presentSupport;
+    for (const auto &queueFamily : queueFamilies) {
+        VkBool32 presentSupport;
 
-		vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
-		if(queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT){
-			if (presentSupport) {
-				return true;
-			}
-		}
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface,
+                                             &presentSupport);
+        if (queueFamily.queueCount > 0 &&
+            queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            if (presentSupport) {
+                return true;
+            }
+        }
 
-		i++;
-	}
+        i++;
+    }
 
-	return false;
+    return false;
 }
 
-uint32_t getFirstPresentQueue(VkPhysicalDevice physicalDevice, VkSurfaceKHR& surface,
-		const std::vector<VkQueueFamilyProperties>& queueFamilies) {
+uint32_t getFirstPresentQueue(
+    VkPhysicalDevice physicalDevice, VkSurfaceKHR &surface,
+    const std::vector<VkQueueFamilyProperties> &queueFamilies) {
 
-	uint32_t i = 0;
+    uint32_t i = 0;
 
-	for (const auto& queueFamily : queueFamilies) {
-		VkBool32 presentSupport;
+    for (const auto &queueFamily : queueFamilies) {
+        VkBool32 presentSupport;
 
-		vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
-		if(queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT){
-			if (presentSupport) {
-				return i;
-			}
-		}
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface,
+                                             &presentSupport);
+        if (queueFamily.queueCount > 0 &&
+            queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            if (presentSupport) {
+                return i;
+            }
+        }
 
-		i++;
-	}
+        i++;
+    }
 
-	//we should never get here
-	throw std::runtime_error("getFirstPresentQueue called on device without any present queue available");
+    // we should never get here
+    throw std::runtime_error("getFirstPresentQueue called on device without "
+                             "any present queue available");
 }
 
-bool getFirstGraphicsQueue(VkPhysicalDevice physicalDevice, VkSurfaceKHR& surface,
-		const std::vector<VkQueueFamilyProperties>& queueFamilies) {
+bool getFirstGraphicsQueue(
+    VkPhysicalDevice physicalDevice, VkSurfaceKHR &surface,
+    const std::vector<VkQueueFamilyProperties> &queueFamilies) {
 
-	uint32_t i = 0;
+    uint32_t i = 0;
 
-	for (const auto& queueFamily : queueFamilies) {
-		VkBool32 presentSupport;
+    for (const auto &queueFamily : queueFamilies) {
+        VkBool32 presentSupport;
 
-		vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
-		if(queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT){
-			return i;
-		}
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface,
+                                             &presentSupport);
+        if (queueFamily.queueCount > 0 &&
+            queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            return i;
+        }
 
-		i++;
-	}
+        i++;
+    }
 
-	//we should never get here
-	throw std::runtime_error("getFirstGraphicsQueue called on device without any graphics queue available");
+    // we should never get here
+    throw std::runtime_error("getFirstGraphicsQueue called on device without "
+                             "any graphics queue available");
 }
 
-std::vector <VkQueueFamilyProperties> findQueueFamilies(VkPhysicalDevice physicalDevice) {
-	uint32_t queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+std::vector<VkQueueFamilyProperties>
+findQueueFamilies(VkPhysicalDevice physicalDevice) {
+    uint32_t queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
+                                             nullptr);
 
-	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
+    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
+                                             queueFamilies.data());
 
-	return queueFamilies;
+    return queueFamilies;
 }
 
-}
+} // namespace BR

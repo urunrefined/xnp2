@@ -2,21 +2,21 @@
 
 namespace BR {
 
-VulkanPhysicalDeviceEnumerations::VulkanPhysicalDeviceEnumerations(VkInstance& instance)
-{
-	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+VulkanPhysicalDeviceEnumerations::VulkanPhysicalDeviceEnumerations(
+    VkInstance &instance) {
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
-	if (deviceCount == 0) {
-		return;
-	}
+    if (deviceCount == 0) {
+        return;
+    }
 
-	std::vector<VkPhysicalDevice> physicalDevicesC(deviceCount);
-	vkEnumeratePhysicalDevices(instance, &deviceCount, physicalDevicesC.data());
+    std::vector<VkPhysicalDevice> physicalDevicesC(deviceCount);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, physicalDevicesC.data());
 
-	for (const auto& physicalDevice : physicalDevicesC) {
-		physicalDevices.push_back(physicalDevice);
-	}
+    for (const auto &physicalDevice : physicalDevicesC) {
+        physicalDevices.push_back(physicalDevice);
+    }
 }
 
-}
+} // namespace BR

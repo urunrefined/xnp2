@@ -29,83 +29,72 @@
 #include "pccore.h"
 #include "timing.h"
 
-#include <unistd.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 static UINT framecnt = 0;
 static UINT waitcnt = 0;
 static UINT framemax = 1;
 
 UINT32
-gettick(void)
-{
-	struct timeval tv;
+gettick(void) {
+    struct timeval tv;
 
-	gettimeofday(&tv, 0);
-	return tv.tv_usec / 1000 + tv.tv_sec * 1000;
+    gettimeofday(&tv, 0);
+    return tv.tv_usec / 1000 + tv.tv_sec * 1000;
 }
 
-void
-framereset()
-{
-	framecnt = 0;
+void framereset() { framecnt = 0; }
+
+static BOOL taskmng_sleep(UINT32 tick) {
+    UINT32 base;
+    UINT32 now;
+
+    base = gettick();
+    while ((((now = gettick()) - base) < tick)) {
+        usleep((tick - (now - base) / 2) * 1000);
+    }
+
+    return 1;
 }
 
-static BOOL
-taskmng_sleep(UINT32 tick)
-{
-	UINT32 base;
-	UINT32 now;
+void processwait(UINT cnt) {
 
-	base = gettick();
-	while ((((now = gettick()) - base) < tick)) {
-		usleep((tick - (now - base) / 2) * 1000);
-	}
-
-	return 1;
+    if (timing_getcount() >= cnt) {
+        timing_setcount(0);
+        framereset();
+    } else {
+        taskmng_sleep(1);
+    }
 }
 
-void
-processwait(UINT cnt)
-{
+int mainloop(void *graphics, void *soundRef) {
+    /* auto skip */
+    if (waitcnt == 0) {
+        UINT cnt;
+        pccore_exec(graphics, framecnt == 0, soundRef);
+        framecnt++;
+        cnt = timing_getcount();
+        if (framecnt > cnt) {
+            waitcnt = framecnt;
+            if (framemax > 1) {
+                framemax--;
+            }
+        } else if (framecnt >= framemax) {
+            if (framemax < 12) {
+                framemax++;
+            }
+            if (cnt >= 12) {
+                timing_reset();
+            } else {
+                timing_setcount(cnt - framecnt);
+            }
+            framereset();
+        }
+    } else {
+        processwait(waitcnt);
+        waitcnt = framecnt;
+    }
 
-	if (timing_getcount() >= cnt) {
-		timing_setcount(0);
-		framereset();
-	} else {
-		taskmng_sleep(1);
-	}
-}
-
-int
-mainloop(void *graphics, void *soundRef)
-{
-	/* auto skip */
-	if (waitcnt == 0) {
-		UINT cnt;
-		pccore_exec(graphics, framecnt == 0, soundRef);
-		framecnt++;
-		cnt = timing_getcount();
-		if (framecnt > cnt) {
-			waitcnt = framecnt;
-			if (framemax > 1) {
-				framemax--;
-			}
-		} else if (framecnt >= framemax) {
-			if (framemax < 12) {
-				framemax++;
-			}
-			if (cnt >= 12) {
-				timing_reset();
-			} else {
-				timing_setcount(cnt - framecnt);
-			}
-			framereset();
-		}
-	} else {
-		processwait(waitcnt);
-		waitcnt = framecnt;
-	}
-
-	return TRUE;
+    return TRUE;
 }
