@@ -221,9 +221,9 @@ CodeKeymapping internalKeymapping [] {
 	{KeyButtons::KEY_B				,"B"},
 	{KeyButtons::KEY_N				,"N"},
 	{KeyButtons::KEY_M				,"M"},
-
-	//{NKEY_COMMA			,","},
-	//{NKEY_DOT			,"."},
+    
+	{KeyButtons::KEY_COMMA				,","},
+	{KeyButtons::KEY_PERIOD				,"."},
 	//{NKEY_SLASH			,"/"},
 	//{NKEY_UNDERSCORE	,"_"},
 	{KeyButtons::KEY_SPACE			,"SPACE"},
@@ -258,10 +258,10 @@ CodeKeymapping internalKeymapping [] {
 	{KeyButtons::KEY_NUM_0			,"KP0"},
 	//{NKEY_KP_COMMA		,"KP,"},
 	{KeyButtons::KEY_NUMPAD_COMMA	,"KPDOT"},
-    {KeyButtons::KEY_NUMPAD_ENTER	,"ENTER"},
-    {KeyButtons::KEY_NUMPAD_NUM	    ,"KPNUM"},
+	{KeyButtons::KEY_NUMPAD_ENTER	,"ENTER"},
+	{KeyButtons::KEY_NUMPAD_NUM	    ,"KPNUM"},
     
-    {KeyButtons::KEY_RIGHT_ALT	    ,"RIGHTALT"},
+	{KeyButtons::KEY_RIGHT_ALT	    ,"RIGHTALT"},
     
 	//{NKEY_NFER			,"NFER"},
 	//{NKEY_VF1			,"VF1"},
@@ -282,8 +282,10 @@ CodeKeymapping internalKeymapping [] {
 	{KeyButtons::KEY_F8			,"F8"},
 	{KeyButtons::KEY_F9			,"F9"},
 	{KeyButtons::KEY_F10		,"F10"},
-    {KeyButtons::KEY_F11		,"F11"},
+	{KeyButtons::KEY_F11		,"F11"},
 	{KeyButtons::KEY_F12		,"F12"},
+    
+	{KeyButtons::KEY_SLASH		,"SLASH"},
 
 	{KeyButtons::KEY_LEFT_SHIFT			,"SHIFT"},
 	//{NKEY_CAPS			,"CAPS"},
@@ -320,6 +322,7 @@ static KeyMappingNew keyTable[]{
     {KeyButtons::KEY_8, NKEY_8},
     {KeyButtons::KEY_9, NKEY_9},
     {KeyButtons::KEY_0, NKEY_0},
+    {KeyButtons::KEY_MINUS, NKEY_MINUS},
     {KeyButtons::KEY_ENTER, NKEY_RETURN},
 
     {KeyButtons::KEY_Q, NKEY_Q},
@@ -379,6 +382,9 @@ static KeyMappingNew keyTable[]{
     {KeyButtons::KEY_NUMPAD_ENTER, NKEY_RETURN},
     {KeyButtons::KEY_NUM_0, NKEY_KP_0},
     {KeyButtons::KEY_NUMPAD_COMMA, NKEY_KP_COMMA},
+    
+    {KeyButtons::KEY_COMMA, NKEY_COMMA},
+    {KeyButtons::KEY_PERIOD, NKEY_DOT},
 
     {KeyButtons::KEY_F1, NKEY_F1},
     {KeyButtons::KEY_F2, NKEY_F2},
@@ -394,6 +400,7 @@ static KeyMappingNew keyTable[]{
     {KeyButtons::KEY_LEFT_SHIFT, NKEY_SHIFT},
     {KeyButtons::KEY_LEFT_CTRL, NKEY_CTRL},
     {KeyButtons::KEY_BACKSPACE, NKEY_BACKSPACE},
+    {KeyButtons::KEY_SLASH, NKEY_SLASH},
 };
 
 // clang-format on

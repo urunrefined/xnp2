@@ -87,6 +87,8 @@ enum class KeyButtons : uint8_t {
     KEY_F11,
     KEY_F12,
 
+    KEY_SLASH,
+
     KEY_NUMPAD_PLUS,
     KEY_NUMPAD_MINUS,
     KEY_NUMPAD_DIV,
@@ -102,6 +104,8 @@ enum class KeyButtons : uint8_t {
     KEY_EQUAL,
     KEY_MINUS,
     KEY_PERIOD,
+    KEY_COMMA,
+
     KEY_SUPER,
 
     KEY_SIZE,
