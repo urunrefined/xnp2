@@ -150,8 +150,8 @@ typedef signed long nxp2ptr;
 #define SUPPORT_STATSAVE
 #define SUPPORT_S98
 
-#undef SUPPORT_SASI
-#undef SUPPORT_SCSI
+#define SUPPORT_SASI
+// #define SUPPORT_SCSI
 
 #ifdef DEBUG
 #define TRACE

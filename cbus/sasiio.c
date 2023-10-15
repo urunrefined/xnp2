@@ -9,6 +9,7 @@
 #include	"sasiio.h"
 #include	"fdd/sxsi.h"
 #include	"sasibios.res"
+#include	"trace.h"
 
 
 enum {

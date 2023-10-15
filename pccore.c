@@ -49,6 +49,9 @@
 #include	"keystat.h"
 #include	"debugsub.h"
 #include	"milstr.h"
+#include	"trace.h"
+
+
 
 
 const OEMCHAR np2version[] = OEMTEXT(NP2VER_CORE);
