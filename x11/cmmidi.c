@@ -39,8 +39,10 @@ static const UINT8 EXCV_GSRESET[] = {0xf0, 0x41, 0x10, 0x42, 0x12, 0x40,
                                      0x00, 0x7f, 0x00, 0x41, 0xf7};
 static const UINT8 EXCV_XGRESET[] = {0xf0, 0x43, 0x10, 0x4c, 0x00,
                                      0x00, 0x7e, 0x00, 0xf7};
-static const UINT8 EXCV_GMVOLUME[] = {0xf0, 0x7f, 0x7f, 0x04,
-                                      0x01, 0x00, 0x00, 0xf7};
+
+//TODO: Investigate what this is supposed to do
+//static const UINT8 EXCV_GMVOLUME[] = {0xf0, 0x7f, 0x7f, 0x04,
+//                                      0x01, 0x00, 0x00, 0xf7};
 
 enum {
     MIDI_EXCLUSIVE = 0xf0,
@@ -235,7 +237,9 @@ static void sendexclusive(CMMIDI midi, const UINT8 *buf, UINT leng) {
 }
 
 static void midiout_none(CMMIDI midi, UINT32 msg, UINT cnt) {
-
+    (void) midi;
+    (void) msg;
+    (void) cnt;
     /* Nothing to do */
 }
 
@@ -251,7 +255,8 @@ static void midiout_device(CMMIDI midi, UINT32 msg, UINT cnt) {
 }
 
 static void midiout_vermouth(CMMIDI midi, UINT32 msg, UINT cnt) {
-
+    (void) cnt;
+    
     sound_sync();
     midiout_shortmsg(midi->vermouth, msg);
 }
@@ -542,7 +547,10 @@ static UINT midiwrite(COMMNG self, UINT8 data) {
     return 0;
 }
 
-static UINT8 midigetstat(COMMNG self) { return 0x00; }
+static UINT8 midigetstat(COMMNG self) {
+    (void) self;
+    return 0x00; 
+}
 
 static INTPTR midimsg(COMMNG self, UINT msg, INTPTR param) {
     CMMIDI midi;
@@ -602,7 +610,7 @@ static void midirelease(COMMNG self) {
 
 // ----
 
-void cmmidi_initailize(void) {
+void cmmidi_initialize(void) {
     UINT i;
 
     ZeroMemory(midictrlindex, sizeof(midictrlindex));

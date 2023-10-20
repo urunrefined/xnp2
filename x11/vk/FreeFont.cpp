@@ -214,6 +214,7 @@ hb_position_t HarfbuzzText::getAdvanceY(unsigned int i) {
 
 HarfbuzzText::~HarfbuzzText() { hb_buffer_destroy(buf); }
 
+/*
 static void draw_lineY(FT_Int y, Image &image) {
 
     unsigned char *data = image.data.data();
@@ -229,7 +230,7 @@ static void draw_lineY(FT_Int y, Image &image) {
     }
 }
 
-/*
+
 static void draw_lineDown(FT_Int x, FT_Int y1, FT_Int len, Image& image){
 
         unsigned char *data = image.data.data();

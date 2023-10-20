@@ -1,3 +1,5 @@
+#include "cmmidi.h"
+#include "cmserial.h"
 #include "compiler.h"
 
 #include "cmjasts.h"
@@ -7,22 +9,43 @@
 
 // ---- non connect
 
-static UINT ncread(COMMNG self, UINT8 *data) { return 0; }
+static UINT ncread(COMMNG self, UINT8 *data) {
+    (void)self;
+    (void)data;
+    return 0;
+}
 
-static UINT ncwrite(COMMNG self, UINT8 data) { return 0; }
+static UINT ncwrite(COMMNG self, UINT8 data) {
+    (void)self;
+    (void)data;
 
-static UINT8 ncgetstat(COMMNG self) { return 0xf0; }
+    return 0;
+}
 
-static INTPTR ncmsg(COMMNG self, UINT msg, INTPTR param) { return 0; }
+static UINT8 ncgetstat(COMMNG self) {
+    (void)self;
 
-static void ncrelease(COMMNG self) { /* Nothing to do */ }
+    return 0xf0;
+}
+
+static INTPTR ncmsg(COMMNG self, UINT msg, INTPTR param) { 
+    (void)self;
+    (void)msg;
+    (void)param;
+    
+    return 0; }
+
+static void ncrelease(COMMNG self) { 
+    (void)self;
+    /* Nothing to do */
+}
 
 static _COMMNG com_nc = {COMCONNECT_OFF, ncread, ncwrite,
                          ncgetstat,      ncmsg,  ncrelease};
 
 // ----
 
-void commng_initialize(void) { cmmidi_initailize(); }
+void commng_initialize(void) { cmmidi_initialize(); }
 
 COMMNG
 commng_create(UINT device) {
@@ -59,10 +82,12 @@ commng_create(UINT device) {
         cfg = NULL;
         break;
     }
+    
     if (cfg) {
         if ((cfg->port >= COMPORT_COM1) && (cfg->port <= COMPORT_COM4)) {
             ret = cmserial_create(cfg->port - COMPORT_COM1 + 1, cfg->param,
                                   cfg->speed);
+            
         } else if (cfg->port == COMPORT_MIDI) {
             ret = cmmidi_create(cfg->mout, cfg->min, cfg->mdl);
             if (ret) {

@@ -12,7 +12,7 @@
 #include	"scsicmd.h"
 #include	"scsibios.res"
 
-#include    "trace.h""
+#include    "trace.h"
 
 
 	_SCSIIO		scsiio;
