@@ -12,6 +12,8 @@
 #include	"scsicmd.h"
 #include	"fdd/sxsi.h"
 
+#include    "trace.h"
+
 #define	SCSICMD_ERR
 
 static const UINT8 hdd_inquiry[0x20] = {

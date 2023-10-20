@@ -10,6 +10,8 @@
 #include	"fdd/fdd_mtr.h"
 #include	"fdd/sxsi.h"
 
+#include    "trace.h"
+
 
 enum {
 	CACHE_TABLES	= 4,
