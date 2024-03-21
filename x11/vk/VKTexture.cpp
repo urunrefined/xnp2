@@ -75,17 +75,41 @@ static void copyBufferToImage(const VkDevice device,
     commandBuffer.submit();
 }
 
-void VulkanTexture::update() {
-    if (textureDirty) {
-        VulkanBufferGeneric stagingBuffer(
-            device, physicalDevice, image.data.size(),
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+static bool lineHasData(const unsigned char *data, unsigned int width) {
+    for (unsigned int x = 0; x < width * 4; x++) {
+        if (data[x])
+            return true;
+    }
 
+    return false;
+}
+
+static void doubleBlankLines(uint16_t width, uint16_t height,
+                             const unsigned char *in, unsigned char *out) {
+    // Always copy the first line
+    memcpy(out, in, width * 4);
+
+    for (uint16_t h = 1; h < height; h++) {
+        if (!lineHasData(in + h * width * 4, width)) {
+
+            memcpy(out + (h)*width * 4, in + (h - 1) * width * 4, width * 4);
+        } else {
+            memcpy(out + (h)*width * 4, in + (h)*width * 4, width * 4);
+        }
+    }
+}
+
+void VulkanTexture::update(DoubleLines doubleLines) {
+    if (textureDirty) {
         void *data;
         vkMapMemory(device, stagingBuffer, 0, image.data.size(), 0, &data);
-        memcpy(data, image.data.data(), image.data.size());
+        if (doubleLines == DoubleLines::NO) {
+            memcpy(data, image.data.data(), image.data.size());
+        } else {
+            doubleBlankLines(image.width, image.height, image.data.data(),
+                             (unsigned char *)data);
+        }
+
         vkUnmapMemory(device, stagingBuffer);
 
         transitionImageLayout(device, commandPool, graphicsQueue, texture,

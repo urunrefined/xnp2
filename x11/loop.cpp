@@ -190,6 +190,7 @@ static void glLoop(SignalFD &sfd, InputMapper &inputMapper,
                    Sfx::PulseSoundEngine &soundEngine, NP2CFG &cfg,
                    NP2OSCFG &oscfg) {
     VisualScreen visualScreen = VisualScreen::MAIN;
+    DoubleLines doubleLines = DoubleLines::NO;
 
     VulkanScaler scaler(engine, physicalDevice);
     std::unique_ptr<VulkanRenderBuffer> renderBuffer;
@@ -270,7 +271,8 @@ static void glLoop(SignalFD &sfd, InputMapper &inputMapper,
         mainloop(&ctx, &soundEngine);
 
         if (scaler.renderingComplete()) {
-            mainTexture.update();
+
+            mainTexture.update(doubleLines);
 
             renderBuffer = scaler.newRenderBuffer();
             scaler.pollWindowEvents();
@@ -302,7 +304,8 @@ static void glLoop(SignalFD &sfd, InputMapper &inputMapper,
 
         GLFWInput &input = engine.glfwCtx.getInput();
 
-        inputMapper.handleInput(input, mode, visualScreen, soundEngine);
+        inputMapper.handleInput(input, mode, visualScreen, doubleLines,
+                                soundEngine);
 
         input.reset();
     }

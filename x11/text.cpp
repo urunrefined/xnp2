@@ -124,7 +124,7 @@ Text TextCache::query(const char *text) {
 
 void TextCache::update() {
     for (auto &page : pages) {
-        page->texture.update();
+        page->texture.update(DoubleLines::NO);
     }
 }
 

@@ -442,12 +442,19 @@ template <class T1> T1 next(const T1 &t1) {
 
 void InputMapper::handleInput(Input &input, ViewPortMode &viewPortMode,
                               VisualScreen &visualScreen,
+                              DoubleLines &doubleLine,
                               Sfx::PulseSoundEngine &soundRef) {
+
     if (input.getButton(KeyButtons::KEY_SUPER)) {
         for (auto &keyEvent : input.keyEvents) {
             if (keyEvent.key == KeyButtons::KEY_E &&
                 keyEvent.state == PRESSED) {
                 viewPortMode = next(viewPortMode);
+            }
+
+            if (keyEvent.key == KeyButtons::KEY_H &&
+                keyEvent.state == PRESSED) {
+                doubleLine = next(doubleLine);
             }
 
             if (keyEvent.key == KeyButtons::KEY_NUMPAD_DIV &&
