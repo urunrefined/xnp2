@@ -6,57 +6,58 @@
 namespace BR {
 
 class Dimensions {
-public:
-	float x = 0;
-	float y = 0;
+  public:
+    float x = 0;
+    float y = 0;
 };
 
-VTXs getTriangleList(Vec2& ul, Vec2& ur, Vec2& ll, Vec2& lr);
+VTXs getTriangleList(Vec2 &ul, Vec2 &ur, Vec2 &ll, Vec2 &lr);
 
-Dimensions calculate(std::vector<TextDims>& elements, VulkanVtxBuffer& vtxBuffer, VulkanVtxBuffer& uvBuffer, size_t offset, Image& image);
+Dimensions calculate(std::vector<TextDims> &elements,
+                     VulkanVtxBuffer &vtxBuffer, VulkanVtxBuffer &uvBuffer,
+                     size_t offset, Image &image);
 
-class Text{
-public:
-	std::string str;
-	VulkanTexture *texture;
-	TextDims dims;
+class Text {
+  public:
+    std::string str;
+    VulkanTexture *texture;
+    TextDims dims;
 };
 
 class Page {
-public:
-	std::vector<Text> texts;
-	VulkanTexture texture;
-	Pen pen;
+  public:
+    std::vector<Text> texts;
+    VulkanTexture texture;
+    Pen pen;
 
-	Page(const VkDevice& device, VulkanPhysicalDevice& physicalDevice,
-		const VkQueue& graphicsQueue, int graphicsFamily, FreetypeFace& face, HarfbuzzFont& font);
+    Page(const VkDevice &device, VulkanPhysicalDevice &physicalDevice,
+         const VkQueue &graphicsQueue, int graphicsFamily, FreetypeFace &face,
+         HarfbuzzFont &font);
 
-	bool alloc(const char *str, Text& text);
+    bool alloc(const char *str, Text &text);
 
-	bool getText(const char *str, Text& text);
+    bool getText(const char *str, Text &text);
 };
-
-
 
 class TextCache {
-	std::vector<std::unique_ptr<Page>> pages;
-	const VkDevice& device;
-	VulkanPhysicalDevice& physicalDevice;
-	const VkQueue& graphicsQueue;
-	int graphicsFamily;
-	FreetypeFace& face;
-	HarfbuzzFont& font;
+    std::vector<std::unique_ptr<Page>> pages;
+    const VkDevice &device;
+    VulkanPhysicalDevice &physicalDevice;
+    const VkQueue &graphicsQueue;
+    int graphicsFamily;
+    FreetypeFace &face;
+    HarfbuzzFont &font;
 
+  public:
+    TextCache(const VkDevice &device_, VulkanPhysicalDevice &physicalDevice_,
+              const VkQueue &graphicsQueue_, int graphicsFamily_,
+              FreetypeFace &face_, HarfbuzzFont &font_);
 
-public:
-	TextCache (const VkDevice& device_, VulkanPhysicalDevice& physicalDevice_,
-			   const VkQueue& graphicsQueue_, int graphicsFamily_,FreetypeFace& face_, HarfbuzzFont& font_);
+    Text query(const char *text);
 
-	Text query(const char *text);
-
-	void update();
+    void update();
 };
 
-}
+} // namespace BR
 
 #endif // TEXT_H

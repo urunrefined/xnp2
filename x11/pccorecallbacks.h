@@ -7,10 +7,10 @@
 namespace BR {
 
 struct CallbackContext {
-	VulkanTexture *texture;
-	Input *input;
+    VulkanTexture *texture;
+    Input *input;
 };
 
-}
+} // namespace BR
 
 #endif // PCCORECALLBACKS_H

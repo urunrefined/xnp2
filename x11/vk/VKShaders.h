@@ -8,31 +8,31 @@
 namespace BR {
 
 class ShaderStage {
-public:
-	const VkDevice& device;
+  public:
+    const VkDevice &device;
 
-	VkShaderModule shaderModule;
+    VkShaderModule shaderModule;
 
-	ShaderStage(const VkDevice& device_, const std::vector<char>& code);
-	~ShaderStage();
-	
-	operator VkShaderModule& ();
-	
-	ShaderStage(const ShaderStage& that) = delete;
+    ShaderStage(const VkDevice &device_, const std::vector<char> &code);
+    ~ShaderStage();
+
+    operator VkShaderModule &();
+
+    ShaderStage(const ShaderStage &that) = delete;
 };
 
 class ShaderStore {
-public:
-	ShaderStage vertTri;
-	ShaderStage fragTri;
-	ShaderStage vertTexExt;
+  public:
+    ShaderStage vertTri;
+    ShaderStage fragTri;
+    ShaderStage vertTexExt;
 
-	ShaderStage vertTex;
-	ShaderStage fragTex;
+    ShaderStage vertTex;
+    ShaderStage fragTex;
 
-	ShaderStore(const VkDevice& device);
-	
-	~ShaderStore();
+    ShaderStore(const VkDevice &device);
+
+    ~ShaderStore();
 };
 
 } // namespace BR

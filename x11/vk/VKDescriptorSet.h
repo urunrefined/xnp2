@@ -6,37 +6,33 @@
 namespace BR {
 
 class VulkanDescriptorLayout {
-	const VkDevice& device;
-	VkDescriptorSetLayout layout;
+    const VkDevice &device;
+    VkDescriptorSetLayout layout;
 
-public:
+  public:
+    VulkanDescriptorLayout(const VkDevice &device_);
+    ~VulkanDescriptorLayout();
 
-	VulkanDescriptorLayout(const VkDevice& device_);
-	~VulkanDescriptorLayout();
-
-	operator const VkDescriptorSetLayout& () const{
-		return layout;
-	}
+    operator const VkDescriptorSetLayout &() const { return layout; }
 };
 
-class VulkanDescriptorSet
-{
-	const VkDevice& device;
-	const VkDescriptorPool& descriptorPool;
+class VulkanDescriptorSet {
+    const VkDevice &device;
+    const VkDescriptorPool &descriptorPool;
 
-	VkDescriptorSet descriptorSet;
+    VkDescriptorSet descriptorSet;
 
-public:
-	VulkanDescriptorSet(const VkDevice& device_, VkImageView& imageView, VkSampler& sampler,
-		const VkDescriptorPool& descriptorPool_, const VkDescriptorSetLayout &layout);
+  public:
+    VulkanDescriptorSet(const VkDevice &device_, VkImageView &imageView,
+                        VkSampler &sampler,
+                        const VkDescriptorPool &descriptorPool_,
+                        const VkDescriptorSetLayout &layout);
 
-	~VulkanDescriptorSet();
+    ~VulkanDescriptorSet();
 
-	operator const VkDescriptorSet& () const{
-		return descriptorSet;
-	}
+    operator const VkDescriptorSet &() const { return descriptorSet; }
 };
 
-}
+} // namespace BR
 
 #endif // VKDESCRIPTORSET_H

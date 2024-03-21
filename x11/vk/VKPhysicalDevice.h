@@ -8,25 +8,23 @@
 namespace BR {
 
 class VulkanPhysicalDevice {
-public:
-	VkPhysicalDevice physicalDevice;
-	VkPhysicalDeviceProperties deviceProperties;
-	std::vector<VkQueueFamilyProperties> queueFamilies;
+  public:
+    VkPhysicalDevice physicalDevice;
+    VkPhysicalDeviceProperties deviceProperties;
+    std::vector<VkQueueFamilyProperties> queueFamilies;
 
-	VulkanPhysicalDevice(VkPhysicalDevice physicalDevice_);
-	~VulkanPhysicalDevice() = default;
+    VulkanPhysicalDevice(VkPhysicalDevice physicalDevice_);
+    ~VulkanPhysicalDevice() = default;
 
-	bool isDeviceSuitable(VkSurfaceKHR& surface);
+    bool isDeviceSuitable(VkSurfaceKHR &surface);
 
-	VkDeviceSize getMinUniformBufferOffsetAlignment() const {
-		return deviceProperties.limits.minUniformBufferOffsetAlignment;
-	}
+    VkDeviceSize getMinUniformBufferOffsetAlignment() const {
+        return deviceProperties.limits.minUniformBufferOffsetAlignment;
+    }
 
-	operator const VkPhysicalDevice& () const {
-		return physicalDevice;
-	}
+    operator const VkPhysicalDevice &() const { return physicalDevice; }
 };
 
-}
+} // namespace BR
 
 #endif // VKPHYSICALDEVICE_H

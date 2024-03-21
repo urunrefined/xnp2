@@ -1,5 +1,5 @@
-#ifndef	NP2_X11_TRACE_H__
-#define	NP2_X11_TRACE_H__
+#ifndef NP2_X11_TRACE_H__
+#define NP2_X11_TRACE_H__
 
 #include <stdio.h>
 
@@ -10,19 +10,19 @@ extern "C" {
 void trace_fmt(const char *fmt, ...);
 
 #ifdef TRACE
-#define	TRACEOUT(arg) trace_fmt arg
+#define TRACEOUT(arg) trace_fmt arg
 #else
-#define	TRACEOUT(a)
+#define TRACEOUT(a)
 #endif
 
 #ifdef TRACEVERBOSE
-#define	VERBOSE(arg) trace_fmt arg
+#define VERBOSE(arg) trace_fmt arg
 #else
-#define	VERBOSE(a)
+#define VERBOSE(a)
 #endif
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* NP2_X11_TRACE_H__ */
+#endif /* NP2_X11_TRACE_H__ */

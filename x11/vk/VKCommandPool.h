@@ -6,22 +6,20 @@
 namespace BR {
 
 class VulkanCommandPool {
-	const VkDevice& device;
+    const VkDevice &device;
 
-public:
-	VkCommandPool commandPool;
+  public:
+    VkCommandPool commandPool;
 
-	VulkanCommandPool(const VkDevice& device_, uint32_t graphicsFamily);
-	VulkanCommandPool & operator=(const VulkanCommandPool&) = delete;
-	VulkanCommandPool(const VulkanCommandPool&) = delete;
+    VulkanCommandPool(const VkDevice &device_, uint32_t graphicsFamily);
+    VulkanCommandPool &operator=(const VulkanCommandPool &) = delete;
+    VulkanCommandPool(const VulkanCommandPool &) = delete;
 
-	~VulkanCommandPool();
+    ~VulkanCommandPool();
 
-	operator VkCommandPool& (){
-		return commandPool;
-	}
+    operator VkCommandPool &() { return commandPool; }
 };
 
-}
+} // namespace BR
 
 #endif // VKCOMMANDPOOL_H

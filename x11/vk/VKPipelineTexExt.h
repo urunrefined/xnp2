@@ -1,35 +1,33 @@
 #ifndef VKPIPELINETEXEXT_H
 #define VKPIPELINETEXEXT_H
 
-#include "VKShaders.h"
 #include "VKRenderBuffer.h"
+#include "VKShaders.h"
 
 namespace BR {
 
 class PipelineTexExt {
 
-public:
-	const VkDevice& device;
+  public:
+    const VkDevice &device;
 
-	VkPipeline pipeline;
-	VkPipelineLayout pipelineLayout;
+    VkPipeline pipeline;
+    VkPipelineLayout pipelineLayout;
 
-	PipelineTexExt(const VkDevice& device_, ShaderStore& shader3D, const VkRect2D& scissor, const VkRenderPass& renderPass, const VkDescriptorSetLayout& desciptorSetLayout);
+    PipelineTexExt(const VkDevice &device_, ShaderStore &shader3D,
+                   const VkRect2D &scissor, const VkRenderPass &renderPass,
+                   const VkDescriptorSetLayout &desciptorSetLayout);
 
-	~PipelineTexExt();
+    ~PipelineTexExt();
 
-	VkPipeline& getPipeline();
+    VkPipeline &getPipeline();
 
-	void record(
-		VulkanRenderBuffer &renderBuffer,
-		const VkDescriptorSet& descriptorSet,
-		VkBuffer vertices,
-		VkDeviceSize verticesOffset,
-		VkBuffer uvs,
-		VkDeviceSize uvOffset,
-		size_t drawCount);
+    void record(VulkanRenderBuffer &renderBuffer,
+                const VkDescriptorSet &descriptorSet, VkBuffer vertices,
+                VkDeviceSize verticesOffset, VkBuffer uvs,
+                VkDeviceSize uvOffset, size_t drawCount);
 };
 
-}
+} // namespace BR
 
 #endif // VKPIPELINETEXEXT_H

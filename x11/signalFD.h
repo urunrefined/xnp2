@@ -6,24 +6,23 @@
 namespace BR {
 
 class SignalBlock {
-public:
-	sigset_t mask;
+  public:
+    sigset_t mask;
 
-	SignalBlock();
-	~SignalBlock();
+    SignalBlock();
+    ~SignalBlock();
 };
 
-class SignalFD
-{
-	SignalBlock block;
-	int sfd;
+class SignalFD {
+    SignalBlock block;
+    int sfd;
 
-public:
-	SignalFD();
-	bool isTriggered();
-	~SignalFD();
+  public:
+    SignalFD();
+    bool isTriggered();
+    ~SignalFD();
 };
 
-}
+} // namespace BR
 
 #endif // SIGNALFD_H

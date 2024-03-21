@@ -5,14 +5,13 @@
 
 namespace BR {
 
-class VulkanPhysicalDeviceEnumerations
-{
-public:
-	std::vector<VulkanPhysicalDevice> physicalDevices;
+class VulkanPhysicalDeviceEnumerations {
+  public:
+    std::vector<VulkanPhysicalDevice> physicalDevices;
 
-	VulkanPhysicalDeviceEnumerations(VkInstance& instance);
+    VulkanPhysicalDeviceEnumerations(VkInstance &instance);
 };
 
-}
+} // namespace BR
 
 #endif // VKPHYSICALDEVICEENUMERATIONS_H

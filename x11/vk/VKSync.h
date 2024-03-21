@@ -6,67 +6,55 @@
 namespace BR {
 
 class VulkanSemaphore {
-public:
-	const VkDevice& device;
-	VkSemaphore semaphore;
+  public:
+    const VkDevice &device;
+    VkSemaphore semaphore;
 
-	VulkanSemaphore(const VkDevice& device_);
+    VulkanSemaphore(const VkDevice &device_);
 
-	~VulkanSemaphore();
+    ~VulkanSemaphore();
 
-	operator VkSemaphore& (){
-		return semaphore;
-	}
+    operator VkSemaphore &() { return semaphore; }
 
-	operator VkSemaphore* (){
-		return &semaphore;
-	}
+    operator VkSemaphore *() { return &semaphore; }
 };
 
 class VulkanFence {
-public:
-	const VkDevice& device;
-	VkFence fence;
+  public:
+    const VkDevice &device;
+    VkFence fence;
 
-	VulkanFence(const VkDevice& device_);
-	~VulkanFence();
+    VulkanFence(const VkDevice &device_);
+    ~VulkanFence();
 
-	operator VkFence& (){
-		return fence;
-	}
+    operator VkFence &() { return fence; }
 
-	VkResult wait();
+    VkResult wait();
 };
 
-enum class SitterState {
-	INIT,
-	INACTIVE = 0,
-	ACTIVE
-};
+enum class SitterState { INIT, INACTIVE = 0, ACTIVE };
 
 class Sitter {
-public:
-	const VkDevice& device;
-	VkFence fence;
-	SitterState state = SitterState::INACTIVE;
+  public:
+    const VkDevice &device;
+    VkFence fence;
+    SitterState state = SitterState::INACTIVE;
 
-	Sitter(const VkDevice& device_);
-	~Sitter();
+    Sitter(const VkDevice &device_);
+    ~Sitter();
 
-	void activate();
-	void cancel();
+    void activate();
+    void cancel();
 
-	bool done ();
+    bool done();
 
-	void block(uint64_t nanoseconds);
-	void block();
-	void wait();
+    void block(uint64_t nanoseconds);
+    void block();
+    void wait();
 
-	operator VkFence& (){
-		return fence;
-	}
+    operator VkFence &() { return fence; }
 };
 
-}
+} // namespace BR
 
 #endif // VKSYNC_H

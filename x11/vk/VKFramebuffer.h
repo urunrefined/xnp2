@@ -8,25 +8,24 @@
 namespace BR {
 
 class VulkanFramebuffer {
-	VkFramebuffer framebuffer;
-	const VkDevice& device;
-public:
+    VkFramebuffer framebuffer;
+    const VkDevice &device;
 
-	VulkanFramebuffer(const VulkanFramebuffer& imageView) = delete;
-	VulkanFramebuffer(const VkDevice& device_, VkExtent2D swapChainExtent, VkRenderPass& renderPass, std::array<VkImageView, 2>& attachments);
-	VulkanFramebuffer(const VkDevice& device_, VkExtent2D extent, VkRenderPass& renderPass, VkImageView& attachment);
+  public:
+    VulkanFramebuffer(const VulkanFramebuffer &imageView) = delete;
+    VulkanFramebuffer(const VkDevice &device_, VkExtent2D swapChainExtent,
+                      VkRenderPass &renderPass,
+                      std::array<VkImageView, 2> &attachments);
+    VulkanFramebuffer(const VkDevice &device_, VkExtent2D extent,
+                      VkRenderPass &renderPass, VkImageView &attachment);
 
-	~VulkanFramebuffer();
+    ~VulkanFramebuffer();
 
-	operator VkFramebuffer& (){
-		return framebuffer;
-	}
+    operator VkFramebuffer &() { return framebuffer; }
 
-	operator const VkFramebuffer& () const{
-		return framebuffer;
-	}
+    operator const VkFramebuffer &() const { return framebuffer; }
 };
 
-}
+} // namespace BR
 
 #endif // VKFRAMEBUFFER_H

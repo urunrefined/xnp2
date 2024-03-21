@@ -1,175 +1,171 @@
 #ifndef VKENGINE_H
 #define VKENGINE_H
 
+#include "VKBuffers.h"
+#include "VKCommandPool.h"
+#include "VKDebug.h"
+#include "VKDevice.h"
 #include "VKGLFW.h"
 #include "VKInstance.h"
-#include "VKCommandPool.h"
-#include "VKSurface.h"
 #include "VKPhysicalDevice.h"
-#include "VKDevice.h"
-#include "VKSwapchain.h"
-#include "VKRenderPass.h"
-#include "VKDebug.h"
-#include "VKSwapchainImages.h"
-#include "VKSwapchain.h"
-#include "VKShaders.h"
 #include "VKRenderBuffer.h"
+#include "VKRenderPass.h"
 #include "VKRenderer.h"
+#include "VKShaders.h"
+#include "VKSurface.h"
+#include "VKSwapchain.h"
+#include "VKSwapchainImages.h"
 #include "VKSync.h"
-#include "VKBuffers.h"
 
 #include <memory>
 
 namespace BR {
 
 class VulkanContext {
-public:
-	GLFWContext glfwCtx;
-	VulkanInstance instance;
-	VulkanDebugCallback callback;
-	VulkanSurface surface;
+  public:
+    GLFWContext glfwCtx;
+    VulkanInstance instance;
+    VulkanDebugCallback callback;
+    VulkanSurface surface;
 
-	VulkanContext(bool enableValidationLayers);
+    VulkanContext(bool enableValidationLayers);
 };
 
 enum class WindowState {
-		SHOULDCLOSE = 0,
-		MINIMIZED,
-		FOCUSED,
+    SHOULDCLOSE = 0,
+    MINIMIZED,
+    FOCUSED,
 };
 
-
 enum class RenderState {
-	// OK :)
-	OK,
+    // OK :)
+    OK,
 
-	NEEDSSWAPCHAINUPDATE,
-	//Can't do anything right now. Don't do anything.
-	WAITING
+    NEEDSSWAPCHAINUPDATE,
+    // Can't do anything right now. Don't do anything.
+    WAITING
 };
 
 class RenderSemaphores {
-	RenderSemaphores(RenderSemaphores&) = delete;
+    RenderSemaphores(RenderSemaphores &) = delete;
 
-public:
-	VulkanSemaphore imageAvailableSemaphore;
-	VulkanSemaphore renderFinishedSemaphore;
-	VulkanSemaphore vboUpdatedSemaphore;
+  public:
+    VulkanSemaphore imageAvailableSemaphore;
+    VulkanSemaphore renderFinishedSemaphore;
+    VulkanSemaphore vboUpdatedSemaphore;
 
-	RenderSemaphores(VulkanDevice& device)
-		:
-			imageAvailableSemaphore(device),
-			renderFinishedSemaphore(device),
-			vboUpdatedSemaphore(device){
-	}
+    RenderSemaphores(VulkanDevice &device)
+        : imageAvailableSemaphore(device), renderFinishedSemaphore(device),
+          vboUpdatedSemaphore(device) {}
 };
 
 class VulkanScaler {
-public:
-	VulkanContext& context;
-	VulkanPhysicalDevice physicalDevice;
-	VulkanDevice device;
+  public:
+    VulkanContext &context;
+    VulkanPhysicalDevice physicalDevice;
+    VulkanDevice device;
 
+    VulkanSwapchainImages swapchainImages;
+    VulkanRenderPass renderpass;
+    VulkanCommandPool commandPool;
+    VulkanSwapchain swapchain;
+    ShaderStore shaderStore;
+    VulkanRenderer renderer;
+    VkCommandBuffer commandBuffer;
+    VulkanCommandPool pool;
 
-	VulkanSwapchainImages swapchainImages;
-	VulkanRenderPass renderpass;
-	VulkanCommandPool commandPool;
-	VulkanSwapchain swapchain;
-	ShaderStore shaderStore;
-	VulkanRenderer renderer;
-	VkCommandBuffer commandBuffer;
-	VulkanCommandPool pool;
+    Sitter imageSitter;
+    Sitter queueSitter;
 
-	Sitter imageSitter;
-	Sitter queueSitter;
+    std::unique_ptr<RenderSemaphores> renderSemaphores;
 
-	std::unique_ptr<RenderSemaphores> renderSemaphores;
+    uint32_t imageIndex;
 
-	uint32_t imageIndex;
+    VulkanScaler(VulkanContext &context_, VulkanPhysicalDevice physicalDevice_)
+        : context(context_), physicalDevice(physicalDevice_),
+          device(true, physicalDevice, context.surface,
+                 physicalDevice.queueFamilies),
+          swapchainImages(physicalDevice, device, context.surface,
+                          context.glfwCtx.currentWidth,
+                          context.glfwCtx.currentHeight, device.graphicsFamily,
+                          device.presentFamily),
+          renderpass(device, physicalDevice,
+                     swapchainImages.swapChainImageFormat),
+          commandPool(device, device.graphicsFamily),
+          swapchain(context.instance, physicalDevice, device, commandPool,
+                    device.graphicsQueue, device.presentQueue, renderpass,
+                    swapchainImages.swapChainImages,
+                    swapchainImages.swapChainImageFormat,
+                    swapchainImages.swapChainExtent),
+          shaderStore(device),
+          renderer(physicalDevice, device, device.graphicsFamily,
+                   device.graphicsQueue, shaderStore,
+                   swapchainImages.swapChainImageFormat,
+                   swapchainImages.swapChainExtent),
+          commandBuffer(VK_NULL_HANDLE), pool(device, device.graphicsFamily),
 
-	VulkanScaler(VulkanContext& context_, VulkanPhysicalDevice physicalDevice_) :
-		context(context_), physicalDevice(physicalDevice_),
-		device(true, physicalDevice, context.surface, physicalDevice.queueFamilies),
-		swapchainImages(physicalDevice, device, context.surface,
-			context.glfwCtx.currentWidth, context.glfwCtx.currentHeight,
-			device.graphicsFamily, device.presentFamily),
-		renderpass(device, physicalDevice, swapchainImages.swapChainImageFormat),
-		commandPool(device, device.graphicsFamily),
-		swapchain(context.instance, physicalDevice, device, commandPool, device.graphicsQueue,
-			device.presentQueue, renderpass, swapchainImages.swapChainImages,
-			swapchainImages.swapChainImageFormat, swapchainImages.swapChainExtent),
-		shaderStore(device),
-		renderer(physicalDevice, device, device.graphicsFamily, device.graphicsQueue, shaderStore, swapchainImages.swapChainImageFormat, swapchainImages.swapChainExtent),
-		commandBuffer(VK_NULL_HANDLE),
-		pool(device, device.graphicsFamily),
+          imageSitter(device), queueSitter(device),
 
-		imageSitter(device),
-		queueSitter(device),
+          renderSemaphores(std::make_unique<RenderSemaphores>(device)) {}
 
-		renderSemaphores(std::make_unique<RenderSemaphores>(device))
-	{
-	}
+    VulkanRenderer &getRenderer() { return renderer; }
 
-	VulkanRenderer& getRenderer() {
-		return renderer;
-	}
+    VulkanRenderPass &getRenderPass() { return renderer.renderPass; }
 
-	VulkanRenderPass& getRenderPass() {
-		return renderer.renderPass;
-	}
+    std::unique_ptr<VulkanRenderBuffer> newRenderBuffer() {
+        return std::make_unique<VulkanRenderBuffer>(device,
+                                                    device.graphicsFamily);
+    }
 
-	std::unique_ptr<VulkanRenderBuffer> newRenderBuffer () {
-		return std::make_unique<VulkanRenderBuffer>(device, device.graphicsFamily);
-	}
+    WindowState getWindowState() {
+        if (glfwWindowShouldClose(context.glfwCtx.window))
+            return WindowState::SHOULDCLOSE;
+        return WindowState::FOCUSED;
+    }
 
-	WindowState getWindowState() {
-		if(glfwWindowShouldClose(context.glfwCtx.window)) return WindowState::SHOULDCLOSE;
-		return WindowState::FOCUSED;
-	}
+    bool renderingComplete() {
+        if (!queueSitter.done()) {
+            queueSitter.wait();
+        }
 
-	bool renderingComplete(){
-		if(!queueSitter.done()){
-			queueSitter.wait();
-		}
+        return queueSitter.done();
+    }
 
-		return queueSitter.done();
-	}
+    void pollWindowEvents() { glfwPollEvents(); }
 
-	void pollWindowEvents(){
-		glfwPollEvents();
-	}
+    bool recreateSwapChain() {
 
-	bool recreateSwapChain() {
+        auto width = context.glfwCtx.currentWidth;
+        auto height = context.glfwCtx.currentHeight;
 
-		auto width = context.glfwCtx.currentWidth;
-		auto height = context.glfwCtx.currentHeight;
+        if (width && height) {
+            vkDeviceWaitIdle(device);
+            vkQueueWaitIdle(device.graphicsQueue);
+            vkQueueWaitIdle(device.presentQueue);
 
-		if(width && height){
-			vkDeviceWaitIdle(device);
-			vkQueueWaitIdle(device.graphicsQueue);
-			vkQueueWaitIdle(device.presentQueue);
+            swapchainImages.reCreate(width, height);
+            swapchain.reCreate(swapchainImages.swapChainImages,
+                               swapchainImages.swapChainImageFormat,
+                               swapchainImages.swapChainExtent);
+            renderer.reCreatePipeline(swapchainImages.swapChainExtent);
 
-			swapchainImages.reCreate(width, height);
-			swapchain.reCreate(swapchainImages.swapChainImages, swapchainImages.swapChainImageFormat, swapchainImages.swapChainExtent);
-			renderer.reCreatePipeline(swapchainImages.swapChainExtent);
+            // We recreate the sems here, as otherwise, when
+            // vkAcquireNextImageKHR returns suboptimal and the swapchain is
+            // recreated, the next time vkAcquireNextImageKHR is called the
+            // aquireImage sem is still signaled.
 
-			// We recreate the sems here, as otherwise, when vkAcquireNextImageKHR returns suboptimal and
-			// the swapchain is recreated, the next time vkAcquireNextImageKHR is called the aquireImage
-			// sem is still signaled.
+            renderSemaphores = std::make_unique<RenderSemaphores>(device);
 
-			renderSemaphores = std::make_unique<RenderSemaphores>(device);
+            return true;
+        }
 
-			return true;
-		}
+        return false;
+    }
 
-		return false;
-	}
-
-	RenderState drawAndPresent(VulkanRenderBuffer& renderBuffer, std::vector<VulkanCmbBuffer *>& cmbBuffers);
-
-
+    RenderState drawAndPresent(VulkanRenderBuffer &renderBuffer,
+                               std::vector<VulkanCmbBuffer *> &cmbBuffers);
 };
 
-}
+} // namespace BR
 
 #endif // VKENGINE_H

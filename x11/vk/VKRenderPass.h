@@ -6,18 +6,18 @@
 namespace BR {
 
 class VulkanRenderPass {
-public:
-	const VkDevice& device;
-	VkRenderPass renderPass;
+  public:
+    const VkDevice &device;
+    VkRenderPass renderPass;
 
-	VulkanRenderPass(const VkDevice& device_, const VkPhysicalDevice& physicalDevice, VkFormat swapChainImageFormat);
-	~VulkanRenderPass();
+    VulkanRenderPass(const VkDevice &device_,
+                     const VkPhysicalDevice &physicalDevice,
+                     VkFormat swapChainImageFormat);
+    ~VulkanRenderPass();
 
-	operator VkRenderPass& (){
-		return renderPass;
-	}
+    operator VkRenderPass &() { return renderPass; }
 };
 
-}
+} // namespace BR
 
 #endif // VULKANRENDERPASS_H

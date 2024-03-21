@@ -8,19 +8,18 @@
 namespace BR {
 
 class VulkanSampler {
-	const VkDevice& device;
-public:
-	VkSampler sampler;
+    const VkDevice &device;
 
-	VulkanSampler(const VkPhysicalDevice& physicalDevice, const VkDevice& device_);
+  public:
+    VkSampler sampler;
 
-	~VulkanSampler();
+    VulkanSampler(const VkPhysicalDevice &physicalDevice,
+                  const VkDevice &device_);
 
-	operator VkSampler& (){
-		return sampler;
-	}
+    ~VulkanSampler();
 
+    operator VkSampler &() { return sampler; }
 };
-}
+} // namespace BR
 
 #endif // VKSAMPLER_H

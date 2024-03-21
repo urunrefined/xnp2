@@ -3,59 +3,55 @@
 
 #include <vulkan/vulkan.h>
 
-#include "VKPhysicalDevice.h"
-#include "VKBuffers.h"
 #include "Matrix4x4.h"
+#include "VKBuffers.h"
+#include "VKPhysicalDevice.h"
 
 namespace BR {
 
 class VulkanDescriptorLayoutExt {
-	const VkDevice& device;
-	VkDescriptorSetLayout layout;
+    const VkDevice &device;
+    VkDescriptorSetLayout layout;
 
-public:
+  public:
+    VulkanDescriptorLayoutExt(const VkDevice &device_);
+    ~VulkanDescriptorLayoutExt();
+    ;
 
-	VulkanDescriptorLayoutExt(const VkDevice& device_);
-	~VulkanDescriptorLayoutExt();;
-
-	operator const VkDescriptorSetLayout& () const{
-		return layout;
-	}
+    operator const VkDescriptorSetLayout &() const { return layout; }
 };
 
-class VulkanDescriptorSetExt
-{
-	const VkDevice& device;
-	VulkanPhysicalDevice& physicalDevice;
-	const VkDescriptorPool& descriptorPoolExt;
+class VulkanDescriptorSetExt {
+    const VkDevice &device;
+    VulkanPhysicalDevice &physicalDevice;
+    const VkDescriptorPool &descriptorPoolExt;
 
-	std::vector<VkDescriptorSet> descriptorSets;
+    std::vector<VkDescriptorSet> descriptorSets;
 
-public:
-	VulkanUniformBuffer uniformBuffer;
-private:
-	size_t modelCount;
-public:
+  public:
+    VulkanUniformBuffer uniformBuffer;
 
-	VulkanDescriptorSetExt(
-		const VkDevice& device_,
-		VulkanPhysicalDevice& physicalDevice,
-		VkImageView& imageView,
-		VkSampler& sampler,
-		const VkDescriptorPool& descriptorPoolExt_,
-		const VkDescriptorSetLayout &layout,
-		size_t modelCount_);
+  private:
+    size_t modelCount;
 
-	~VulkanDescriptorSetExt();
+  public:
+    VulkanDescriptorSetExt(const VkDevice &device_,
+                           VulkanPhysicalDevice &physicalDevice,
+                           VkImageView &imageView, VkSampler &sampler,
+                           const VkDescriptorPool &descriptorPoolExt_,
+                           const VkDescriptorSetLayout &layout,
+                           size_t modelCount_);
 
-	void updateWorldMatrix(const Matrix4x4f& world);
-	void updateModelMatrix(const Matrix4x4f& world, size_t index);
+    ~VulkanDescriptorSetExt();
 
-	const VkDescriptorSet& get(size_t index) const{
-		return descriptorSets[index];
-	}
+    void updateWorldMatrix(const Matrix4x4f &world);
+    void updateModelMatrix(const Matrix4x4f &world, size_t index);
+
+    const VkDescriptorSet &get(size_t index) const {
+        return descriptorSets[index];
+    }
 };
 
-}
+} // namespace BR
 
 #endif // VKDESCRIPTORSETEXT_H

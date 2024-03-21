@@ -6,11 +6,10 @@
 
 namespace BR {
 
-template<typename T1, size_t N>
-constexpr size_t arraySize(T1 (&)[N]) {
-	return N;
+template <typename T1, size_t N> constexpr size_t arraySize(T1 (&)[N]) {
+    return N;
 }
 
-}
+} // namespace BR
 
-#endif //CORE
+#endif // CORE

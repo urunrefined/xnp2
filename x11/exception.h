@@ -3,23 +3,21 @@
 
 namespace BR {
 
-class Exception
-{
-public:
-	const char *msg;
+class Exception {
+  public:
+    const char *msg;
 
-	Exception(const char *msg_);
+    Exception(const char *msg_);
 };
 
-class CException
-{
-public:
-	const char *msg;
-	int osErrno;
+class CException {
+  public:
+    const char *msg;
+    int osErrno;
 
-	CException(const char *msg_, int osErrno);
+    CException(const char *msg_, int osErrno);
 };
 
-}
+} // namespace BR
 
 #endif // EXCEPTION_H

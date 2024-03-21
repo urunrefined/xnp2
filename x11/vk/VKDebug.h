@@ -5,20 +5,20 @@
 
 namespace BR {
 
-class VulkanDebugCallback{
-public:
-	VkInstance& instance;
-	bool enableValidationLayers;
+class VulkanDebugCallback {
+  public:
+    VkInstance &instance;
+    bool enableValidationLayers;
 
-	VkDebugReportCallbackEXT callback;
+    VkDebugReportCallbackEXT callback;
 
-	VkResult createDebugReportCallbackEXT();
+    VkResult createDebugReportCallbackEXT();
 
-	VulkanDebugCallback(VkInstance& instance_, bool enableValidationLayers_);
+    VulkanDebugCallback(VkInstance &instance_, bool enableValidationLayers_);
 
-	~VulkanDebugCallback();
+    ~VulkanDebugCallback();
 };
 
-} // namespace Vk
+} // namespace BR
 
 #endif // VKDEBUG_H

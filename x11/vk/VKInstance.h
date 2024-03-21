@@ -6,18 +6,16 @@
 namespace BR {
 
 class VulkanInstance {
-public:
-	VkInstance instance;
+  public:
+    VkInstance instance;
 
-	VulkanInstance(bool enableValidationLayers);
+    VulkanInstance(bool enableValidationLayers);
 
-	~VulkanInstance();
+    ~VulkanInstance();
 
-	operator VkInstance& (){
-		return instance;
-	}
+    operator VkInstance &() { return instance; }
 };
 
-}
+} // namespace BR
 
 #endif // VKINSTANCE_H
