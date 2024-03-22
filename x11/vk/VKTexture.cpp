@@ -89,14 +89,18 @@ static void doubleBlankLines(uint16_t width, uint16_t height,
     // Always copy the first line
     memcpy(out, in, width * 4);
 
-    for (uint16_t h = 1; h < height; h++) {
-        if (!lineHasData(in + h * width * 4, width)) {
-
+    for (uint16_t h = 1; h < height - 1; h++) {
+        if (
+          !lineHasData(in + h * width * 4, width) &&
+          lineHasData(in + (h + 1)  * width * 4, width)
+        ) {
             memcpy(out + (h)*width * 4, in + (h - 1) * width * 4, width * 4);
         } else {
             memcpy(out + (h)*width * 4, in + (h)*width * 4, width * 4);
         }
     }
+    
+    memcpy(out + ((height - 1) * width * 4), in + ((height - 1) * width * 4), width * 4);
 }
 
 void VulkanTexture::update(DoubleLines doubleLines) {
