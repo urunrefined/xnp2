@@ -15,7 +15,6 @@ makedepends=(
 depends=(
   "glibc"
   "glfw"
-  "sdl2"
   "vulkan-icd-loader"
   "fontconfig"
   "harfbuzz"

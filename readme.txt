@@ -7,14 +7,12 @@ Building on Arch:
 Install the following packages
 glslang (for glslangValidator glsl -> spirv compiler)
 glfw-wayland OR glfw-x11 depending on what DE/WM you are running
-sdl2 (for sound & controller support)
 fontconfig, harfbuzz, freetype for rendering fonts
 cd into the "x11" directory and call "make".
 
 Running:
 To run you need:
 glfw-wayland OR glfw-x11
-sdl2
 vulkan-icd-loader,
 fontconfig
 harfbuzz

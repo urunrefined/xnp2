@@ -1,7 +1,7 @@
-INC=-I.  -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I./../i386c
-INCEXT=-I/usr/include/SDL2 -I/usr/include/fontconfig -I/usr/include/freetype2 -I/usr/include/harfbuzz
+INC=-I. -I./.. -I./../x11/vk -I./../x11/debug -I./../common -I./../cbus -I./../generic -I./../io -I./../mem -I./../sound -I./../vram -I./../i386c
+INCEXT=-I/usr/include/fontconfig -I/usr/include/freetype2 -I/usr/include/harfbuzz
 
-LDLIBS = -pthread -lSDL2 -lm -lglfw -lvulkan -lfontconfig -lharfbuzz -lfreetype -lpulse
+LDLIBS = -pthread -lm -lglfw -lvulkan -lfontconfig -lharfbuzz -lfreetype -lpulse
 
 #General flags
 CXXFLAGS = -Wall -Wextra -std=gnu++17 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
