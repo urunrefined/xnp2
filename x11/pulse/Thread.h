@@ -4,45 +4,43 @@
 #include <pthread.h>
 
 class Runable {
-public:
-	virtual void run() = 0;
-	virtual void finish() = 0;
-	~Runable();
+  public:
+    virtual void run() = 0;
+    virtual void finish() = 0;
+    ~Runable();
 };
 
-void* run(void *);
+void *run(void *);
 
-class Thread
-{
-	Thread(Thread&) = delete;
-	Runable& runable;
+class Thread {
+    Thread(Thread &) = delete;
+    Runable &runable;
 
-	pthread_t thread;
-public:
-	Thread(Runable& runable_);
-	~Thread();
+    pthread_t thread;
+
+  public:
+    Thread(Runable &runable_);
+    ~Thread();
 };
 
-class Mutex{
-public:
-	Mutex(Mutex&) = delete;
+class Mutex {
+  public:
+    Mutex(Mutex &) = delete;
 
-	pthread_mutex_t mutex;
+    pthread_mutex_t mutex;
 
-	Mutex();
-	~Mutex();
+    Mutex();
+    ~Mutex();
 };
 
-class LockGuard{
-	Mutex& mutex;
+class LockGuard {
+    Mutex &mutex;
 
-public:
-	LockGuard(LockGuard&) = delete;
+  public:
+    LockGuard(LockGuard &) = delete;
 
-	LockGuard(Mutex& mutex_);
-	~LockGuard();
+    LockGuard(Mutex &mutex_);
+    ~LockGuard();
 };
-
-
 
 #endif // THREAD_H

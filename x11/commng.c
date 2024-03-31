@@ -28,14 +28,15 @@ static UINT8 ncgetstat(COMMNG self) {
     return 0xf0;
 }
 
-static INTPTR ncmsg(COMMNG self, UINT msg, INTPTR param) { 
+static INTPTR ncmsg(COMMNG self, UINT msg, INTPTR param) {
     (void)self;
     (void)msg;
     (void)param;
-    
-    return 0; }
 
-static void ncrelease(COMMNG self) { 
+    return 0;
+}
+
+static void ncrelease(COMMNG self) {
     (void)self;
     /* Nothing to do */
 }
@@ -82,12 +83,12 @@ commng_create(UINT device) {
         cfg = NULL;
         break;
     }
-    
+
     if (cfg) {
         if ((cfg->port >= COMPORT_COM1) && (cfg->port <= COMPORT_COM4)) {
             ret = cmserial_create(cfg->port - COMPORT_COM1 + 1, cfg->param,
                                   cfg->speed);
-            
+
         } else if (cfg->port == COMPORT_MIDI) {
             ret = cmmidi_create(cfg->mout, cfg->min, cfg->mdl);
             if (ret) {
