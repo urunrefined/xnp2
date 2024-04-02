@@ -15,7 +15,7 @@ x11/configure
 x11/install-sh
 x11/missing
 x11/stamp-h1
-x11/xnp2
+xnp2
 x11/xnp2.1
 x11/xnp2.1j
 x11/xnp21
