@@ -143,7 +143,7 @@ void keyboard_send(REG8 data) {
 
 // ---- RS-232C
 
-	COMMNG	cm_rs232c;
+	struct _commng	*cm_rs232c;
 
 void rs232c_construct(void) {
 

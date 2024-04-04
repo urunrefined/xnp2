@@ -5,16 +5,14 @@
 #include	"iocore.h"
 
 
-	COMMNG	cm_prt;
+	struct _commng	*cm_prt;
 
 
 // ---- I/O
 
 static void IOOUTCALL prt_o40(UINT port, REG8 dat) {
+	struct _commng  *prt = cm_prt;
 
-	COMMNG	prt;
-
-	prt = cm_prt;
 	if (prt == NULL) {
 		prt = commng_create(COMCREATE_PRINTER);
 		cm_prt = prt;

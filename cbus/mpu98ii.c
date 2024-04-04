@@ -73,7 +73,7 @@ enum {
 
 
 	_MPU98II	mpu98;
-	COMMNG		cm_mpu98;
+	struct _commng	*cm_mpu98;
 
 
 static const UINT8 mpuirqnum[4] = {3, 5, 6, 12};
@@ -160,10 +160,6 @@ static void setrecvdata(REG8 data) {
 }
 
 static void sendmpushortmsg(const UINT8 *dat, UINT count) {
-
-	UINT	i;
-	COMMNG	cm;
-
 #if 0
 	if (!(mpu98.flag1 & MPUFLAG1_BENDERTOHOST)) {
 		switch(dat[0] >> 4) {
@@ -180,20 +176,14 @@ static void sendmpushortmsg(const UINT8 *dat, UINT count) {
 		}
 	}
 #endif
-	cm = cm_mpu98;
-	for (i=0; i<count; i++) {
-		cm->write(cm, dat[i]);
+	for (UINT i=0; i<count; i++) {
+		cm_mpu98->write(cm_mpu98, dat[i]);
 	}
 }
 
 static void sendmpulongmsg(const UINT8 *dat, UINT count) {
-
-	UINT	i;
-	COMMNG	cm;
-
-	cm = cm_mpu98;
-	for (i=0; i<count; i++) {
-		cm->write(cm, dat[i]);
+	for (UINT    i=0; i<count; i++) {
+		cm_mpu98->write(cm_mpu98, dat[i]);
 	}
 }
 

@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-extern COMMNG cm_mpu98;
+extern struct _commgr *cm_mpu98;
 
 enum {
     MIDI_MT32 = 0,
@@ -35,7 +35,7 @@ extern const char cmmidi_midiin_device[];
 extern const char *cmmidi_mdlname[];
 
 void cmmidi_initialize(void);
-COMMNG cmmidi_create(const char *midiout, const char *midiin,
+struct _commng* cmmidi_create(const char *midiout, const char *midiin,
                      const char *module);
 
 #ifdef __cplusplus

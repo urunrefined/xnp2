@@ -7,28 +7,30 @@
 #include "global.h"
 #include "np2.h"
 
+#include <stdio.h>
+
 // ---- non connect
 
-static UINT ncread(COMMNG self, UINT8 *data) {
+static UINT ncread(struct _commng *self, UINT8 *data) {
     (void)self;
     (void)data;
     return 0;
 }
 
-static UINT ncwrite(COMMNG self, UINT8 data) {
+static UINT ncwrite(struct _commng *self, UINT8 data) {
     (void)self;
     (void)data;
 
     return 0;
 }
 
-static UINT8 ncgetstat(COMMNG self) {
+static UINT8 ncgetstat(struct _commng *self) {
     (void)self;
 
     return 0xf0;
 }
 
-static INTPTR ncmsg(COMMNG self, UINT msg, INTPTR param) {
+static INTPTR ncmsg(struct _commng *self, UINT msg, INTPTR param) {
     (void)self;
     (void)msg;
     (void)param;
@@ -36,23 +38,23 @@ static INTPTR ncmsg(COMMNG self, UINT msg, INTPTR param) {
     return 0;
 }
 
-static void ncrelease(COMMNG self) {
+static void ncrelease(struct _commng *self) {
     (void)self;
     /* Nothing to do */
 }
 
-static _COMMNG com_nc = {COMCONNECT_OFF, ncread, ncwrite,
+static struct _commng com_nc = {COMCONNECT_OFF, ncread, ncwrite,
                          ncgetstat,      ncmsg,  ncrelease};
 
 // ----
 
 void commng_initialize(void) { cmmidi_initialize(); }
 
-COMMNG
+struct _commng *
 commng_create(UINT device) {
-    COMMNG ret;
+    struct _commng *ret = 0;
     COMCFG *cfg;
-
+    
     ret = NULL;
 
     switch (device) {
@@ -77,7 +79,7 @@ commng_create(UINT device) {
         if (np2oscfg.jastsnd) {
             ret = cmjasts_create();
         }
-        break;
+        return ret;
 
     default:
         cfg = NULL;
@@ -95,14 +97,18 @@ commng_create(UINT device) {
                 (*ret->msg)(ret, COMMSG_MIMPIDEFFILE, (INTPTR)cfg->def);
                 (*ret->msg)(ret, COMMSG_MIMPIDEFEN, (INTPTR)cfg->def_en);
             }
-        }
+        }        
     }
+    
+    
+    
     if (ret)
         return ret;
-    return (COMMNG)&com_nc;
+
+    return &com_nc;
 }
 
-void commng_destroy(COMMNG hdl) {
+void commng_destroy(struct _commng *hdl) {
 
     if (hdl) {
         hdl->release(hdl);

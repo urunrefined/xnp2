@@ -104,8 +104,8 @@ typedef struct {
 #include "statsave.tbl"
 
 
-extern	COMMNG	cm_mpu98;
-extern	COMMNG	cm_rs232c;
+extern	struct _commng	*cm_mpu98;
+extern	struct _commng	*cm_rs232c;
 
 typedef struct {
 	OEMCHAR	*buf;
@@ -1069,7 +1069,7 @@ static int flagload_sxsi(STFLAGH sfh, const SFENTRY *tbl) {
 static int flagsave_com(STFLAGH sfh, const SFENTRY *tbl) {
 
 	UINT	device;
-	COMMNG	cm;
+	struct _commng	*cm;
 	int		ret;
 	COMFLAG	flag;
 
@@ -1101,7 +1101,7 @@ static int flagsave_com(STFLAGH sfh, const SFENTRY *tbl) {
 static int flagload_com(STFLAGH sfh, const SFENTRY *tbl) {
 
 	UINT		device;
-	COMMNG		cm;
+	struct _commng	*cm;
 	int			ret;
 	_COMFLAG	fhdr;
 	COMFLAG		flag;

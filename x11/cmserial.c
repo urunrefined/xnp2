@@ -49,7 +49,7 @@ typedef struct {
 const UINT32 cmserial_speed[10] = {110,  300,   1200,  2400,  4800,
                                    9600, 19200, 38400, 57600, 115200};
 
-static UINT serialread(COMMNG self, UINT8 *data) {
+static UINT serialread(struct _commng *self, UINT8 *data) {
     CMSER serial = (CMSER)(self + 1);
     size_t size;
     int bytes;
@@ -68,7 +68,7 @@ static UINT serialread(COMMNG self, UINT8 *data) {
     return 0;
 }
 
-static UINT serialwrite(COMMNG self, UINT8 data) {
+static UINT serialwrite(struct _commng *self, UINT8 data) {
     CMSER serial = (CMSER)(self + 1);
     size_t size;
 
@@ -81,7 +81,7 @@ static UINT serialwrite(COMMNG self, UINT8 data) {
     return 0;
 }
 
-static UINT8 serialgetstat(COMMNG self) {
+static UINT8 serialgetstat(struct _commng *self) {
     CMSER serial = (CMSER)(self + 1);
     int status;
     int rv;
@@ -99,7 +99,7 @@ static UINT8 serialgetstat(COMMNG self) {
     return 0x00;
 }
 
-static INTPTR serialmsg(COMMNG self, UINT msg, INTPTR param) {
+static INTPTR serialmsg(struct _commng *self, UINT msg, INTPTR param) {
 
     (void)self;
     (void)msg;
@@ -108,7 +108,7 @@ static INTPTR serialmsg(COMMNG self, UINT msg, INTPTR param) {
     return 0;
 }
 
-static void serialrelease(COMMNG self) {
+static void serialrelease(struct _commng *self) {
     CMSER serial = (CMSER)(self + 1);
 
     tcsetattr(serial->hdl, TCSANOW, &serial->tio);
@@ -116,14 +116,14 @@ static void serialrelease(COMMNG self) {
     _MFREE(self);
 }
 
-COMMNG
+struct _commng *
 cmserial_create(UINT port, UINT8 param, UINT32 speed) {
     static const int cmserial_cflag[10] = {B110,   B300,   B1200,  B2400,
                                            B4800,  B9600,  B19200, B38400,
                                            B57600, B115200};
     static const int csize[] = {CS5, CS6, CS7, CS8};
     struct termios options, origopt;
-    COMMNG ret;
+    struct _commng *ret;
     CMSER serial;
     int hdl;
     UINT i;
@@ -222,7 +222,7 @@ cmserial_create(UINT port, UINT8 param, UINT32 speed) {
     options.c_cflag |= CLOCAL | CREAD;
     options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
 
-    ret = (COMMNG)_MALLOC(sizeof(_COMMNG) + sizeof(_CMSER), "SERIAL");
+    ret = (struct _commng *) _MALLOC(sizeof(struct _commng) + sizeof(_CMSER), "SERIAL");
     if (ret == NULL) {
         VERBOSE(("cmserial_create: memory alloc failure"));
         goto cscre_close;

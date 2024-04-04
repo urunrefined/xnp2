@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-COMMNG cmjasts_create(void);
+struct _commng *cmjasts_create(void);
 
 #ifdef __cplusplus
 }

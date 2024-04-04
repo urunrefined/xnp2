@@ -23,14 +23,14 @@ typedef struct {
 } _CMJAST, *CMJAST;
 
 
-static UINT jsread(COMMNG self, UINT8 *data) {
+static UINT jsread(struct _commng *self, UINT8 *data) {
 
 	(void)self;
 	(void)data;
 	return(0);
 }
 
-static UINT jswrite(COMMNG self, UINT8 data) {
+static UINT jswrite(struct _commng *self, UINT8 data) {
 
 	CMJAST	js;
 	SINT32	pcm;
@@ -56,13 +56,13 @@ static UINT jswrite(COMMNG self, UINT8 data) {
 	return(1);
 }
 
-static UINT8 jsgetstat(COMMNG self) {
+static UINT8 jsgetstat(struct _commng *self) {
 
 	(void)self;
 	return(0);
 }
 
-static INTPTR jsmsg(COMMNG self, UINT msg, INTPTR param) {
+static INTPTR jsmsg(struct _commng *self, UINT msg, INTPTR param) {
 
 	(void)self;
 	(void)msg;
@@ -70,8 +70,7 @@ static INTPTR jsmsg(COMMNG self, UINT msg, INTPTR param) {
 	return(0);
 }
 
-static void jsrelease(COMMNG self) {
-
+static void jsrelease(struct _commng *self) {
 	_MFREE(self);
 }
 
@@ -123,15 +122,16 @@ static void SOUNDCALL js_getpcm(CMJAST hdl, SINT32 *pcm, UINT count) {
 }
 
 
-COMMNG cmjasts_create(void) {
+struct _commng *cmjasts_create(void) {
 
-	COMMNG		ret;
+	struct _commng *ret;
 	CMJAST		js;
 
-	ret = (COMMNG)_MALLOC(sizeof(_COMMNG) + sizeof(_CMJAST), "JAST");
+	ret = (struct _commng *)_MALLOC(sizeof(struct _commng) + sizeof(_CMJAST), "JAST");
 	if (ret == NULL) {
 		goto cmjscre_err;
 	}
+
 	ret->connect = COMCONNECT_PARALLEL;
 	ret->read = jsread;
 	ret->write = jswrite;

@@ -11,8 +11,8 @@
 
 
 	_PC9861K	pc9861k;
-	COMMNG		cm_pc9861ch1;
-	COMMNG		cm_pc9861ch2;
+	struct _commng	*cm_pc9861ch1;
+	struct _commng  *cm_pc9861ch2;
 
 
 const UINT32 pc9861k_speed[11] = {75, 150, 300, 600, 1200, 2400, 4800,
@@ -27,7 +27,7 @@ static const _PC9861CH pc9861def =
 
 // ----
 
-static void pc9861k_callback(COMMNG cm, PC9861CH m) {
+static void pc9861k_callback(struct _commng *cm, PC9861CH m) {
 
 	BOOL	interrupt;
 
@@ -124,7 +124,7 @@ static void pc9861ch2_open(void) {
 
 // -------------------------------------------------------------------------
 
-static void IOOUTCALL pc9861data_w8(COMMNG cm, PC9861CH m,
+static void IOOUTCALL pc9861data_w8(struct _commng *cm, PC9861CH m,
 													UINT port, REG8 value) {
 
 	UINT32	mul2;
@@ -189,7 +189,7 @@ static void IOOUTCALL pc9861data_w8(COMMNG cm, PC9861CH m,
 	}
 }
 
-static REG8 IOINPCALL pc9861data_r8(COMMNG cm, PC9861CH m, UINT port) {
+static REG8 IOINPCALL pc9861data_r8(struct _commng *cm, PC9861CH m, UINT port) {
 
 	switch(port & 0x3) {
 		case 0x01:

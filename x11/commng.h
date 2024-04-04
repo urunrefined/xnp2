@@ -26,17 +26,14 @@ enum {
 
 enum { COMMSG_MIDIRESET = 0, COMMSG_SETFLAG, COMMSG_GETFLAG, COMMSG_USER };
 
-struct _commng;
-typedef struct _commng _COMMNG;
-typedef struct _commng *COMMNG;
-
 struct _commng {
     UINT connect;
-    UINT (*read)(COMMNG self, UINT8 *data);
-    UINT (*write)(COMMNG self, UINT8 data);
-    UINT8 (*getstat)(COMMNG self);
-    INTPTR (*msg)(COMMNG self, UINT msg, INTPTR param);
-    void (*release)(COMMNG self);
+    
+    UINT (*read)(struct _commng *self, UINT8 *data);
+    UINT (*write)(struct _commng *self, UINT8 data);
+    UINT8 (*getstat)(struct _commng *self);
+    INTPTR (*msg)(struct _commng *self, UINT msg, INTPTR param);
+    void (*release)(struct _commng *self);
 };
 
 typedef struct {
@@ -46,8 +43,8 @@ typedef struct {
     UINT32 param;
 } _COMFLAG, *COMFLAG;
 
-COMMNG commng_create(UINT device);
-void commng_destroy(COMMNG hdl);
+struct _commng* commng_create(UINT device);
+void commng_destroy(struct _commng *hdl);
 
 // ---- com manager for unix
 

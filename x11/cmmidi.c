@@ -364,7 +364,7 @@ static void midisetparam(CMMIDI midi) {
 
 // ----
 
-static UINT midiread(COMMNG self, UINT8 *data) {
+static UINT midiread(struct _commng *self, UINT8 *data) {
     CMMIDI midi = (CMMIDI)(self + 1);
 
     if (midi->recvsize > 0) {
@@ -376,7 +376,7 @@ static UINT midiread(COMMNG self, UINT8 *data) {
     return 0;
 }
 
-static UINT midiwrite(COMMNG self, UINT8 data) {
+static UINT midiwrite(struct _commng *self, UINT8 data) {
     CMMIDI midi;
     MIDICH mch;
     int type;
@@ -547,12 +547,12 @@ static UINT midiwrite(COMMNG self, UINT8 data) {
     return 0;
 }
 
-static UINT8 midigetstat(COMMNG self) {
+static UINT8 midigetstat(struct _commng *self) {
     (void)self;
     return 0x00;
 }
 
-static INTPTR midimsg(COMMNG self, UINT msg, INTPTR param) {
+static INTPTR midimsg(struct _commng *self, UINT msg, INTPTR param) {
     CMMIDI midi;
     COMFLAG flag;
 
@@ -588,7 +588,7 @@ static INTPTR midimsg(COMMNG self, UINT msg, INTPTR param) {
     return 0;
 }
 
-static void midirelease(COMMNG self) {
+static void midirelease(struct _commng *self) {
     CMMIDI midi;
 
     midi = (CMMIDI)(self + 1);
@@ -620,9 +620,9 @@ void cmmidi_initialize(void) {
     midictrlindex[32] = 1;
 }
 
-COMMNG
+struct _commng *
 cmmidi_create(const char *midiout, const char *midiin, const char *module) {
-    COMMNG ret;
+    struct _commng *ret;
     CMMIDI midi;
     void (*outfn)(CMMIDI midi, UINT32 msg, UINT cnt);
     int hmidiout;
@@ -653,7 +653,7 @@ cmmidi_create(const char *midiout, const char *midiin, const char *module) {
     if (!opened) {
         goto cmcre_err1;
     }
-    ret = (COMMNG)_MALLOC(sizeof(_COMMNG) + sizeof(_CMMIDI), "MIDI");
+    ret = (struct _commng *)_MALLOC(sizeof(struct _commng) + sizeof(_CMMIDI), "MIDI");
     if (ret == NULL) {
         goto cmcre_err2;
     }
