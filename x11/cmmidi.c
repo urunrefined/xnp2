@@ -620,8 +620,8 @@ void cmmidi_initialize(void) {
     midictrlindex[32] = 1;
 }
 
-struct _commng *
-cmmidi_create(const char *midiout, const char *midiin, const char *module) {
+struct _commng *cmmidi_create(const char *midiout, const char *midiin,
+                              const char *module) {
     struct _commng *ret;
     CMMIDI midi;
     void (*outfn)(CMMIDI midi, UINT32 msg, UINT cnt);
@@ -653,7 +653,8 @@ cmmidi_create(const char *midiout, const char *midiin, const char *module) {
     if (!opened) {
         goto cmcre_err1;
     }
-    ret = (struct _commng *)_MALLOC(sizeof(struct _commng) + sizeof(_CMMIDI), "MIDI");
+    ret = (struct _commng *)_MALLOC(sizeof(struct _commng) + sizeof(_CMMIDI),
+                                    "MIDI");
     if (ret == NULL) {
         goto cmcre_err2;
     }

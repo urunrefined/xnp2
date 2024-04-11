@@ -85,31 +85,21 @@ IniCfg::IniCfg(NP2OSCFG &np2oscfg, tagNP2Config &np2cfg) {
 
         {"confirm_", INITYPE_BOOL, &np2oscfg.confirm, 0},
 
-        {"mpu98map", INITYPE_STR, np2oscfg.mpu.mout, MAX_PATH},
-        {"mpu98min", INITYPE_STR, np2oscfg.mpu.min, MAX_PATH},
-        {"mpu98mdl", INITYPE_STR, np2oscfg.mpu.mdl, 64},
-        {"mpu98def", INITYPE_STR, np2oscfg.mpu.def, MAX_PATH},
+        {"mpu98map", INITYPE_STR, np2oscfg.mpu.type, 64},
+        {"mpu98min", INITYPE_STR, np2oscfg.mpu.ttyname, MAX_PATH},
+        {"mpu98mdl", INITYPE_STR, np2oscfg.mpu.alsaRawHWName, 64},
 
-        {"com1port", INIMAX_UINT8, &np2oscfg.com[0].port, COMPORT_MIDI},
-        {"com1para", INITYPE_UINT8, &np2oscfg.com[0].param, 0},
-        {"com1_bps", INITYPE_UINT32, &np2oscfg.com[0].speed, 0},
-        {"com1mmap", INITYPE_STR, np2oscfg.com[0].mout, MAX_PATH},
-        {"com1mmdl", INITYPE_STR, np2oscfg.com[0].mdl, 64},
-        {"com1mdef", INITYPE_STR, np2oscfg.com[0].def, MAX_PATH},
+        {"com1type", INITYPE_STR, &np2oscfg.com[0].type, 64},
+        {"com1ttyn", INITYPE_STR, &np2oscfg.com[0].ttyname, MAX_PATH},
+        {"com1mdhw", INITYPE_STR, &np2oscfg.com[0].alsaRawHWName, 64},
 
-        {"com2port", INIMAX_UINT8, &np2oscfg.com[1].port, COMPORT_MIDI},
-        {"com2para", INITYPE_UINT8, &np2oscfg.com[1].param, 0},
-        {"com2_bps", INITYPE_UINT32, &np2oscfg.com[1].speed, 0},
-        {"com2mmap", INITYPE_STR, np2oscfg.com[1].mout, MAX_PATH},
-        {"com2mmdl", INITYPE_STR, np2oscfg.com[1].mdl, 64},
-        {"com2mdef", INITYPE_STR, np2oscfg.com[1].def, MAX_PATH},
+        {"com2type", INITYPE_STR, &np2oscfg.com[1].type, 64},
+        {"com2ttyn", INITYPE_STR, &np2oscfg.com[1].ttyname, MAX_PATH},
+        {"com2mdhw", INITYPE_STR, &np2oscfg.com[1].alsaRawHWName, 64},
 
-        {"com3port", INIMAX_UINT8, &np2oscfg.com[2].port, COMPORT_MIDI},
-        {"com3para", INITYPE_UINT8, &np2oscfg.com[2].param, 0},
-        {"com3_bps", INITYPE_UINT32, &np2oscfg.com[2].speed, 0},
-        {"com3mmap", INITYPE_STR, np2oscfg.com[2].mout, MAX_PATH},
-        {"com3mmdl", INITYPE_STR, np2oscfg.com[2].mdl, 64},
-        {"com3mdef", INITYPE_STR, np2oscfg.com[2].def, MAX_PATH},
+        {"com3type", INITYPE_STR, &np2oscfg.com[2].type, 64},
+        {"com3ttyn", INITYPE_STR, &np2oscfg.com[2].ttyname, MAX_PATH},
+        {"com3mdhw", INITYPE_STR, &np2oscfg.com[2].alsaRawHWName, 64},
 
 #if defined(SUPPORT_STATSAVE)
         {"STATSAVE", INIRO_BOOL, &np2oscfg.statsave, 0},

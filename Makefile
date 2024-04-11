@@ -1,7 +1,7 @@
 INC=-I. -Ix11 -Ix11/vk -Ix11/debug -Icommon -Icbus -Igeneric -Iio -Imem -Isound -Ivram -Ii386c
 INCEXT=-I/usr/include/fontconfig -I/usr/include/freetype2 -I/usr/include/harfbuzz
 
-LDLIBS = -pthread -lm -lglfw -lvulkan -lfontconfig -lharfbuzz -lfreetype -lpulse
+LDLIBS = -pthread -lasound -lm -lglfw -lvulkan -lfontconfig -lharfbuzz -lfreetype -lpulse
 
 #General flags
 CXXFLAGS = -Wall -Wextra -std=gnu++17 -pthread -DNDEBUG -fsigned-char -fno-strict-aliasing -g -O2
@@ -14,6 +14,7 @@ SRC_C = \
 		x11/trace.c                                    \
 		x11/cmmidi.c                                   \
 		x11/cmserial.c                                 \
+		x11/cmamidi.c                                  \
 		x11/commng.c                                   \
 		x11/timemng.c                                  \
 		pccore.c                                       \

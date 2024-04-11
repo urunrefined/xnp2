@@ -40,25 +40,21 @@
 #include <termios.h>
 #include <unistd.h>
 
-typedef struct {
-    int hdl;
-
-    struct termios tio;
-} _CMSER, *CMSER;
-
-const UINT32 cmserial_speed[10] = {110,  300,   1200,  2400,  4800,
-                                   9600, 19200, 38400, 57600, 115200};
+struct SerialCom {
+    struct _commng commng;
+    int fd;
+};
 
 static UINT serialread(struct _commng *self, UINT8 *data) {
-    CMSER serial = (CMSER)(self + 1);
+    struct SerialCom *serial = (struct SerialCom *)self;
     size_t size;
     int bytes;
     int rv;
 
-    rv = ioctl(serial->hdl, FIONREAD, &bytes);
+    rv = ioctl(serial->fd, FIONREAD, &bytes);
     if (rv == 0 && bytes > 0) {
         VERBOSE(("serialread: bytes = %d", bytes));
-        size = read(serial->hdl, data, 1);
+        size = read(serial->fd, data, 1);
         if (size == 1) {
             VERBOSE(("serialread: data = %02x", *data));
             return 1;
@@ -68,34 +64,38 @@ static UINT serialread(struct _commng *self, UINT8 *data) {
     return 0;
 }
 
+// TODO: Handle eagain
 static UINT serialwrite(struct _commng *self, UINT8 data) {
-    CMSER serial = (CMSER)(self + 1);
+    struct SerialCom *serial = (struct SerialCom *)self;
     size_t size;
 
-    size = write(serial->hdl, &data, 1);
+    size = write(serial->fd, &data, 1);
     if (size == 1) {
         VERBOSE(("serialwrite: data = %02x", data));
         return 1;
     }
+
     VERBOSE(("serialwrite: write failure (%s)", strerror(errno)));
     return 0;
 }
 
 static UINT8 serialgetstat(struct _commng *self) {
-    CMSER serial = (CMSER)(self + 1);
-    int status;
-    int rv;
+    struct SerialCom *serial = (struct SerialCom *)self;
 
-    rv = ioctl(serial->hdl, TIOCMGET, &status);
+    int status;
+    int rv = ioctl(serial->fd, TIOCMGET, &status);
+
     if (rv < 0) {
         VERBOSE(("serialgetstat: ioctl: %s", strerror(errno)));
         return 0x20;
     }
+
     if (!(status & TIOCM_DSR)) {
-        VERBOSE(("serialgetstat: DSR is disable"));
+        VERBOSE(("serialgetstat: DSR is disabled"));
         return 0x20;
     }
-    VERBOSE(("serialgetstat: DSR is enable"));
+
+    VERBOSE(("serialgetstat: DSR is enabled"));
     return 0x00;
 }
 
@@ -109,145 +109,56 @@ static INTPTR serialmsg(struct _commng *self, UINT msg, INTPTR param) {
 }
 
 static void serialrelease(struct _commng *self) {
-    CMSER serial = (CMSER)(self + 1);
-
-    tcsetattr(serial->hdl, TCSANOW, &serial->tio);
-    close(serial->hdl);
-    _MFREE(self);
+    struct SerialCom *serial = (struct SerialCom *)self;
+    printf("Release serial %p, fd %d\n", serial, serial->fd);
+    close(serial->fd);
 }
 
-struct _commng *
-cmserial_create(UINT port, UINT8 param, UINT32 speed) {
-    static const int cmserial_cflag[10] = {B110,   B300,   B1200,  B2400,
-                                           B4800,  B9600,  B19200, B38400,
-                                           B57600, B115200};
-    static const int csize[] = {CS5, CS6, CS7, CS8};
-    struct termios options, origopt;
-    struct _commng *ret;
-    CMSER serial;
-    int hdl;
-    UINT i;
+struct _commng *cmserial_create(const char *tty) {
+    printf("cmserial_create: (terminal %s)\n", tty ? "NULL" : tty);
 
-    VERBOSE(("cmserial_create: port = %d, param = %02x, speed = %d", port,
-             param, speed));
-
-    if (port == 0 || port > MAX_SERIAL_PORT_NUM) {
-        VERBOSE(("cmserial_create: port is invalid"));
-        goto cscre_failure;
+    if (!tty || tty[0] == '\0') {
+        printf("cmserial_create: com device file is disabled\n");
+        printf("Check config, set mmap if this port should be used\n");
+        return NULL;
     }
 
-    port--;
-    if (np2oscfg.com[port].mout[0] == '\0') {
-        VERBOSE(("cmserial_create: com device file is disable"));
-        goto cscre_failure;
+    int fd = open(tty, O_RDWR | O_NOCTTY | O_NDELAY);
+
+    if (fd == -1) {
+        printf("Open failure %s, %s\n", tty, strerror(errno));
+        return 0;
     }
 
-    hdl = open(np2oscfg.com[port].mout, O_RDWR | O_NOCTTY | O_NDELAY);
-    if (hdl == -1) {
-        VERBOSE(("cmserial_create: open failure %s, %s",
-                 np2oscfg.com[port].mout, strerror(errno)));
-        goto cscre_failure;
+    if (!isatty(fd)) {
+        printf("cmserial_create: not terminal file descriptor\n");
+        close(fd);
+        return 0;
     }
 
-    if (!isatty(hdl)) {
-        VERBOSE(("cmserial_create: not terminal file descriptor (%s)",
-                 strerror(errno)));
-        goto cscre_close;
+    struct SerialCom *serialCom =
+        (struct SerialCom *)malloc(sizeof(struct SerialCom));
+
+    if (!serialCom) {
+        printf("cmserial_create: memory alloc failure\n");
+        close(fd);
     }
 
-    /* get current options for the port */
-    tcgetattr(hdl, &options);
-    origopt = options;
+    memset(serialCom, 0, sizeof(struct SerialCom));
 
-    /* baud rates */
-    for (i = 0; i < NELEMENTS(cmserial_speed); i++) {
-        if (cmserial_speed[i] >= speed) {
-            VERBOSE(("cmserial_create: spped = %d", cmserial_speed[i]));
-            break;
-        }
-    }
-    if (i >= NELEMENTS(cmserial_speed)) {
-        VERBOSE(("cmserial_create: speed is invaild"));
-        goto cscre_close;
-    }
-    cfsetispeed(&options, cmserial_cflag[i]);
-    cfsetospeed(&options, cmserial_cflag[i]);
+    serialCom->fd = fd;
 
-    /* character size bits */
-    options.c_cflag &= ~CSIZE;
-    options.c_cflag |= csize[(param >> 2) & 3];
-    VERBOSE(("cmserial_create: charactor size = %d", csize[(param >> 2) & 3]));
+    //    serialCom->commng.connect = COMCONNECT_MIDI;
+    serialCom->commng.connect = COMCONNECT_SERIAL;
 
-    /* parity check */
-    switch (param & 0x30) {
-    case 0x10:
-        VERBOSE(("cmserial_create: odd parity"));
-        options.c_cflag |= PARENB | PARODD;
-        options.c_iflag |= INPCK | ISTRIP;
-        break;
+    serialCom->commng.read = serialread;
+    serialCom->commng.write = serialwrite;
+    serialCom->commng.getstat = serialgetstat;
+    serialCom->commng.msg = serialmsg;
+    serialCom->commng.release = serialrelease;
 
-    case 0x30:
-        VERBOSE(("cmserial_create: even parity"));
-        options.c_cflag |= PARENB;
-        options.c_cflag &= ~PARODD;
-        options.c_iflag |= INPCK | ISTRIP;
-        break;
+    printf("cmsercial created real serialCom %p\n", serialCom);
+    printf("cmgetstat %p\n", serialgetstat);
 
-    default:
-        VERBOSE(("cmserial_create: non parity"));
-        options.c_cflag &= ~PARENB;
-        options.c_iflag &= ~(INPCK | ISTRIP);
-        break;
-    }
-
-    /* stop bits */
-    switch (param & 0xc0) {
-    case 0x80:
-        VERBOSE(("cmserial_create: stop bits: 1.5"));
-        break;
-
-    case 0xc0:
-        VERBOSE(("cmserial_create: stop bits: 2"));
-        options.c_cflag |= CSTOPB;
-        break;
-
-    default:
-        VERBOSE(("cmserial_create: stop bits: 1"));
-        options.c_cflag &= ~CSTOPB;
-        break;
-    }
-
-    /* set misc flag */
-    cfmakeraw(&options);
-    options.c_cflag |= CLOCAL | CREAD;
-    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-
-    ret = (struct _commng *) _MALLOC(sizeof(struct _commng) + sizeof(_CMSER), "SERIAL");
-    if (ret == NULL) {
-        VERBOSE(("cmserial_create: memory alloc failure"));
-        goto cscre_close;
-    }
-
-    /* set the new options for the port */
-    tcsetattr(hdl, TCSANOW, &options);
-
-#if 1
-    ret->connect = COMCONNECT_MIDI;
-#else
-    ret->connect = COMCONNECT_SERIAL;
-#endif
-    ret->read = serialread;
-    ret->write = serialwrite;
-    ret->getstat = serialgetstat;
-    ret->msg = serialmsg;
-    ret->release = serialrelease;
-    serial = (CMSER)(ret + 1);
-    serial->hdl = hdl;
-    serial->tio = origopt;
-    return ret;
-
-cscre_close:
-    close(hdl);
-cscre_failure:
-    return NULL;
+    return (struct _commng *)serialCom;
 }

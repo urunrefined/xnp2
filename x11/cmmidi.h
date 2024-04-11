@@ -35,8 +35,8 @@ extern const char cmmidi_midiin_device[];
 extern const char *cmmidi_mdlname[];
 
 void cmmidi_initialize(void);
-struct _commng* cmmidi_create(const char *midiout, const char *midiin,
-                     const char *module);
+struct _commng *cmmidi_create(const char *midiout, const char *midiin,
+                              const char *module);
 
 #ifdef __cplusplus
 }

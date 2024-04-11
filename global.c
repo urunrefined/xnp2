@@ -84,11 +84,11 @@ NP2OSCFG np2oscfg = {
 	0,					/* JOYPAD2 */
 	{ "", "" },					/* JOYDEV */
 
-	{ COMPORT_MIDI, 0, 0x3e, 19200, "", "", "", "" },	/* mpu */
+	{ "", "", ""},	/* mpu */
 	{
-		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com1 */
-		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com2 */
-		{ COMPORT_NONE, 0, 0x3e, 19200, "", "", "", "" },/* com3 */
+		{ "", "", ""}, /* com1 */
+		{ "", "", ""}, /* com2 */
+		{ "", "", ""}, /* com3 */
 	},
 
 	0,					/* confirm */

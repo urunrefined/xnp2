@@ -11,14 +11,9 @@ extern "C" {
 UINT32 gettick(void);
 
 typedef struct {
-    UINT8 port;
-    UINT8 def_en;
-    UINT8 param;
-    UINT32 speed;
-    char mout[MAX_PATH];
-    char min[MAX_PATH];
-    char mdl[64];
-    char def[MAX_PATH];
+    char type[64];
+    char ttyname[MAX_PATH];
+    char alsaRawHWName[64];
 } COMCFG;
 
 typedef struct {

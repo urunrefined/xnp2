@@ -1,3 +1,4 @@
+#include "cmamidi.h"
 #include "cmmidi.h"
 #include "cmserial.h"
 #include "compiler.h"
@@ -44,68 +45,71 @@ static void ncrelease(struct _commng *self) {
 }
 
 static struct _commng com_nc = {COMCONNECT_OFF, ncread, ncwrite,
-                         ncgetstat,      ncmsg,  ncrelease};
+                                ncgetstat,      ncmsg,  ncrelease};
 
 // ----
 
 void commng_initialize(void) { cmmidi_initialize(); }
 
-struct _commng *
-commng_create(UINT device) {
+static const char *getDeviceName(UINT device) {
+    return device == COMCREATE_SERIAL     ? "COMCREATE_SERIAL"
+           : device == COMCREATE_PC9861K1 ? "COMCREATE_PC9861K1"
+           : device == COMCREATE_PC9861K2 ? "COMCREATE_PC9861K2"
+           : device == COMCREATE_PRINTER  ? "COMCREATE_PRINTER"
+           : device == COMCREATE_MPU98II  ? "COMCREATE_MPU98II"
+                                          : "Unknown COMCREATE";
+}
+
+static const char *getComName(enum ComPort comPort) {
+    return comPort == COMPORT_NONE   ? "COMPORT_NONE"
+           : comPort == COMPORT_COM1 ? "COMPORT_COM1"
+           : comPort == COMPORT_COM2 ? "COMPORT_COM2"
+           : comPort == COMPORT_COM3 ? "COMPORT_COM3"
+           : comPort == COMPORT_COM4 ? "COMPORT_COM4"
+           : comPort == COMPORT_MIDI ? "COMPORT_MIDI"
+                                     : "Unknown COMPORT";
+}
+
+struct _commng *commng_create(UINT device) {
+
+    printf("create device (%s)\n", getDeviceName(device));
+
+    // TODO: Investigate printer // Why cant it be opened as a simple tty?
+
+    if (device == COMCREATE_PRINTER && np2oscfg.jastsnd) {
+        printf("Try to create jasts device\n");
+        return cmjasts_create();
+    }
+
+    // TODO: cmmidi is currently cometely disabled
+
+    COMCFG *cfg = (device == COMCREATE_SERIAL     ? &np2oscfg.com[0]
+                   : device == COMCREATE_PC9861K1 ? &np2oscfg.com[1]
+                   : device == COMCREATE_PC9861K2 ? &np2oscfg.com[2]
+                                                  : 0);
+
+    if (!cfg) {
+        printf("No config for device %s\n", getDeviceName(device));
+        return &com_nc;
+    }
+
     struct _commng *ret = 0;
-    COMCFG *cfg;
-    
-    ret = NULL;
 
-    switch (device) {
-    case COMCREATE_SERIAL:
-        cfg = &np2oscfg.com[0];
-        break;
-
-    case COMCREATE_PC9861K1:
-        cfg = &np2oscfg.com[1];
-        break;
-
-    case COMCREATE_PC9861K2:
-        cfg = &np2oscfg.com[2];
-        break;
-
-    case COMCREATE_MPU98II:
-        cfg = &np2oscfg.mpu;
-        break;
-
-    case COMCREATE_PRINTER:
-        cfg = NULL;
-        if (np2oscfg.jastsnd) {
-            ret = cmjasts_create();
-        }
-        return ret;
-
-    default:
-        cfg = NULL;
-        break;
+    if (strcmp(cfg->type, "alsaraw") == 0) {
+        ret = cmALSASerial_create(cfg->alsaRawHWName);
+    } else if (strcmp(cfg->type, "tty") == 0) {
+        ret = cmserial_create(cfg->ttyname);
+    } else {
+        printf("Invalid COM type %s\n", cfg->type);
     }
 
-    if (cfg) {
-        if ((cfg->port >= COMPORT_COM1) && (cfg->port <= COMPORT_COM4)) {
-            ret = cmserial_create(cfg->port - COMPORT_COM1 + 1, cfg->param,
-                                  cfg->speed);
+    printf("device(%u) result: %p\n", device, ret);
 
-        } else if (cfg->port == COMPORT_MIDI) {
-            ret = cmmidi_create(cfg->mout, cfg->min, cfg->mdl);
-            if (ret) {
-                (*ret->msg)(ret, COMMSG_MIMPIDEFFILE, (INTPTR)cfg->def);
-                (*ret->msg)(ret, COMMSG_MIMPIDEFEN, (INTPTR)cfg->def_en);
-            }
-        }        
+    if (!ret) {
+        ret = &com_nc;
     }
-    
-    
-    
-    if (ret)
-        return ret;
 
-    return &com_nc;
+    return ret;
 }
 
 void commng_destroy(struct _commng *hdl) {

@@ -1,5 +1,4 @@
-#ifndef NP2_X11_COMMNG_H__
-#define NP2_X11_COMMNG_H__
+#pragma once
 
 // ---- com manager interface
 
@@ -9,7 +8,7 @@
 extern "C" {
 #endif
 
-enum {
+enum ConnectionType {
     COMCREATE_SERIAL = 0,
     COMCREATE_PC9861K1,
     COMCREATE_PC9861K2,
@@ -17,7 +16,7 @@ enum {
     COMCREATE_MPU98II
 };
 
-enum {
+enum ConnectionState {
     COMCONNECT_OFF = 0,
     COMCONNECT_SERIAL,
     COMCONNECT_MIDI,
@@ -28,7 +27,7 @@ enum { COMMSG_MIDIRESET = 0, COMMSG_SETFLAG, COMMSG_GETFLAG, COMMSG_USER };
 
 struct _commng {
     UINT connect;
-    
+
     UINT (*read)(struct _commng *self, UINT8 *data);
     UINT (*write)(struct _commng *self, UINT8 data);
     UINT8 (*getstat)(struct _commng *self);
@@ -43,12 +42,12 @@ typedef struct {
     UINT32 param;
 } _COMFLAG, *COMFLAG;
 
-struct _commng* commng_create(UINT device);
+struct _commng *commng_create(UINT device);
 void commng_destroy(struct _commng *hdl);
 
 // ---- com manager for unix
 
-enum {
+enum ComPort {
     COMPORT_NONE = 0,
     COMPORT_COM1,
     COMPORT_COM2,
@@ -57,7 +56,7 @@ enum {
     COMPORT_MIDI
 };
 
-enum {
+enum ComSig {
     COMSIG_COM1 = 0x314d4f43,
     COMSIG_COM2 = 0x324d4f43,
     COMSIG_COM3 = 0x334d4f43,
@@ -72,5 +71,3 @@ void commng_initialize(void);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* NP2_X11_COMMNG_H__ */

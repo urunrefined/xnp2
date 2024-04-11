@@ -2,7 +2,6 @@
 #define NP2_X11_CMSERIAL_H__
 
 #include "commng.h"
-#include "compiler.h"
 
 // ---- com manager serial for unix
 
@@ -10,9 +9,7 @@
 extern "C" {
 #endif
 
-extern const UINT32 cmserial_speed[10];
-
-struct _commng* cmserial_create(UINT port, UINT8 param, UINT32 speed);
+struct _commng *cmserial_create(const char *tty);
 
 #if defined(SUPPORT_PC9861K)
 #define MAX_SERIAL_PORT_NUM 3

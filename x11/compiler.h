@@ -1,5 +1,4 @@
-#ifndef NP2_X11_COMPILER_H__
-#define NP2_X11_COMPILER_H__
+#pragma once
 
 /*-
  * Copyright (C) 2003, 2004 NONAKA Kimihiro <nonakap@gmail.com>
@@ -157,5 +156,3 @@ typedef signed long nxp2ptr;
 #define TRACE
 #define TRACEVERBOSE
 #endif
-
-#endif /* NP2_X11_COMPILER_H__ */
