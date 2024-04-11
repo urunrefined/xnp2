@@ -33,6 +33,10 @@ xnp2.includes
 .qtc_*
 build/
 
+src/
+vkglfw.*
+xnp2katze-*
+
 *.d
 *.spv
 doc/
