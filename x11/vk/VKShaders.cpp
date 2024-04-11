@@ -25,7 +25,7 @@ static std::vector<char> readFile(const std::string &filename) {
 
 static std::vector<char> readShaderFile(const char *filename) {
     try {
-        std::string shaderFilename(std::string("shader/") + filename);
+        std::string shaderFilename(std::string("x11/shader/") + filename);
         printf("Try relative shaderfilename: %s\n", shaderFilename.c_str());
         return readFile(shaderFilename);
     } catch (...) {

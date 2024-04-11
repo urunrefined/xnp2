@@ -27,7 +27,7 @@ prepare() {
 }
 
 build() {
-  cd "$srcdir/$pkgname-$pkgver/x11"
+  cd "$srcdir/$pkgname-$pkgver"
   make -j8
 }
 
@@ -41,6 +41,6 @@ check() {
 package() {
   mkdir -p $pkgdir/usr/bin
   mkdir -p $pkgdir/usr/share/$pkgname
-  cp -a $pkgname-$pkgver/x11/xnp2 $pkgdir/usr/bin/
+  cp -a $pkgname-$pkgver/xnp2 $pkgdir/usr/bin/
   cp -a $pkgname-$pkgver/x11/shader/*.spv $pkgdir/usr/share/$pkgname/
 }

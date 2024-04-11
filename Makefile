@@ -280,8 +280,8 @@ endif
 OBJ = $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 DEP = $(SRC_C:.c=.d) $(SRC_CPP:.cpp=.d)
 
-FRAGSHADERSRC = $(wildcard shader/*.frag)
-VERTSHADERSRC = $(wildcard shader/*.vert)
+FRAGSHADERSRC = $(wildcard x11/shader/*.frag)
+VERTSHADERSRC = $(wildcard x11/shader/*.vert)
 
 VERTSHADEROBJ = $(VERTSHADERSRC:.vert=.spv)
 FRAGSHADEROBJ = $(FRAGSHADERSRC:.frag=.spv)
