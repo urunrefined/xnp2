@@ -1,6 +1,6 @@
 pkgname="xnp2katze"
-pkgver="vkglfw.4"
-pkgrel="4"
+pkgver="vkglfw.5"
+pkgrel="5"
 pkgdesc="xnp2katze is PC-9801 series emulator for Linux"
 url="https://github.com/urunrefined/xnp2katze"
 source=("https://github.com/urunrefined/xnp2katze/archive/refs/tags/$pkgver.tar.gz")
