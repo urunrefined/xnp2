@@ -44,10 +44,11 @@ static void serialrelease(struct _commng *self) {
     struct SerialMidi *midi = (struct SerialMidi *)self;
 
     snd_rawmidi_close(midi->handle);
+    free(midi);
 }
 
 struct _commng *cmALSASerial_create(const char *hwdevice) {
-    printf("%s: (terminal %s)\n", __FUNCTION__, hwdevice ? "NULL" : hwdevice);
+    printf("(ALSA Device %s)\n", hwdevice ? hwdevice : "NULL");
     snd_rawmidi_t *midiHandle = 0;
 
     int err = snd_rawmidi_open(NULL, &midiHandle, hwdevice, 0);

@@ -112,10 +112,11 @@ static void serialrelease(struct _commng *self) {
     struct SerialCom *serial = (struct SerialCom *)self;
     printf("Release serial %p, fd %d\n", serial, serial->fd);
     close(serial->fd);
+    free(serial);
 }
 
 struct _commng *cmserial_create(const char *tty) {
-    printf("cmserial_create: (terminal %s)\n", tty ? "NULL" : tty);
+    printf("cmserial_create: (terminal %s)\n", tty ? tty : "NULL");
 
     if (!tty || tty[0] == '\0') {
         printf("cmserial_create: com device file is disabled\n");
