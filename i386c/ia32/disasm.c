@@ -27,6 +27,8 @@
 #include "cpu.h"
 #include "inst_table.h"
 
+#include <stdio.h>
+
 
 /*
  * opcode strings

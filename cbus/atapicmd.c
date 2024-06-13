@@ -17,6 +17,8 @@
 #include	"atapicmd.h"
 #include	"fdd/sxsi.h"
 
+#include	<stdlib.h>
+
 #define	YUIDEBUG
 
 

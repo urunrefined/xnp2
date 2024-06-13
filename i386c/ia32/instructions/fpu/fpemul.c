@@ -30,6 +30,8 @@
 
 #include "ia32/instructions/fpu/fp.h"
 
+#include <stdio.h>
+
 /*
 Short Real
    31: sign (符号)
